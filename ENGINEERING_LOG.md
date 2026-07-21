@@ -17,50 +17,74 @@ Only completed and validated work is listed as implemented. Planned capabilities
 * Initialized the local Git repository
 * Established `main` as the default branch
 * Connected the local repository to GitHub
-* Published the repository at:
-  `MAndersonASU/predictive-maintenance-assistant`
+* Published the public repository at `MAndersonASU/predictive-maintenance-assistant`
 * Created the initial project directory structure
-* Added Python, environment, secret, data, and model-artifact exclusions through `.gitignore`
-* Created the initial project README
+* Created the project README
 * Verified the local-to-remote Git workflow
 * Confirmed that the working tree and remote branch are synchronized
 
+### Repository Protection
+
+* Configured exclusions for Python caches and virtual environments
+* Excluded environment-variable files, credentials, private keys, and certificates
+* Excluded raw, interim, and processed datasets from Git
+* Excluded generated outputs, local databases, model artifacts, logs, and analysis caches
+* Verified representative ignore rules using `git check-ignore`
+* Confirmed that no secret-related filenames are tracked by Git
+
+### Source Governance
+
+* Created `data/source_manifest.csv`
+* Registered the MetroPT-3 dataset from the UCI Machine Learning Repository
+* Recorded the dataset DOI, license, source URL, version, and expected local filename
+* Created `docs/document_manifest.csv`
+* Registered the primary MetroPT dataset research paper
+* Classified the paper as an exact dataset source
+* Recorded document licensing, equipment relevance, source URL, and local status
+* Validated both manifest files using Python's CSV parser
+* Published the source-governance manifests to GitHub
+
 ## Repository Verification
 
-| Item                   | Status                          |
-| ---------------------- | ------------------------------- |
-| Local Git repository   | Verified                        |
-| Default branch         | `main`                          |
-| Remote name            | `origin`                        |
-| Remote tracking branch | `origin/main`                   |
-| GitHub visibility      | Public                          |
-| Initial push           | Successful                      |
-| Working tree           | Clean                           |
-| Secret files excluded  | Configured through `.gitignore` |
+| Item | Status |
+| --- | --- |
+| Local Git repository | Verified |
+| Default branch | `main` |
+| Remote name | `origin` |
+| Remote tracking branch | `origin/main` |
+| GitHub visibility | Public |
+| Local-to-remote synchronization | Verified |
+| Working tree | Clean after latest push |
+| Secret-file exclusions | Verified |
+| Dataset manifest | Implemented |
+| Document manifest | Implemented |
+| Manifest CSV structure | Validated |
 
 ## Current Engineering Workstream
 
-The current workstream focuses on establishing a reproducible and professionally documented project foundation before beginning data ingestion and model development.
+The current workstream focuses on designing a reproducible MetroPT-3 data-ingestion process.
 
-Active tasks include:
+Active engineering tasks include:
 
-* Finalizing repository documentation
-* Defining source-governance requirements
-* Creating dataset and document manifests
-* Establishing reproducible environment configuration
-* Preparing the MetroPT-3 ingestion architecture
-* Reviewing repository visibility and security settings
+* Defining the dataset download workflow
+* Calculating and recording a file-integrity checksum
+* Preserving the original dataset as immutable raw data
+* Establishing ingestion configuration and validation rules
+* Designing the raw-to-Parquet conversion process
+* Preparing DuckDB-based analytical access
+* Documenting failure handling and reproducibility requirements
 
 ## Planned Technical Milestones
 
 ### Data Engineering
 
-* Register the MetroPT-3 dataset in a structured source manifest
-* Implement reproducible dataset download and integrity checks
+* Implement reproducible MetroPT-3 download and integrity verification
 * Preserve immutable raw data outside Git
-* Convert raw CSV data to Parquet
+* Validate the source schema and expected sensor fields
+* Convert the raw CSV file to Parquet
 * Query time-series data using DuckDB
-* Create schema and data-quality validation routines
+* Create automated data-quality validation routines
+* Record ingestion metadata and processing outcomes
 
 ### Machine Learning
 
@@ -94,7 +118,11 @@ Active tasks include:
 
 ### Real Industrial Data
 
-The system will use MetroPT-3, a public industrial time-series dataset containing operational measurements from a metro-train Air Production Unit compressor.
+The system uses MetroPT-3, a public industrial time-series dataset containing operational measurements from a metro-train Air Production Unit compressor.
+
+### Data Provenance
+
+Every dataset must be registered before ingestion. Source records include publisher information, source URL, access date, version, license, expected local filename, checksum, and processing status.
 
 ### Data Storage
 
@@ -102,7 +130,7 @@ The planned local analytical workflow uses Parquet and DuckDB. PostgreSQL is pla
 
 ### Document Governance
 
-Technical documents will be classified as either:
+Technical documents are classified as either:
 
 * Exact dataset documentation
 * Authoritative domain reference
@@ -111,25 +139,26 @@ Generic compressor documentation will not be represented as the exact equipment 
 
 ### Public Repository Policy
 
-The public repository will contain:
+The public repository contains:
 
 * Source code
 * Schemas
-* Manifests
+* Source manifests
 * Documentation
 * Tests
 * Small representative samples
 * Reproducible setup instructions
 
-It will not contain:
+It does not contain:
 
 * API keys or credentials
 * Local `.env` files
 * Restricted documents
-* Large generated artifacts
+* Large raw or generated datasets
+* Local databases
 * Unverified performance claims
 * Private development notes
 
 ## Next Engineering Milestone
 
-Create professional source manifests for the MetroPT-3 dataset and technical-document corpus, followed by a reproducible data-ingestion design.
+Implement a reproducible MetroPT-3 acquisition and integrity-verification workflow that downloads the dataset into the ignored raw-data directory, calculates a cryptographic checksum, validates the file, and updates the dataset manifest.
