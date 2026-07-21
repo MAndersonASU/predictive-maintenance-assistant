@@ -1,0 +1,2 @@
+source_id,title,publisher,source_url,access_date,version_or_date,license,local_filename,checksum,status,notes
+metropt3_uci,MetroPT-3 Dataset,UCI Machine Learning Repository,https://archive.ics.uci.edu/dataset/791/metropt+3+dataset,2026-07-20,2021,CC BY 4.0,MetroPT3(AirCompressor).csv,,registered_not_downloaded,"Primary industrial time-series dataset; DOI 10.24432/C5VW3R; data collected from a metro-train Air Production Unit"

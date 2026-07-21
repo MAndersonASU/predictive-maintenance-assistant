@@ -1,0 +1,2 @@
+document_id,title,publisher,source_url,access_date,version_or_date,license_or_usage_status,local_filename,document_category,exact_equipment_match,status,notes
+metropt_dataset_paper,The MetroPT dataset for predictive maintenance,Scientific Data,https://doi.org/10.1038/s41597-022-01877-3,2026-07-20,2022,CC BY 4.0,metropt_dataset_paper.pdf,exact_dataset_source,yes,registered_not_downloaded,"Primary paper describing the MetroPT APU sensors, data collection, operational context, and maintenance-report failure events"
