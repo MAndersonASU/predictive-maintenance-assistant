@@ -159,6 +159,28 @@ It does not contain:
 * Unverified performance claims
 * Private development notes
 
+## Verified Data-Quality Profiling
+
+The immutable MetroPT-3 CSV was profiled with a deterministic, read-only validation workflow implemented in `src/predictive_maintenance/data/data_quality.py` and covered by controlled tests in `tests/test_data_quality.py`.
+
+Verified results:
+
+* 1,516,948 data rows and 17 columns
+* Zero row-width mismatches
+* Zero exact duplicate rows
+* Zero missing values
+* Zero timestamp parse failures
+* Zero out-of-order or adjacent duplicate timestamps
+* Zero numeric-coercion failures
+* Zero non-finite numeric values
+* Zero invalid supported binary values
+* Dominant sampling interval of 10 seconds
+* 363 intervals greater than the 15-second gap threshold
+* Largest observed gap of 172,918 seconds, approximately 48.033 hours
+* Raw source preservation confirmed; the source CSV was not modified
+
+The temporal gaps are recorded as a data-quality limitation. Later time-series analysis must not assume continuous adjacency across these gaps.
+
 ## Next Engineering Milestone
 
-Implement a reproducible MetroPT-3 acquisition and integrity-verification workflow that downloads the dataset into the ignored raw-data directory, calculates a cryptographic checksum, validates the file, and updates the dataset manifest.
+Convert the validated MetroPT-3 CSV to Parquet without modifying the immutable raw source, record reproducible processing metadata, and establish DuckDB-based local analytical access.
