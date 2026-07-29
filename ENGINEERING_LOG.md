@@ -180,6 +180,61 @@ The metadata records:
 
 The metadata file is excluded from Git as a generated processing artifact.
 
+### Reproducible Gap-Aware Exploratory Analysis
+
+Implemented `src/predictive_maintenance/analysis/eda.py` and `src/predictive_maintenance/analysis/__init__.py` to perform reproducible descriptive analysis directly over the verified MetroPT-3 Parquet dataset with an in-memory DuckDB connection.
+
+Implemented controls include:
+
+* Validation of the Parquet file, non-zero size, and complete 17-column analytical schema
+* Verification of row count, timestamp coverage, and observed calendar days
+* Descriptive summaries for seven continuous sensor signals
+* State-frequency summaries for eight governed binary operating signals
+* Temporal-gap detection using the previously verified 15-second threshold
+* Gap-aware segmentation so disconnected observation windows are not treated as continuous
+* Atomic JSON, CSV, and SVG output writing through `.part` files
+* Explicit overwrite protection for previously reviewed analytical outputs
+* Reproducibility metadata including input checksum, schema, configuration, software versions, and output locations
+* Command-line execution with actionable failure messages
+
+Verified analytical results:
+
+* Input rows analyzed: 1,516,948
+* Input columns analyzed: 17
+* Input Parquet SHA-256: `50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3`
+* Timestamp coverage: `2020-02-01 00:00:00` through `2020-09-01 03:59:50`
+* Observed calendar days: 212
+* Temporal gaps above 15 seconds: 363
+* Gap-aware observation segments: 364
+* Largest temporal gap: 172,918 seconds, approximately 48.03 hours
+* Continuous-signal summaries generated: 7
+* Binary-state frequency records generated: 16
+* Temporal-segment records generated: 364
+* Largest gap details retained: 20
+* SVG figures generated and visually reviewed: 2
+* Remaining `.part` files after successful execution: 0
+
+Generated analytical artifacts remain excluded from Git under `outputs/eda/`:
+
+```text
+outputs/eda/metropt3_eda_summary.json
+outputs/eda/signal_summary.csv
+outputs/eda/operating_state_frequencies.csv
+outputs/eda/temporal_segments.csv
+outputs/eda/temporal_gaps.csv
+outputs/eda/figures/operating_state_frequencies.svg
+outputs/eda/figures/signal_distribution_overview.svg
+```
+
+Professional documentation was added at:
+
+```text
+docs/eda_method.md
+docs/eda_findings.md
+```
+
+The analysis is descriptive only. It does not define anomaly or failure labels, establish equipment operating limits, engineer predictive features, create train/validation/test partitions, train models, or publish performance claims.
+
 ### Automated Validation
 
 Created `tests/test_parquet_conversion.py` with controlled tests covering:
@@ -194,11 +249,22 @@ Created `tests/test_parquet_conversion.py` with controlled tests covering:
 * DuckDB row-count and schema access
 * Complete conversion-workflow execution
 
+Created `tests/test_eda.py` with controlled tests covering:
+
+* Successful gap-aware analytical output generation
+* Continuous-signal and binary-state records
+* Reproducibility metadata and explicit scope controls
+* Existing-output overwrite protection
+* Missing Parquet input handling
+* Analytical-schema rejection
+* Temporary-file cleanup following failure
+
 The full repository test suite currently contains:
 
 * 12 data-quality tests
 * 7 Parquet and DuckDB tests
-* 19 total passing tests
+* 7 exploratory-analysis tests
+* 26 total passing tests
 
 ## Repository Verification
 
@@ -219,7 +285,8 @@ The full repository test suite currently contains:
 | Data-quality profiling     | Implemented   |
 | Parquet conversion         | Implemented   |
 | DuckDB analytical access   | Implemented   |
-| Controlled tests           | 19 passing    |
+| Gap-aware exploratory analysis | Implemented |
+| Controlled tests           | 26 passing    |
 
 ## Architecture Decisions
 
@@ -285,6 +352,24 @@ Technical documents are classified as either:
 
 Generic compressor documentation will not be represented as the exact equipment manual unless the equipment manufacturer and model are independently verified.
 
+### Gap-Aware Temporal Analysis
+
+The dataset is analyzed as 364 verified observation segments separated by 363 temporal gaps greater than 15 seconds.
+
+Time-dependent calculations must not create rolling windows, lag features, labels, or evaluation relationships across segment boundaries.
+
+### Descriptive Evidence Before Target Definition
+
+Observed distributions, rare operating states, and unusual sensor patterns are descriptive evidence rather than automatic anomaly or failure labels.
+
+Target definitions must be traceable to exact source documentation, maintenance reports, dataset version, timestamps, and a documented operational objective before modeling begins.
+
+### Engineering Log Maintenance
+
+`ENGINEERING_LOG.md` is a required repository artifact for every completed engineering milestone.
+
+Before a coding session or full project day is closed, the log must be updated with only verified facts: files changed, tests and validations passed, generated evidence, architecture decisions, commit and push state, current repository state, and the single next milestone. The log update must be reviewed in the intended Git diff and committed with the coherent engineering change.
+
 ### Public Repository Policy
 
 The public repository contains:
@@ -309,33 +394,31 @@ It does not contain:
 
 ## Current Engineering Workstream
 
-The governed acquisition, data-quality profiling, reproducible Parquet conversion, and DuckDB analytical-access layers are implemented and verified.
+The governed acquisition, data-quality profiling, reproducible Parquet conversion, DuckDB analytical access, and gap-aware exploratory-analysis layers are implemented and verified.
 
-The next workstream is documented exploratory analysis of compressor sensor signals and operational states.
+The active workstream is evidence-grounded target definition and temporal evaluation design.
 
-Exploratory work must:
+This work must:
 
-* Use the verified Parquet dataset
-* Respect the documented temporal gaps
-* Avoid assuming uninterrupted sampling across missing intervals
-* Separate measured facts from interpretations
-* Establish descriptive evidence before target definition or modeling
-* Preserve reproducible queries, figures, and analysis configuration
+* Use the verified exploratory findings without converting rare values or states directly into labels
+* Trace every proposed failure or anomaly interpretation to exact source provenance
+* Distinguish observed failure intervals, warning intervals, prediction horizons, and maintenance outcomes
+* Respect all 364 observation segments and prevent relationships across temporal gaps
+* Define leakage-safe training, validation, and test boundaries before feature engineering or model training
+* Record assumptions, unresolved ambiguities, and excluded claims explicitly
 
 ## Planned Technical Milestones
 
 ### Data Engineering
 
-* Document representative DuckDB analytical queries
-* Measure analytical behavior using the verified Parquet dataset
-* Preserve query and visualization reproducibility
-* Record analytical limitations before modeling
+* Maintain the verified Parquet, DuckDB, and exploratory-analysis workflows
+* Preserve analytical queries, figures, configuration, checksums, and scope limitations
+* Extend data controls only when required by a verified downstream objective
 
 ### Machine Learning
 
-* Perform exploratory analysis of compressor sensor signals
-* Define anomaly and failure-event targets
-* Establish leakage-safe temporal boundaries
+* Define evidence-grounded anomaly and failure-event targets
+* Establish leakage-safe temporal boundaries and evaluation partitions
 * Build preprocessing and feature-engineering pipelines
 * Establish baseline models
 * Compare models using documented evaluation metrics
@@ -362,6 +445,6 @@ Exploratory work must:
 
 ## Next Engineering Milestone
 
-Perform reproducible exploratory analysis over the verified MetroPT-3 Parquet dataset using DuckDB and Python.
+Define a documented, source-traceable anomaly and failure-event interpretation for the governed MetroPT-3 dataset and establish leakage-safe temporal evaluation boundaries.
 
-The analysis must begin with signal distributions, operating-state frequencies, timestamp coverage, temporal-gap-aware segmentation, and representative sensor relationships before any target definition, feature engineering, or model training.
+The milestone must use the verified exploratory evidence and exact dataset documentation, distinguish labels from prediction windows, respect temporal-gap-aware segments, and stop before predictive feature engineering, model training, or performance reporting.
