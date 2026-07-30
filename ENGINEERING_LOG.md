@@ -235,6 +235,60 @@ docs/eda_findings.md
 
 The analysis is descriptive only. It does not define anomaly or failure labels, establish equipment operating limits, engineer predictive features, create train/validation/test partitions, train models, or publish performance claims.
 
+### Governed Target-Definition and Temporal-Evaluation Validation
+
+Implemented `src/predictive_maintenance/analysis/target_definition.py` to validate a governed JSON design specification before row-level labeling, feature engineering, model training, or performance reporting.
+
+Added the governed specification and method documentation at:
+
+```text
+config/metropt3_target_definition.json
+docs/target_definition_method.md
+```
+
+Implemented validation controls include:
+
+* Required schema version 1
+* Required declared dataset name, 64-character hexadecimal Parquet SHA-256 value, and timestamp coverage
+* Required unique event names and intervals contained within the declared dataset coverage
+* Required provenance fields: source title, source type, source locator, interpretation, and confidence
+* Allowed provenance confidence values limited to `documented`, `derived`, or `ambiguous`
+* Rejection of overlapping observed-event intervals
+* Rejection of overlapping prediction windows
+* Enforcement that each prediction window ends before its observed event starts
+* Enforcement of a minimum warning interval
+* Required policy that unlabeled rows are not assumed to be normal
+* Required policy that ambiguous periods are excluded
+* Strictly chronological, non-overlapping train, validation, and test partitions
+* Partition boundaries contained within the declared dataset coverage
+* Enforcement of a minimum temporal buffer between evaluation partitions
+* Required leakage-control declarations for chronological evaluation, segment-bounded windows, training-only fitting, and event isolation
+* Optional atomic JSON validation-report writing through a `.part` file
+* Command-line execution with actionable validation errors
+
+Verified configuration results:
+
+* Validation status: `valid`
+* Schema version: 1
+* Proposed event records: 1
+* Documented events: 0
+* Ambiguous events: 1
+* Prediction windows: 1
+* Minimum warning interval: 2.0 hours
+* Evaluation-partition buffer: 2.0 hours
+* Train interval: `2020-02-01T00:00:00` through `2020-05-15T23:59:50`
+* Validation interval: `2020-05-16T02:00:00` through `2020-07-01T23:59:50`
+* Test interval: `2020-07-02T02:00:00` through `2020-09-01T03:59:50`
+
+The configuration contains one deliberately ambiguous placeholder event. Its source locator states that exact interval confirmation is still required, and it is not represented as verified maintenance ground truth or as a row-level failure label.
+
+Verified scope exclusions:
+
+* Row-level labels created: no
+* Predictive features engineered: no
+* Models trained: no
+* Performance metrics reported: no
+
 ### Automated Validation
 
 Created `tests/test_parquet_conversion.py` with controlled tests covering:
@@ -259,12 +313,35 @@ Created `tests/test_eda.py` with controlled tests covering:
 * Analytical-schema rejection
 * Temporary-file cleanup following failure
 
+Created `tests/test_target_definition.py` with controlled tests covering:
+
+* Successful validation of a governed specification
+* Required leakage-control declarations
+* Atomic validation-report writing
+* Valid specification-file loading and invalid JSON rejection
+* Minimum warning-interval enforcement
+* Chronological partition enforcement
+* Prediction-window ordering
+* Required provenance fields
+* Rejection of the assumption that unlabeled rows are normal
+
+Verified Day 7 validation results:
+
+* Python syntax compilation: passed
+* Focused target-definition tests: 9 passing
+* Focused-test failures: 0
+* Focused-test errors: 0
+* Complete repository test suite: 35 passing
+* Complete-suite failures: 0
+* Complete-suite errors: 0
+
 The full repository test suite currently contains:
 
 * 12 data-quality tests
 * 7 Parquet and DuckDB tests
 * 7 exploratory-analysis tests
-* 26 total passing tests
+* 9 target-definition tests
+* 35 total passing tests
 
 ## Repository Verification
 
@@ -286,7 +363,23 @@ The full repository test suite currently contains:
 | Parquet conversion         | Implemented   |
 | DuckDB analytical access   | Implemented   |
 | Gap-aware exploratory analysis | Implemented |
-| Controlled tests           | 26 passing    |
+| Target-definition validation | Implemented |
+| Controlled tests           | 35 passing    |
+
+Verified pre-commit repository state for the Day 7 milestone:
+
+* Branch: `main`
+* Remote tracking branch: `origin/main`
+* Baseline local and remote commit: `1026316` — `Document gap-aware exploratory analysis milestone`
+* Intended Day 7 implementation files:
+  * `src/predictive_maintenance/analysis/target_definition.py`
+  * `config/metropt3_target_definition.json`
+  * `tests/test_target_definition.py`
+  * `docs/target_definition_method.md`
+  * `ENGINEERING_LOG.md`
+* The four implementation files were isolated as the only untracked files before this log replacement
+* No unrelated generated artifacts, datasets, caches, or configuration files were included
+* Day 7 commit and push verification remain pending and must be recorded before the day is closed
 
 ## Architecture Decisions
 
@@ -364,6 +457,16 @@ Observed distributions, rare operating states, and unusual sensor patterns are d
 
 Target definitions must be traceable to exact source documentation, maintenance reports, dataset version, timestamps, and a documented operational objective before modeling begins.
 
+### Leakage-Safe Target-Definition Design
+
+Target definitions are stored as governed configuration rather than hidden assumptions inside modeling code.
+
+The validator enforces provenance completeness, prediction-window ordering, minimum warning time, chronological evaluation partitions, partition buffers, and required leakage-control declarations. It does not claim that the placeholder timestamp is a verified failure event.
+
+Unlabeled observations are not automatically classified as healthy operation. Ambiguous periods remain excluded until exact source evidence is confirmed.
+
+The `segment_bounded_windows` control is required in the specification, while actual row-level labels, rolling windows, lag features, and model-ready datasets remain future work. Those later calculations must stay inside one of the 364 verified observation segments and must not cross any of the 363 known temporal gaps.
+
 ### Engineering Log Maintenance
 
 `ENGINEERING_LOG.md` is a required repository artifact for every completed engineering milestone.
@@ -394,18 +497,19 @@ It does not contain:
 
 ## Current Engineering Workstream
 
-The governed acquisition, data-quality profiling, reproducible Parquet conversion, DuckDB analytical access, and gap-aware exploratory-analysis layers are implemented and verified.
+The governed acquisition, data-quality profiling, reproducible Parquet conversion, DuckDB analytical access, gap-aware exploratory analysis, and target-definition validation layers are implemented and verified.
 
-The active workstream is evidence-grounded target definition and temporal evaluation design.
+The active workstream is exact failure-event provenance confirmation.
 
 This work must:
 
-* Use the verified exploratory findings without converting rare values or states directly into labels
-* Trace every proposed failure or anomaly interpretation to exact source provenance
-* Distinguish observed failure intervals, warning intervals, prediction horizons, and maintenance outcomes
+* Confirm proposed event intervals against the governed MetroPT dataset paper and available maintenance evidence
+* Replace ambiguous placeholder intervals only when exact source support is available
+* Preserve source titles, source types, exact locators, interpretations, and confidence classifications
+* Preserve the distinction between observed failure intervals and earlier prediction windows
+* Keep unlabeled observations separate from verified healthy operation
 * Respect all 364 observation segments and prevent relationships across temporal gaps
-* Define leakage-safe training, validation, and test boundaries before feature engineering or model training
-* Record assumptions, unresolved ambiguities, and excluded claims explicitly
+* Stop before row-level labeling, feature engineering, model training, or performance reporting until target provenance is verified
 
 ## Planned Technical Milestones
 
@@ -445,6 +549,6 @@ This work must:
 
 ## Next Engineering Milestone
 
-Define a documented, source-traceable anomaly and failure-event interpretation for the governed MetroPT-3 dataset and establish leakage-safe temporal evaluation boundaries.
+Confirm the exact MetroPT-3 failure-event intervals from governed source documentation and replace the ambiguous design placeholder only where the evidence supports exact timestamps.
 
-The milestone must use the verified exploratory evidence and exact dataset documentation, distinguish labels from prediction windows, respect temporal-gap-aware segments, and stop before predictive feature engineering, model training, or performance reporting.
+The milestone must preserve source locators and confidence classifications, distinguish observed failures from prediction windows, respect all 364 temporal segments, and stop before row-level labeling, feature engineering, model training, or performance reporting.
