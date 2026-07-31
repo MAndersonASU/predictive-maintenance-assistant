@@ -1,7 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "dataset": {
     "name": "MetroPT-3 Air Production Unit",
+    "source_identifier": "doi:10.24432/C5VW3R",
     "parquet_sha256": "50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3",
     "start": "2020-02-01T00:00:00",
     "end": "2020-09-01T03:59:50"
@@ -14,20 +15,73 @@
   },
   "events": [
     {
-      "name": "candidate_failure_interval_1",
+      "name": "uci_air_leak_2020_04_18",
       "start": "2020-04-18T00:00:00",
-      "end": "2020-04-18T00:30:00",
-      "prediction_window": {
-        "name": "candidate_failure_interval_1_prediction_window",
-        "start": "2020-04-17T20:00:00",
-        "end": "2020-04-17T22:00:00"
-      },
+      "end": "2020-04-18T23:59:00",
+      "prediction_window": null,
       "provenance": {
-        "source_title": "The MetroPT dataset for predictive maintenance",
-        "source_type": "exact_dataset_paper",
-        "source_locator": "Candidate placeholder requiring exact interval confirmation against governed source documentation",
-        "confidence": "ambiguous",
-        "interpretation": "Template event used only to validate the specification structure. It is not a verified row-level failure label."
+        "source_title": "MetroPT-3 Dataset",
+        "source_type": "exact_dataset_repository",
+        "source_identifier": "doi:10.24432/C5VW3R",
+        "source_locator": "UCI Machine Learning Repository, Additional Information, Failure Information table, entry beginning 4/18/2020 0:00",
+        "accessed_on": "2026-07-30",
+        "dataset_match": "exact",
+        "confidence": "documented",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-04-18 00:00 through 2020-04-18 23:59. This is event metadata, not a row-level label.",
+        "source_conflicts": []
+      }
+    },
+    {
+      "name": "uci_air_leak_2020_05_29",
+      "start": "2020-05-29T23:30:00",
+      "end": "2020-05-30T06:00:00",
+      "prediction_window": null,
+      "provenance": {
+        "source_title": "MetroPT-3 Dataset",
+        "source_type": "exact_dataset_repository",
+        "source_identifier": "doi:10.24432/C5VW3R",
+        "source_locator": "UCI Machine Learning Repository, Additional Information, Failure Information table, entry beginning 5/29/2020 23:30",
+        "accessed_on": "2026-07-30",
+        "dataset_match": "exact",
+        "confidence": "documented",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-05-29 23:30 through 2020-05-30 06:00. This is event metadata, not a row-level label.",
+        "source_conflicts": [
+          "The same UCI entry says 'Maintenance on 30Apr at 12:00' although the event interval is dated May 29-30, 2020. The discrepancy is preserved as unresolved and is not silently corrected."
+        ]
+      }
+    },
+    {
+      "name": "uci_air_leak_2020_06_05",
+      "start": "2020-06-05T10:00:00",
+      "end": "2020-06-07T14:30:00",
+      "prediction_window": null,
+      "provenance": {
+        "source_title": "MetroPT-3 Dataset",
+        "source_type": "exact_dataset_repository",
+        "source_identifier": "doi:10.24432/C5VW3R",
+        "source_locator": "UCI Machine Learning Repository, Additional Information, Failure Information table, entry beginning 6/5/2020 10:00",
+        "accessed_on": "2026-07-30",
+        "dataset_match": "exact",
+        "confidence": "documented",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-06-05 10:00 through 2020-06-07 14:30. This is event metadata, not a row-level label.",
+        "source_conflicts": []
+      }
+    },
+    {
+      "name": "uci_air_leak_2020_07_15",
+      "start": "2020-07-15T14:30:00",
+      "end": "2020-07-15T19:00:00",
+      "prediction_window": null,
+      "provenance": {
+        "source_title": "MetroPT-3 Dataset",
+        "source_type": "exact_dataset_repository",
+        "source_identifier": "doi:10.24432/C5VW3R",
+        "source_locator": "UCI Machine Learning Repository, Additional Information, Failure Information table, entry beginning 7/15/2020 14:30",
+        "accessed_on": "2026-07-30",
+        "dataset_match": "exact",
+        "confidence": "documented",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-07-15 14:30 through 2020-07-15 19:00. This is event metadata, not a row-level label.",
+        "source_conflicts": []
       }
     }
   ],

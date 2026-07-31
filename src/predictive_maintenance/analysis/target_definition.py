@@ -1,9 +1,9 @@
 """Validate source-traceable target definitions and temporal evaluation boundaries.
 
 This module validates a governed JSON specification for documented failure
-intervals, prediction windows, ambiguous periods, and chronological evaluation
-partitions. It intentionally does not create row-level labels, engineer
-features, train models, or publish performance metrics.
+intervals, optional prediction windows, provenance conflicts, and chronological
+evaluation partitions. It intentionally does not create row-level labels,
+engineer features, train models, or publish performance metrics.
 """
 
 from __future__ import annotations
@@ -11,11 +11,13 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable
 
 ISO_FORMAT = "%Y-%m-%dT%H:%M:%S"
+ALLOWED_CONFIDENCE = {"documented", "derived", "ambiguous"}
+ALLOWED_DATASET_MATCH = {"exact", "related", "unknown"}
 
 
 class TargetDefinitionError(ValueError):
@@ -47,6 +49,18 @@ def parse_timestamp(value: Any, field_name: str) -> datetime:
         ) from exc
 
 
+def parse_date(value: Any, field_name: str) -> date:
+    """Parse an ISO calendar date."""
+    if not isinstance(value, str):
+        raise TargetDefinitionError(f"{field_name} must be a string.")
+    try:
+        return date.fromisoformat(value)
+    except ValueError as exc:
+        raise TargetDefinitionError(
+            f"{field_name} must use YYYY-MM-DD: {value!r}"
+        ) from exc
+
+
 def require_nonempty_string(payload: dict[str, Any], key: str, prefix: str) -> str:
     """Read one required, non-empty string field."""
     value = payload.get(key)
@@ -65,20 +79,56 @@ def parse_interval(payload: dict[str, Any], prefix: str) -> Interval:
     return Interval(start=start, end=end, name=name)
 
 
-def validate_provenance(event: dict[str, Any], prefix: str) -> None:
-    """Require traceable source information for a proposed event."""
+def validate_source_conflicts(provenance: dict[str, Any], prefix: str) -> int:
+    """Validate explicitly recorded source conflicts and return their count."""
+    conflicts = provenance.get("source_conflicts")
+    if not isinstance(conflicts, list):
+        raise TargetDefinitionError(f"{prefix}.source_conflicts must be a list.")
+    for index, conflict in enumerate(conflicts):
+        if not isinstance(conflict, str) or not conflict.strip():
+            raise TargetDefinitionError(
+                f"{prefix}.source_conflicts[{index}] must be a non-empty string."
+            )
+    return len(conflicts)
+
+
+def validate_provenance(event: dict[str, Any], prefix: str) -> tuple[str, int]:
+    """Require exact source identity, traceability, and conflict preservation."""
     provenance = event.get("provenance")
     if not isinstance(provenance, dict):
         raise TargetDefinitionError(f"{prefix}.provenance must be an object.")
 
-    for key in ("source_title", "source_type", "source_locator", "interpretation"):
+    for key in (
+        "source_title",
+        "source_type",
+        "source_identifier",
+        "source_locator",
+        "interpretation",
+    ):
         require_nonempty_string(provenance, key, f"{prefix}.provenance")
 
+    parse_date(provenance.get("accessed_on"), f"{prefix}.provenance.accessed_on")
+
     confidence = provenance.get("confidence")
-    if confidence not in {"documented", "derived", "ambiguous"}:
+    if confidence not in ALLOWED_CONFIDENCE:
         raise TargetDefinitionError(
             f"{prefix}.provenance.confidence must be documented, derived, or ambiguous."
         )
+
+    dataset_match = provenance.get("dataset_match")
+    if dataset_match not in ALLOWED_DATASET_MATCH:
+        raise TargetDefinitionError(
+            f"{prefix}.provenance.dataset_match must be exact, related, or unknown."
+        )
+    if confidence == "documented" and dataset_match != "exact":
+        raise TargetDefinitionError(
+            f"{prefix} cannot be documented unless provenance.dataset_match is exact."
+        )
+
+    conflict_count = validate_source_conflicts(
+        provenance, f"{prefix}.provenance"
+    )
+    return confidence, conflict_count
 
 
 def validate_prediction_window(
@@ -86,11 +136,15 @@ def validate_prediction_window(
     event_interval: Interval,
     minimum_warning_hours: float,
     prefix: str,
-) -> Interval:
-    """Validate that a prediction window precedes its observed event."""
+) -> Interval | None:
+    """Validate an optional prediction window that precedes an observed event."""
     payload = event.get("prediction_window")
+    if payload is None:
+        return None
     if not isinstance(payload, dict):
-        raise TargetDefinitionError(f"{prefix}.prediction_window must be an object.")
+        raise TargetDefinitionError(
+            f"{prefix}.prediction_window must be an object or null."
+        )
 
     window = parse_interval(payload, f"{prefix}.prediction_window")
     if window.end >= event_interval.start:
@@ -161,16 +215,21 @@ def validate_partitions(
 
 def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
     """Validate a complete governed target-definition specification."""
-    if payload.get("schema_version") != 1:
-        raise TargetDefinitionError("schema_version must equal 1.")
+    if payload.get("schema_version") != 2:
+        raise TargetDefinitionError("schema_version must equal 2.")
 
     dataset = payload.get("dataset")
     if not isinstance(dataset, dict):
         raise TargetDefinitionError("dataset must be an object.")
     require_nonempty_string(dataset, "name", "dataset")
+    require_nonempty_string(dataset, "source_identifier", "dataset")
     checksum = require_nonempty_string(dataset, "parquet_sha256", "dataset")
-    if len(checksum) != 64 or any(char not in "0123456789abcdef" for char in checksum.lower()):
-        raise TargetDefinitionError("dataset.parquet_sha256 must be a 64-character hexadecimal SHA-256 value.")
+    if len(checksum) != 64 or any(
+        char not in "0123456789abcdef" for char in checksum.lower()
+    ):
+        raise TargetDefinitionError(
+            "dataset.parquet_sha256 must be a 64-character hexadecimal SHA-256 value."
+        )
 
     dataset_start = parse_timestamp(dataset.get("start"), "dataset.start")
     dataset_end = parse_timestamp(dataset.get("end"), "dataset.end")
@@ -188,7 +247,9 @@ def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(partition_buffer_hours, (int, float)) or partition_buffer_hours < 0:
         raise TargetDefinitionError("policy.partition_buffer_hours cannot be negative.")
     if policy.get("unlabeled_rows_are_assumed_normal") is not False:
-        raise TargetDefinitionError("policy.unlabeled_rows_are_assumed_normal must be false.")
+        raise TargetDefinitionError(
+            "policy.unlabeled_rows_are_assumed_normal must be false."
+        )
     if policy.get("ambiguous_periods_are_excluded") is not True:
         raise TargetDefinitionError("policy.ambiguous_periods_are_excluded must be true.")
 
@@ -200,7 +261,9 @@ def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
     prediction_windows: list[Interval] = []
     event_names: set[str] = set()
     documented_event_count = 0
+    derived_event_count = 0
     ambiguous_event_count = 0
+    provenance_conflict_count = 0
 
     for index, event in enumerate(events):
         prefix = f"events[{index}]"
@@ -215,10 +278,11 @@ def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
         if interval.start < dataset_start or interval.end > dataset_end:
             raise TargetDefinitionError(f"{prefix} exceeds dataset coverage.")
 
-        validate_provenance(event, prefix)
-        confidence = event["provenance"]["confidence"]
+        confidence, conflict_count = validate_provenance(event, prefix)
         documented_event_count += int(confidence == "documented")
+        derived_event_count += int(confidence == "derived")
         ambiguous_event_count += int(confidence == "ambiguous")
+        provenance_conflict_count += conflict_count
 
         prediction_window = validate_prediction_window(
             event,
@@ -227,7 +291,8 @@ def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
             prefix,
         )
         event_intervals.append(interval)
-        prediction_windows.append(prediction_window)
+        if prediction_window is not None:
+            prediction_windows.append(prediction_window)
 
     assert_no_overlaps(event_intervals, "Observed event")
     assert_no_overlaps(prediction_windows, "Prediction window")
@@ -263,10 +328,12 @@ def validate_specification(payload: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "status": "valid",
-        "schema_version": 1,
+        "schema_version": 2,
         "event_count": len(event_intervals),
         "documented_event_count": documented_event_count,
+        "derived_event_count": derived_event_count,
         "ambiguous_event_count": ambiguous_event_count,
+        "provenance_conflict_count": provenance_conflict_count,
         "prediction_window_count": len(prediction_windows),
         "minimum_warning_hours": float(minimum_warning_hours),
         "partition_buffer_hours": float(partition_buffer_hours),
