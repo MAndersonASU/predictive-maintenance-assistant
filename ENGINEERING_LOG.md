@@ -4,555 +4,317 @@
 
 **Intelligent Predictive Maintenance and Technical Knowledge Assistant**
 
+Repository: `MAndersonASU/predictive-maintenance-assistant`
+
 ## Purpose
 
-This document records verified implementation milestones, technical decisions, repository changes, and upcoming engineering work.
+This log records only implemented and verified engineering work. Planned capabilities remain explicitly identified as future work until they are developed, tested, committed, and synchronized with the public repository.
 
-Only completed and validated work is listed as implemented. Planned capabilities remain identified as future milestones until they are developed and tested.
+## Current Verified State
+
+- Active branch: `main`
+- Remote tracking branch: `origin/main`
+- Public repository: verified
+- Latest verified Day 8 implementation commit: `4ab2333b2684447e62fa45fc6e0fe0aaf989b863`
+- Commit message: `Document MetroPT-3 failure-event provenance`
+- Local and remote commit identity at the end of the Day 8 implementation: matched at `4ab2333`
+- Working tree at the end of the Day 8 implementation: clean
+- Complete repository test suite: 42 passing tests
+- Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
 
-### Repository Foundation
+### Repository Foundation and Protection
 
-* Initialized the local Git repository
-* Established `main` as the default branch
-* Connected the local repository to GitHub
-* Published the public repository at `MAndersonASU/predictive-maintenance-assistant`
-* Created the initial project directory structure
-* Created the project README
-* Verified the local-to-remote Git workflow
-* Confirmed that the working tree and remote branch can be synchronized through the documented Git process
-
-### Repository Protection
-
-* Configured exclusions for Python caches and virtual environments
-* Excluded environment-variable files, credentials, private keys, and certificates
-* Excluded raw, interim, and processed datasets from Git
-* Excluded generated outputs, local databases, model artifacts, logs, and analysis caches
-* Verified representative ignore rules using `git check-ignore`
-* Confirmed that no secret-related filenames are tracked by Git
-* Confirmed that the generated Parquet dataset remains under ignored `data/processed/`
-* Confirmed that generated conversion metadata remains under ignored `outputs/`
+- Initialized the Git repository and established `main` as the default branch.
+- Connected the repository to GitHub through `origin`.
+- Created the professional project structure and README.
+- Excluded virtual environments, credentials, environment files, private keys, caches, logs, local databases, model artifacts, raw data, processed data, and generated outputs.
+- Verified representative ignore behavior and public-repository safety controls.
 
 ### Source Governance
 
-* Created `data/source_manifest.csv`
-* Registered the MetroPT-3 dataset from the UCI Machine Learning Repository
-* Recorded the dataset DOI, license, source URL, version, and expected local filename
-* Created `docs/document_manifest.csv`
-* Registered the primary MetroPT dataset research paper
-* Classified the paper as an exact dataset source
-* Recorded document licensing, equipment relevance, source URL, and local status
-* Validated both manifest files using Python's CSV parser
-* Published the source-governance manifests to GitHub
+- Created `data/source_manifest.csv` and registered the MetroPT-3 dataset.
+- Recorded source URL, DOI, licensing, expected filename, access information, checksum fields, and processing status.
+- Created `docs/document_manifest.csv` for governed technical references.
+- Preserved the distinction between exact dataset documentation and authoritative general domain references.
 
 ### Governed Data Acquisition
 
-* Implemented deterministic project-relative paths in `src/predictive_maintenance/data/acquire.py`
-* Implemented safe streaming download through temporary `.part` files
-* Implemented controlled extraction without silent overwrite
-* Validated ZIP integrity and expected archive members
-* Validated the exact governed 17-column CSV header
-* Calculated and recorded SHA-256 checksums
-* Updated the governed source manifest atomically
-* Preserved the original MetroPT-3 source files under ignored `data/raw/`
+Implemented deterministic acquisition in `src/predictive_maintenance/data/acquire.py` with:
+
+- project-relative paths;
+- streaming download through `.part` files;
+- ZIP integrity and archive-member validation;
+- controlled extraction without silent overwrite;
+- exact 17-column source-header validation;
+- SHA-256 calculation and atomic manifest updates;
+- immutable storage of governed source files under ignored `data/raw/`.
 
 Verified source checksums:
 
-* Archive: `aab991a970e58210de853bb8078ce0e63abb4d9412fdc5c79792dae3d8e1721a`
-* CSV: `db30ccb4ea402e3c8bf2c99db06e288d4f2a772f6928f9dbe26a920d69793e24`
-* Dataset PDF: `b00fac0e8899854078309bef4adaa480d82ecf14dc81c5097c3646973e824127`
+- Archive: `aab991a970e58210de853bb8078ce0e63abb4d9412fdc5c79792dae3d8e1721a`
+- CSV: `db30ccb4ea402e3c8bf2c99db06e288d4f2a772f6928f9dbe26a920d69793e24`
+- Dataset PDF: `b00fac0e8899854078309bef4adaa480d82ecf14dc81c5097c3646973e824127`
 
 ### Data-Quality Profiling
 
-The immutable MetroPT-3 CSV was profiled with a deterministic, read-only validation workflow implemented in `src/predictive_maintenance/data/data_quality.py` and covered by controlled tests in `tests/test_data_quality.py`.
+Implemented deterministic, read-only profiling in `src/predictive_maintenance/data/data_quality.py` with controlled tests in `tests/test_data_quality.py`.
 
 Verified results:
 
-* 1,516,948 data rows and 17 columns
-* Zero row-width mismatches
-* Zero exact duplicate rows
-* Zero missing values
-* Zero timestamp parse failures
-* Zero out-of-order or adjacent duplicate timestamps
-* Zero numeric-coercion failures
-* Zero non-finite numeric values
-* Zero invalid supported binary values
-* Dominant sampling interval of 10 seconds
-* 363 intervals greater than the 15-second gap threshold
-* Largest observed gap of 172,918 seconds, approximately 48.033 hours
-* Raw source preservation confirmed; the source CSV was not modified
+- 1,516,948 rows and 17 columns
+- Zero row-width mismatches
+- Zero exact duplicate rows
+- Zero missing values
+- Zero timestamp parse failures
+- Zero out-of-order or adjacent duplicate timestamps
+- Zero numeric-coercion failures
+- Zero non-finite numeric values
+- Zero invalid supported binary values
+- Dominant sampling interval: 10 seconds
+- Intervals above the 15-second gap threshold: 363
+- Largest gap: 172,918 seconds, approximately 48.033 hours
+- Raw source modification: none
+- Controlled data-quality tests: 12 passing
 
-The temporal gaps are recorded as a data-quality limitation. Later time-series analysis must not assume continuous adjacency across these gaps.
+The temporal gaps are a governed limitation. Later time-dependent calculations must not assume continuity across them.
 
-### Reproducible Parquet Conversion
+### Reproducible Parquet Conversion and DuckDB Access
 
-Implemented `src/predictive_maintenance/data/parquet_conversion.py` to convert the governed MetroPT-3 CSV into a validated analytical Parquet dataset.
+Implemented `src/predictive_maintenance/data/parquet_conversion.py` with:
 
-Implemented controls include:
+- explicit governed Arrow schema;
+- preservation of the unnamed source column;
+- streaming CSV reading;
+- Zstandard compression;
+- Parquet statistics and schema validation;
+- row-count and column-count verification;
+- source-preservation checks before and after conversion;
+- `.part` handling and cleanup after failure;
+- atomic JSON metadata writing;
+- direct in-memory DuckDB validation over the completed Parquet file.
 
-* Deterministic source, output, and metadata paths
-* Explicit governed Arrow schema for all 17 source columns
-* Preservation of the unnamed source column
-* Millisecond Parquet timestamp storage capable of representing the source timestamps exactly
-* Streaming CSV reading rather than loading the complete dataset into memory
-* Zstandard Parquet compression
-* Parquet statistics and stored Arrow schema
-* Temporary `.part` output handling
-* Protection against unintended destination overwrite
-* Source file validation before conversion
-* Expected row-count validation
-* Parquet metadata row-count validation
-* Parquet column-count and schema validation
-* Source checksum, size, and modification-time comparison before and after conversion
-* Automatic cleanup of incomplete output following a failed conversion
-* SHA-256 calculation for the completed Parquet file
-* Atomic JSON metadata writing
-* Command-line execution with actionable failure messages
+Verified results:
 
-Verified conversion results:
+- Source rows: 1,516,948
+- Parquet rows: 1,516,948
+- Columns: 17
+- Source CSV size: 218,300,507 bytes
+- Parquet size: 24,485,606 bytes
+- Source CSV SHA-256: `db30ccb4ea402e3c8bf2c99db06e288d4f2a772f6928f9dbe26a920d69793e24`
+- Parquet SHA-256: `50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3`
+- Compression: Zstandard
+- PyArrow: `25.0.0`
+- DuckDB: `1.5.5`
+- Permanent database created: no
+- Controlled Parquet and DuckDB tests: 7 passing
 
-* Source rows: 1,516,948
-* Parquet rows: 1,516,948
-* Source columns: 17
-* Parquet columns: 17
-* Compression: Zstandard
-* Source CSV size: 218,300,507 bytes
-* Parquet size: 24,485,606 bytes
-* Source CSV SHA-256: `db30ccb4ea402e3c8bf2c99db06e288d4f2a772f6928f9dbe26a920d69793e24`
-* Parquet SHA-256: `50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3`
-* Source modification status: unchanged
-* PyArrow version: `25.0.0`
-
-The generated Parquet file is stored at:
+Generated artifacts remain ignored:
 
 ```text
 data/processed/metropt3_air_compressor.parquet
-```
-
-The dataset is excluded from Git as a generated analytical artifact.
-
-### DuckDB Analytical Access
-
-Established direct local analytical access to the verified Parquet dataset using DuckDB.
-
-Implemented validation includes:
-
-* In-memory DuckDB connection
-* Direct `read_parquet` access without creating a permanent local database
-* SQL row-count verification
-* SQL schema inspection
-* Verification that DuckDB exposes all 17 columns
-* Verification that the Parquet timestamp is available as a SQL `TIMESTAMP`
-* Explicit handling of DuckDB's `C0` alias for the preserved unnamed source column
-* Comparison of DuckDB row and column counts against conversion results
-
-Verified DuckDB results:
-
-* Rows accessible through DuckDB: 1,516,948
-* Columns accessible through DuckDB: 17
-* DuckDB version: `1.5.5`
-* Permanent database file created: no
-
-### Reproducibility Metadata
-
-Generated an atomic JSON report at:
-
-```text
 outputs/metropt3_parquet_metadata.json
 ```
 
-The metadata records:
-
-* Processing status
-* UTC generation timestamp
-* Source and output paths
-* Source and output file sizes
-* Source and output SHA-256 checksums
-* Row and column counts
-* Compression configuration
-* CSV streaming block size
-* Parquet schema
-* Parquet implementation information
-* DuckDB schema and row-count validation
-* Python, PyArrow, and DuckDB versions
-* Source-preservation evidence
-
-The metadata file is excluded from Git as a generated processing artifact.
-
 ### Reproducible Gap-Aware Exploratory Analysis
 
-Implemented `src/predictive_maintenance/analysis/eda.py` and `src/predictive_maintenance/analysis/__init__.py` to perform reproducible descriptive analysis directly over the verified MetroPT-3 Parquet dataset with an in-memory DuckDB connection.
+Implemented `src/predictive_maintenance/analysis/eda.py` and supporting documentation and tests.
 
-Implemented controls include:
+Verified results:
 
-* Validation of the Parquet file, non-zero size, and complete 17-column analytical schema
-* Verification of row count, timestamp coverage, and observed calendar days
-* Descriptive summaries for seven continuous sensor signals
-* State-frequency summaries for eight governed binary operating signals
-* Temporal-gap detection using the previously verified 15-second threshold
-* Gap-aware segmentation so disconnected observation windows are not treated as continuous
-* Atomic JSON, CSV, and SVG output writing through `.part` files
-* Explicit overwrite protection for previously reviewed analytical outputs
-* Reproducibility metadata including input checksum, schema, configuration, software versions, and output locations
-* Command-line execution with actionable failure messages
+- Input rows: 1,516,948
+- Input columns: 17
+- Input Parquet SHA-256: `50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3`
+- Timestamp coverage: `2020-02-01 00:00:00` through `2020-09-01 03:59:50`
+- Observed calendar days: 212
+- Temporal gaps above 15 seconds: 363
+- Gap-aware observation segments: 364
+- Largest temporal gap: 172,918 seconds
+- Continuous-signal summaries: 7
+- Binary operating-state frequency records: 16
+- Segment records: 364
+- Largest-gap details retained: 20
+- SVG figures generated and visually reviewed: 2
+- Remaining `.part` files after success: 0
+- Controlled EDA tests: 7 passing
 
-Verified analytical results:
+Generated outputs remain under ignored `outputs/eda/`. The EDA is descriptive only and did not create failure labels, predictive features, models, or performance claims.
 
-* Input rows analyzed: 1,516,948
-* Input columns analyzed: 17
-* Input Parquet SHA-256: `50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3`
-* Timestamp coverage: `2020-02-01 00:00:00` through `2020-09-01 03:59:50`
-* Observed calendar days: 212
-* Temporal gaps above 15 seconds: 363
-* Gap-aware observation segments: 364
-* Largest temporal gap: 172,918 seconds, approximately 48.03 hours
-* Continuous-signal summaries generated: 7
-* Binary-state frequency records generated: 16
-* Temporal-segment records generated: 364
-* Largest gap details retained: 20
-* SVG figures generated and visually reviewed: 2
-* Remaining `.part` files after successful execution: 0
+### Governed Target Definition and Temporal Evaluation
 
-Generated analytical artifacts remain excluded from Git under `outputs/eda/`:
+Implemented `src/predictive_maintenance/analysis/target_definition.py`, `config/metropt3_target_definition.json`, `tests/test_target_definition.py`, and `docs/target_definition_method.md`.
+
+The validator enforces:
+
+- governed dataset identity and timestamp coverage;
+- complete event provenance and exact dataset matching for documented events;
+- valid access dates and persistent source identifiers;
+- unique, ordered, non-overlapping event intervals;
+- optional prediction windows that precede observed events and satisfy minimum warning time;
+- chronological train, validation, and test partitions with temporal buffers;
+- required leakage controls;
+- the policy that unlabeled rows are not automatically assumed healthy;
+- atomic validation-report writing and actionable errors.
+
+Day 7 established the governed validation framework without creating row-level labels. Verified Day 7 implementation commit: `607bac4` (`Implement governed target definition and temporal evaluation`). The Day 7 checkpoint documentation commit was `d9fc5b9`.
+
+### Exact MetroPT-3 Failure-Event Provenance
+
+Day 8 replaced the ambiguous design placeholder with four intervals documented by the exact 2020 MetroPT-3 UCI dataset source.
+
+Governed source identity:
+
+- Dataset: MetroPT-3 Dataset
+- Publisher: UCI Machine Learning Repository
+- DOI: `10.24432/C5VW3R`
+- Local analytical coverage: `2020-02-01 00:00:00` through `2020-09-01 03:59:50`
+- Source section: Additional Information - Failure Information
+- Access date recorded in configuration: July 30, 2026
+
+Documented intervals:
+
+| Event ID | Start | End | Interpretation |
+|---|---|---|---|
+| `uci_air_leak_2020_04_18` | `2020-04-18 00:00` | `2020-04-18 23:59` | High-stress air-leak event metadata |
+| `uci_air_leak_2020_05_29` | `2020-05-29 23:30` | `2020-05-30 06:00` | High-stress air-leak event metadata |
+| `uci_air_leak_2020_06_05` | `2020-06-05 10:00` | `2020-06-07 14:30` | High-stress air-leak event metadata |
+| `uci_air_leak_2020_07_15` | `2020-07-15 14:30` | `2020-07-15 19:00` | High-stress air-leak event metadata |
+
+The May 29-30 source entry also says `Maintenance on 30Apr at 12:00`. This conflicts with the event dates. The project preserves the statement as one unresolved provenance conflict and does not silently correct, reinterpret, or use it to change the documented event interval.
+
+Day 8 implementation changes:
+
+- Upgraded the governed specification to schema version 2.
+- Added exact dataset source identifiers, access dates, dataset-match controls, and source-conflict records.
+- Added `docs/failure_event_provenance.md`.
+- Updated the method documentation to distinguish the 2020 UCI failure records from later MetroPT research data.
+- Removed the invented prediction-window placeholder; prediction-window count is now zero.
+- Preserved the four records as event metadata rather than row-level labels.
+- Strengthened target-definition tests from 9 to 16.
+
+Verified Day 8 validation report:
+
+- Status: `valid`
+- Schema version: 2
+- Event count: 4
+- Documented events: 4
+- Derived events: 0
+- Ambiguous events: 0
+- Prediction windows: 0
+- Provenance conflicts: 1
+- Minimum warning interval: 2.0 hours
+- Evaluation partition buffer: 2.0 hours
+- Row-level labels created: no
+- Predictive features engineered: no
+- Models trained: no
+- Performance metrics reported: no
+- Remaining `.part` files: 0
+
+Verified Day 8 testing:
+
+- Python syntax compilation: passed
+- Focused target-definition tests: 16 passing
+- Complete repository test suite: 42 passing
+  - 12 data-quality tests
+  - 7 Parquet and DuckDB tests
+  - 7 exploratory-analysis tests
+  - 16 target-definition tests
+- Failures: 0
+- Errors: 0
+
+Verified Day 8 implementation commit and push:
+
+- Commit: `4ab2333b2684447e62fa45fc6e0fe0aaf989b863`
+- Message: `Document MetroPT-3 failure-event provenance`
+- Scope: 5 files changed, 330 insertions, 73 deletions
+- New file: `docs/failure_event_provenance.md`
+- Push: `origin/main` advanced from `d9fc5b9` to `4ab2333`
+- End-of-implementation synchronization: local `HEAD` and `origin/main` matched
+- End-of-implementation working tree: clean
+
+## Verified Repository Artifacts
+
+Source modules:
 
 ```text
-outputs/eda/metropt3_eda_summary.json
-outputs/eda/signal_summary.csv
-outputs/eda/operating_state_frequencies.csv
-outputs/eda/temporal_segments.csv
-outputs/eda/temporal_gaps.csv
-outputs/eda/figures/operating_state_frequencies.svg
-outputs/eda/figures/signal_distribution_overview.svg
+src/predictive_maintenance/data/acquire.py
+src/predictive_maintenance/data/data_quality.py
+src/predictive_maintenance/data/parquet_conversion.py
+src/predictive_maintenance/analysis/eda.py
+src/predictive_maintenance/analysis/target_definition.py
 ```
 
-Professional documentation was added at:
+Controlled test modules:
 
 ```text
+tests/test_data_quality.py
+tests/test_parquet_conversion.py
+tests/test_eda.py
+tests/test_target_definition.py
+```
+
+Professional documentation and governed configuration:
+
+```text
+ENGINEERING_LOG.md
+config/metropt3_target_definition.json
 docs/eda_method.md
 docs/eda_findings.md
-```
-
-The analysis is descriptive only. It does not define anomaly or failure labels, establish equipment operating limits, engineer predictive features, create train/validation/test partitions, train models, or publish performance claims.
-
-### Governed Target-Definition and Temporal-Evaluation Validation
-
-Implemented `src/predictive_maintenance/analysis/target_definition.py` to validate a governed JSON design specification before row-level labeling, feature engineering, model training, or performance reporting.
-
-Added the governed specification and method documentation at:
-
-```text
-config/metropt3_target_definition.json
 docs/target_definition_method.md
+docs/failure_event_provenance.md
 ```
-
-Implemented validation controls include:
-
-* Required schema version 1
-* Required declared dataset name, 64-character hexadecimal Parquet SHA-256 value, and timestamp coverage
-* Required unique event names and intervals contained within the declared dataset coverage
-* Required provenance fields: source title, source type, source locator, interpretation, and confidence
-* Allowed provenance confidence values limited to `documented`, `derived`, or `ambiguous`
-* Rejection of overlapping observed-event intervals
-* Rejection of overlapping prediction windows
-* Enforcement that each prediction window ends before its observed event starts
-* Enforcement of a minimum warning interval
-* Required policy that unlabeled rows are not assumed to be normal
-* Required policy that ambiguous periods are excluded
-* Strictly chronological, non-overlapping train, validation, and test partitions
-* Partition boundaries contained within the declared dataset coverage
-* Enforcement of a minimum temporal buffer between evaluation partitions
-* Required leakage-control declarations for chronological evaluation, segment-bounded windows, training-only fitting, and event isolation
-* Optional atomic JSON validation-report writing through a `.part` file
-* Command-line execution with actionable validation errors
-
-Verified configuration results:
-
-* Validation status: `valid`
-* Schema version: 1
-* Proposed event records: 1
-* Documented events: 0
-* Ambiguous events: 1
-* Prediction windows: 1
-* Minimum warning interval: 2.0 hours
-* Evaluation-partition buffer: 2.0 hours
-* Train interval: `2020-02-01T00:00:00` through `2020-05-15T23:59:50`
-* Validation interval: `2020-05-16T02:00:00` through `2020-07-01T23:59:50`
-* Test interval: `2020-07-02T02:00:00` through `2020-09-01T03:59:50`
-
-The configuration contains one deliberately ambiguous placeholder event. Its source locator states that exact interval confirmation is still required, and it is not represented as verified maintenance ground truth or as a row-level failure label.
-
-Verified scope exclusions:
-
-* Row-level labels created: no
-* Predictive features engineered: no
-* Models trained: no
-* Performance metrics reported: no
-
-### Automated Validation
-
-Created `tests/test_parquet_conversion.py` with controlled tests covering:
-
-* Successful CSV-to-Parquet conversion
-* Row-count and schema preservation
-* Source checksum preservation
-* Failed row-count validation and partial-output cleanup
-* Missing source handling
-* Existing destination protection
-* Atomic conversion-metadata writing
-* DuckDB row-count and schema access
-* Complete conversion-workflow execution
-
-Created `tests/test_eda.py` with controlled tests covering:
-
-* Successful gap-aware analytical output generation
-* Continuous-signal and binary-state records
-* Reproducibility metadata and explicit scope controls
-* Existing-output overwrite protection
-* Missing Parquet input handling
-* Analytical-schema rejection
-* Temporary-file cleanup following failure
-
-Created `tests/test_target_definition.py` with controlled tests covering:
-
-* Successful validation of a governed specification
-* Required leakage-control declarations
-* Atomic validation-report writing
-* Valid specification-file loading and invalid JSON rejection
-* Minimum warning-interval enforcement
-* Chronological partition enforcement
-* Prediction-window ordering
-* Required provenance fields
-* Rejection of the assumption that unlabeled rows are normal
-
-Verified Day 7 validation results:
-
-* Python syntax compilation: passed
-* Focused target-definition tests: 9 passing
-* Focused-test failures: 0
-* Focused-test errors: 0
-* Complete repository test suite: 35 passing
-* Complete-suite failures: 0
-* Complete-suite errors: 0
-
-The full repository test suite currently contains:
-
-* 12 data-quality tests
-* 7 Parquet and DuckDB tests
-* 7 exploratory-analysis tests
-* 9 target-definition tests
-* 35 total passing tests
-
-## Repository Verification
-
-| Item                       | Status        |
-| -------------------------- | ------------- |
-| Local Git repository       | Verified      |
-| Default branch             | `main`        |
-| Remote name                | `origin`      |
-| Remote tracking branch     | `origin/main` |
-| GitHub visibility          | Public        |
-| Secret-file exclusions     | Verified      |
-| Raw-data exclusion         | Verified      |
-| Processed-data exclusion   | Verified      |
-| Generated-output exclusion | Verified      |
-| Dataset manifest           | Implemented   |
-| Document manifest          | Implemented   |
-| Governed acquisition       | Implemented   |
-| Data-quality profiling     | Implemented   |
-| Parquet conversion         | Implemented   |
-| DuckDB analytical access   | Implemented   |
-| Gap-aware exploratory analysis | Implemented |
-| Target-definition validation | Implemented |
-| Controlled tests           | 35 passing    |
-
-Verified Day 7 implementation commit and push state:
-
-* Branch: `main`
-* Remote tracking branch: `origin/main`
-* Implementation commit: `607bac41ca8cdb974b4b333d95f40303b376fe4e`
-* Commit message: `Implement governed target definition and temporal evaluation`
-* Previous milestone commit: `1026316` — `Document gap-aware exploratory analysis milestone`
-* Files included in the implementation commit:
-  * `src/predictive_maintenance/analysis/target_definition.py`
-  * `config/metropt3_target_definition.json`
-  * `tests/test_target_definition.py`
-  * `docs/target_definition_method.md`
-  * `ENGINEERING_LOG.md`
-* Commit scope: 5 files changed, 710 insertions, and 11 deletions
-* Push result: `main` advanced on `origin` from `1026316` to `607bac4`
-* Local `main`, `origin/main`, and `origin/HEAD` were verified at `607bac4`
-* Working tree after the implementation push: clean
-* No unrelated generated artifacts, datasets, caches, or configuration files were included
 
 ## Architecture Decisions
 
-### Real Industrial Data
+### Immutable and Traceable Inputs
 
-The system uses MetroPT-3, a public industrial time-series dataset containing operational measurements from a metro-train Air Production Unit compressor.
+Original governed source files remain immutable under ignored raw storage. Derived analytical artifacts never replace source data. Every source-dependent claim must preserve source identity and provenance.
 
-### Data Provenance
+### Columnar Local Analytics
 
-Every dataset must be registered before ingestion. Source records include publisher information, source URL, access date, version, license, expected local filename, checksum, and processing status.
+Parquet is the governed analytical format and DuckDB provides direct in-memory SQL access. This supports typed, compressed, column-selective analysis without requiring a permanent local database.
 
-### Immutable Raw Storage
+### Gap-Aware Time-Series Processing
 
-Original downloaded source files remain under `data/raw/` and are treated as immutable governed inputs.
+The dataset contains 364 verified observation segments separated by 363 temporal gaps greater than 15 seconds. Rolling windows, lags, labels, features, and evaluation relationships must not cross these segment boundaries.
 
-Derived analytical datasets are created separately and never replace or modify the raw source.
+### Evidence Before Labels
 
-### Columnar Analytical Storage
+Exploratory rarity, sensor patterns, and operating-state frequencies are not automatic anomaly or failure labels. The exact dataset source now supplies four documented event intervals, but these are still event metadata until a separate governed materialization policy defines row-level targets.
 
-Parquet is used as the local analytical format because it preserves typed columns, supports compression and column-selective access, and can be queried directly by analytical engines.
+### Leakage-Safe Evaluation
 
-The conversion process preserves the governed 17-column source schema and records reproducibility metadata for the generated output.
+Evaluation remains strictly chronological. Training precedes validation, validation precedes testing, and temporal buffers separate partitions. Fitted preprocessing and selection steps must use training data only.
 
-### DuckDB Access
+### Conflict Preservation
 
-DuckDB is used for local SQL analysis directly over Parquet.
-
-The current implementation uses an in-memory connection and does not require importing the dataset into a permanent database.
-
-### Timestamp Representation
-
-The CSV reader interprets source timestamps with second-level precision.
-
-The governed Parquet schema stores timestamps as `timestamp[ms]` because Parquet supports millisecond timestamp resolution and can represent every source timestamp exactly without losing information.
-
-### Unnamed Source Column
-
-The first MetroPT-3 CSV column has an empty source name.
-
-The conversion preserves that column in Parquet. DuckDB exposes it as `C0` so it can be referenced through SQL.
-
-### Failure Handling
-
-Partial Parquet and metadata files are written with `.part` suffixes and promoted to their final names only after successful validation.
-
-Failed processing removes temporary outputs rather than leaving incomplete files that appear valid.
-
-### Dependency Reproducibility
-
-The verified local analytical environment is recorded in `requirements.txt`:
-
-```text
-duckdb==1.5.5
-pyarrow==25.0.0
-```
-
-### Document Governance
-
-Technical documents are classified as either:
-
-* Exact dataset documentation
-* Authoritative domain reference
-
-Generic compressor documentation will not be represented as the exact equipment manual unless the equipment manufacturer and model are independently verified.
-
-### Gap-Aware Temporal Analysis
-
-The dataset is analyzed as 364 verified observation segments separated by 363 temporal gaps greater than 15 seconds.
-
-Time-dependent calculations must not create rolling windows, lag features, labels, or evaluation relationships across segment boundaries.
-
-### Descriptive Evidence Before Target Definition
-
-Observed distributions, rare operating states, and unusual sensor patterns are descriptive evidence rather than automatic anomaly or failure labels.
-
-Target definitions must be traceable to exact source documentation, maintenance reports, dataset version, timestamps, and a documented operational objective before modeling begins.
-
-### Leakage-Safe Target-Definition Design
-
-Target definitions are stored as governed configuration rather than hidden assumptions inside modeling code.
-
-The validator enforces provenance completeness, prediction-window ordering, minimum warning time, chronological evaluation partitions, partition buffers, and required leakage-control declarations. It does not claim that the placeholder timestamp is a verified failure event.
-
-Unlabeled observations are not automatically classified as healthy operation. Ambiguous periods remain excluded until exact source evidence is confirmed.
-
-The `segment_bounded_windows` control is required in the specification, while actual row-level labels, rolling windows, lag features, and model-ready datasets remain future work. Those later calculations must stay inside one of the 364 verified observation segments and must not cross any of the 363 known temporal gaps.
-
-### Engineering Log Maintenance
-
-`ENGINEERING_LOG.md` is a required repository artifact for every completed engineering milestone.
-
-Before a coding session or full project day is closed, the log must be updated with only verified facts: files changed, tests and validations passed, generated evidence, architecture decisions, commit and push state, current repository state, and the single next milestone. The log update must be reviewed in the intended Git diff and committed with the coherent engineering change.
+Source conflicts are retained explicitly. They are not silently resolved through guesswork. The unresolved `30Apr` note remains recorded but does not alter the four documented event intervals.
 
 ### Public Repository Policy
 
-The public repository contains:
+The repository contains source code, tests, schemas, configuration, manifests, documentation, and reproducible setup information. It excludes credentials, private files, large data, generated outputs, local databases, and unverified performance claims.
 
-* Source code
-* Schemas
-* Source manifests
-* Documentation
-* Tests
-* Small representative samples
-* Reproducible setup instructions
+### Engineering Log Maintenance
 
-It does not contain:
-
-* API keys or credentials
-* Local `.env` files
-* Restricted documents
-* Large raw or generated datasets
-* Local databases
-* Unverified performance claims
-* Private development notes
+`ENGINEERING_LOG.md` must be updated for each completed engineering milestone with verified files, validations, evidence, architecture decisions, commit and push state, repository state, and one exact next milestone.
 
 ## Current Engineering Workstream
 
-The governed acquisition, data-quality profiling, reproducible Parquet conversion, DuckDB analytical access, gap-aware exploratory analysis, and target-definition validation layers are implemented and verified.
+Exact failure-event provenance confirmation is complete. The four documented UCI intervals are governed, the unresolved source conflict is preserved, and the validation framework rejects unsupported assumptions.
 
-The active workstream is exact failure-event provenance confirmation.
-
-This work must:
-
-* Confirm proposed event intervals against the governed MetroPT dataset paper and available maintenance evidence
-* Replace ambiguous placeholder intervals only when exact source support is available
-* Preserve source titles, source types, exact locators, interpretations, and confidence classifications
-* Preserve the distinction between observed failure intervals and earlier prediction windows
-* Keep unlabeled observations separate from verified healthy operation
-* Respect all 364 observation segments and prevent relationships across temporal gaps
-* Stop before row-level labeling, feature engineering, model training, or performance reporting until target provenance is verified
-
-## Planned Technical Milestones
-
-### Data Engineering
-
-* Maintain the verified Parquet, DuckDB, and exploratory-analysis workflows
-* Preserve analytical queries, figures, configuration, checksums, and scope limitations
-* Extend data controls only when required by a verified downstream objective
-
-### Machine Learning
-
-* Define evidence-grounded anomaly and failure-event targets
-* Establish leakage-safe temporal boundaries and evaluation partitions
-* Build preprocessing and feature-engineering pipelines
-* Establish baseline models
-* Compare models using documented evaluation metrics
-* Save and version verified model artifacts
-
-### Technical Knowledge System
-
-* Build a governed technical-document corpus
-* Classify documents by source authority and equipment relevance
-* Implement document extraction and chunking
-* Generate and store embeddings
-* Build vector and hybrid retrieval
-* Add reranking and citation-grounded generation
-* Evaluate retrieval and answer quality
-
-### Application Engineering
-
-* Develop prediction and retrieval APIs
-* Add structured storage for predictions and system events
-* Implement testing, logging, and monitoring
-* Add Docker-based deployment
-* Create a demonstration interface
-* Document system limitations and operational requirements
+The active workstream is now the design of a governed row-level target-materialization policy. This work must define how documented event intervals, optional pre-event warning horizons, excluded ambiguous periods, chronological partitions, and the 364 observation segments translate into auditable row-level target states without crossing temporal gaps or treating every unlabeled row as verified healthy operation.
 
 ## Next Engineering Milestone
 
-Confirm the exact MetroPT-3 failure-event intervals from governed source documentation and replace the ambiguous design placeholder only where the evidence supports exact timestamps.
+Define and validate the row-level target-materialization policy for the four documented MetroPT-3 failure intervals.
 
-The milestone must preserve source locators and confidence classifications, distinguish observed failures from prediction windows, respect all 364 temporal segments, and stop before row-level labeling, feature engineering, model training, or performance reporting.
+The milestone must:
+
+- define explicit target states and exclusion states;
+- define any warning horizon before implementation rather than inventing one inside code;
+- keep all labels and windows inside individual verified observation segments;
+- preserve chronological partitions and leakage controls;
+- preserve the unresolved source conflict without converting it into a label;
+- generate auditable label counts and metadata;
+- stop before predictive feature engineering, model training, or performance reporting.
