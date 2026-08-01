@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "name": "MetroPT-3 Air Production Unit",
+    "sensor_parquet_sha256": "50f9c0640bde18069270e639d451e79fa1243e917d4ef0e45ac99dc4bf7c80a3",
+    "target_states_parquet_sha256": "6a88ef1333664ceb477632c7a80cb6b3985f850254e3e93211f57681da9e5bd0",
+    "timestamp_column": "timestamp"
+  },
+  "feature_contract": {
+    "causal_direction": "current_and_past_only",
+    "continuous_signals": [
+      "TP2",
+      "TP3",
+      "H1",
+      "DV_pressure",
+      "Reservoirs",
+      "Oil_temperature",
+      "Motor_current"
+    ],
+    "operating_state_signals": [
+      "COMP",
+      "DV_eletric",
+      "Towers",
+      "MPG",
+      "LPS",
+      "Pressure_switch",
+      "Oil_level",
+      "Caudal_impulses"
+    ],
+    "include_current_values": true,
+    "lag_rows": [1],
+    "difference_lag_rows": 1,
+    "rolling_windows_rows": [6, 30],
+    "rolling_statistics": ["mean", "stddev_population"],
+    "expected_sampling_seconds": 10.0,
+    "history_reset_on_segment_change": true,
+    "history_reset_on_partition_change": true,
+    "rolling_windows_include_current_row": true,
+    "partial_rolling_windows_allowed": true,
+    "missing_history_policy": "null_lag_and_difference_with_explicit_history_indicators",
+    "source_identifier_column_included": false
+  },
+  "governance": {
+    "preserve_target_columns": true,
+    "unverified_rows_are_negative": false,
+    "learned_preprocessing_enabled": false,
+    "learned_preprocessing_fit_scope": "eligible_training_rows_only_if_enabled",
+    "model_training_enabled": false,
+    "performance_reporting_enabled": false
+  },
+  "outputs": {
+    "feature_parquet": "data/processed/metropt3_features.parquet",
+    "evidence_report": "outputs/metropt3_feature_engineering_report.json",
+    "compression": "zstd"
+  }
+}
