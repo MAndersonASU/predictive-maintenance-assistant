@@ -13,6 +13,23 @@
     "unlabeled_rows_are_assumed_normal": false,
     "ambiguous_periods_are_excluded": true
   },
+  "materialization": {
+    "timestamp_column": "timestamp",
+    "expected_sampling_seconds": 10.0,
+    "gap_threshold_seconds": 15.0,
+    "pre_event_exclusion_hours": 2.0,
+    "warning_horizon_hours": null,
+    "cross_segment_assignment_allowed": false,
+    "unverified_rows_are_negative": false,
+    "source_conflicts_create_labels": false,
+    "states": {
+      "documented_failure": "documented_failure",
+      "warning": "warning_not_enabled",
+      "pre_event_exclusion": "excluded_pre_event",
+      "partition_buffer_exclusion": "excluded_partition_buffer",
+      "unverified": "unverified"
+    }
+  },
   "events": [
     {
       "name": "uci_air_leak_2020_04_18",
@@ -27,7 +44,7 @@
         "accessed_on": "2026-07-30",
         "dataset_match": "exact",
         "confidence": "documented",
-        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-04-18 00:00 through 2020-04-18 23:59. This is event metadata, not a row-level label.",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-04-18 00:00 through 2020-04-18 23:59. This is event metadata governed for row-state materialization.",
         "source_conflicts": []
       }
     },
@@ -44,7 +61,7 @@
         "accessed_on": "2026-07-30",
         "dataset_match": "exact",
         "confidence": "documented",
-        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-05-29 23:30 through 2020-05-30 06:00. This is event metadata, not a row-level label.",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-05-29 23:30 through 2020-05-30 06:00. This is event metadata governed for row-state materialization.",
         "source_conflicts": [
           "The same UCI entry says 'Maintenance on 30Apr at 12:00' although the event interval is dated May 29-30, 2020. The discrepancy is preserved as unresolved and is not silently corrected."
         ]
@@ -63,7 +80,7 @@
         "accessed_on": "2026-07-30",
         "dataset_match": "exact",
         "confidence": "documented",
-        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-06-05 10:00 through 2020-06-07 14:30. This is event metadata, not a row-level label.",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-06-05 10:00 through 2020-06-07 14:30. This is event metadata governed for row-state materialization.",
         "source_conflicts": []
       }
     },
@@ -80,7 +97,7 @@
         "accessed_on": "2026-07-30",
         "dataset_match": "exact",
         "confidence": "documented",
-        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-07-15 14:30 through 2020-07-15 19:00. This is event metadata, not a row-level label.",
+        "interpretation": "The exact MetroPT-3 dataset page reports a high-stress air-leak interval from 2020-07-15 14:30 through 2020-07-15 19:00. This is event metadata governed for row-state materialization.",
         "source_conflicts": []
       }
     }
