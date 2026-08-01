@@ -15,11 +15,11 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified Day 8 implementation commit: `4ab2333b2684447e62fa45fc6e0fe0aaf989b863`
-- Commit message: `Document MetroPT-3 failure-event provenance`
-- Local and remote commit identity at the end of the Day 8 implementation: matched at `4ab2333`
-- Working tree at the end of the Day 8 implementation: clean
-- Complete repository test suite: 42 passing tests
+- Latest verified Day 9 implementation commit: `c16a9465fed7755d1b3a86ab84f489b83d6a886f`
+- Commit message: `Materialize governed MetroPT-3 target states`
+- Local and remote commit identity at the end of the Day 9 implementation: matched at `c16a946`
+- Working tree at the end of the Day 9 implementation: clean
+- Complete repository test suite: 53 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
@@ -233,6 +233,67 @@ Verified Day 8 implementation commit and push:
 - End-of-implementation synchronization: local `HEAD` and `origin/main` matched
 - End-of-implementation working tree: clean
 
+### Governed Row-Level Target Materialization
+
+Day 9 implemented the audited translation from governed event metadata to row-level target states without inventing a negative class or crossing observation gaps.
+
+Implemented artifacts:
+
+- `src/predictive_maintenance/analysis/target_materialization.py`
+- `tests/test_target_materialization.py`
+- `docs/target_materialization_method.md`
+- updated `config/metropt3_target_definition.json`
+
+The materialization policy enforces:
+
+- seven governed output columns: `timestamp`, `segment_id`, `partition`, `target_state`, `binary_target`, `source_event`, and `exclusion_reason`;
+- four documented UCI failure intervals and one preserved provenance conflict;
+- 364 gap-aware observation segments;
+- chronological train, validation, test, and excluded partitions;
+- a 2.0-hour pre-event exclusion period;
+- no assignments across segment boundaries;
+- no automatic conversion of unverified rows into a negative class;
+- atomic JSON and Parquet output handling with cleanup of partial files.
+
+Verified production evidence:
+
+- Status: `valid`
+- Input rows: 1,516,948
+- Output rows: 1,516,948
+- Observation segments: 364
+- Documented events: 4
+- Preserved provenance conflicts: 1
+- Cross-segment assignments: 0
+- Documented-failure rows: 29,954
+- Excluded partition-buffer rows: 1,453
+- Excluded pre-event rows: 2,776
+- Unverified rows: 1,482,765
+- Warning horizon: disabled
+- Verified negative class created: no
+- Predictive features engineered: no
+- Models trained: no
+- Performance metrics reported: no
+- Remaining `.part` files: 0
+- Output Parquet SHA-256: `6a88ef1333664ceb477632c7a80cb6b3985f850254e3e93211f57681da9e5bd0`
+- Output Parquet size: 5,303,389 bytes
+- Validation-report size: 2,635 bytes
+
+Verified testing:
+
+- Target-definition and target-materialization tests: 27 passing
+- Complete repository test suite: 53 passing
+- Failures: 0
+- Errors: 0
+
+Verified Day 9 implementation commit and push:
+
+- Commit: `c16a9465fed7755d1b3a86ab84f489b83d6a886f`
+- Message: `Materialize governed MetroPT-3 target states`
+- Scope: 4 files changed, 994 insertions, 4 deletions
+- Push: `origin/main` advanced from `a7a8bb7` to `c16a946`
+- Local `HEAD` and `origin/main` matched after fetch verification
+- End-of-implementation working tree: clean
+
 ## Verified Repository Artifacts
 
 Source modules:
@@ -243,6 +304,7 @@ src/predictive_maintenance/data/data_quality.py
 src/predictive_maintenance/data/parquet_conversion.py
 src/predictive_maintenance/analysis/eda.py
 src/predictive_maintenance/analysis/target_definition.py
+src/predictive_maintenance/analysis/target_materialization.py
 ```
 
 Controlled test modules:
@@ -252,6 +314,7 @@ tests/test_data_quality.py
 tests/test_parquet_conversion.py
 tests/test_eda.py
 tests/test_target_definition.py
+tests/test_target_materialization.py
 ```
 
 Professional documentation and governed configuration:
@@ -263,6 +326,7 @@ docs/eda_method.md
 docs/eda_findings.md
 docs/target_definition_method.md
 docs/failure_event_provenance.md
+docs/target_materialization_method.md
 ```
 
 ## Architecture Decisions
@@ -281,7 +345,7 @@ The dataset contains 364 verified observation segments separated by 363 temporal
 
 ### Evidence Before Labels
 
-Exploratory rarity, sensor patterns, and operating-state frequencies are not automatic anomaly or failure labels. The exact dataset source now supplies four documented event intervals, but these are still event metadata until a separate governed materialization policy defines row-level targets.
+Exploratory rarity, sensor patterns, and operating-state frequencies are not automatic anomaly or failure labels. The four exact documented intervals have now been materialized as auditable row-level failure states, while all other observations remain explicitly unverified rather than being treated as healthy negatives.
 
 ### Leakage-Safe Evaluation
 
@@ -301,20 +365,20 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ## Current Engineering Workstream
 
-Exact failure-event provenance confirmation is complete. The four documented UCI intervals are governed, the unresolved source conflict is preserved, and the validation framework rejects unsupported assumptions.
+Governed row-level target materialization is complete. The four documented UCI intervals are represented as auditable failure states, the 364 observation segments and chronological partitions remain binding, and 1,482,765 rows remain explicitly unverified rather than being treated as healthy negatives.
 
-The active workstream is now the design of a governed row-level target-materialization policy. This work must define how documented event intervals, optional pre-event warning horizons, excluded ambiguous periods, chronological partitions, and the 364 observation segments translate into auditable row-level target states without crossing temporal gaps or treating every unlabeled row as verified healthy operation.
+The active workstream is now leakage-safe, gap-aware feature engineering. Features must use only information available at or before each timestamp, remain inside observation segments, preserve partitions and exclusions, and keep all fitted transformations restricted to training data.
 
 ## Next Engineering Milestone
 
-Define and validate the row-level target-materialization policy for the four documented MetroPT-3 failure intervals.
+Define, implement, and validate a reproducible feature-engineering pipeline over the governed MetroPT-3 sensor and operating-state data.
 
 The milestone must:
 
-- define explicit target states and exclusion states;
-- define any warning horizon before implementation rather than inventing one inside code;
-- keep all labels and windows inside individual verified observation segments;
-- preserve chronological partitions and leakage controls;
-- preserve the unresolved source conflict without converting it into a label;
-- generate auditable label counts and metadata;
-- stop before predictive feature engineering, model training, or performance reporting.
+- define each feature and its operational meaning before implementation;
+- use causal lag and rolling calculations that never cross observation-segment boundaries;
+- preserve chronological partitions, target states, exclusions, and provenance;
+- fit any learned preprocessing only on eligible training data;
+- retain unverified rows as unverified rather than declaring a healthy negative class;
+- generate auditable feature metadata, schema, row counts, and reproducibility evidence;
+- stop before model training, model comparison, or performance reporting.
