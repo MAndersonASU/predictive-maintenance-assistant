@@ -15,11 +15,11 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified Day 11 implementation commit: `1d6a9b33d61e706ebf939d1efc6282d8777bcef8`
-- Commit message: `Define governed baseline evaluation contract`
-- Local and remote commit identity at the end of the Day 11 implementation: matched at `1d6a9b33d61e706ebf939d1efc6282d8777bcef8`
-- Working tree at the end of the Day 11 implementation: clean
-- Complete repository test suite: 74 passing tests
+- Latest verified implementation commit: `2dcf55a37bbbe523271bc8aff91379f6bc67869e`
+- Commit message: `Implement robust-distance validation baseline`
+- Local and remote implementation commit identity: matched at `2dcf55a37bbbe523271bc8aff91379f6bc67869e`
+- Working tree after the implementation push and before this engineering-log update: clean
+- Complete repository test suite: 86 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
@@ -525,3 +525,164 @@ The milestone must:
 - preserve unlabeled uncertainty and avoid accuracy, precision, specificity, false-positive-rate, or healthy-class claims;
 - keep the test partition locked until the complete baseline method and validation decisions are frozen;
 - generate auditable model parameters, checksums, row counts, schema, and reproducibility evidence before any advanced-model comparison.
+
+## Robust-Distance Validation Baseline
+
+Status: Implemented and verified on August 2, 2026.
+
+### Implemented Scope
+
+Implemented a governed robust-distance baseline under the frozen baseline-evaluation contract.
+
+Created and validated:
+
+```text
+config/metropt3_robust_distance.json
+docs/robust_distance_method.md
+src/predictive_maintenance/analysis/robust_distance.py
+tests/test_robust_distance.py
+```
+
+The implementation:
+
+- selects numeric model features through the governed contract;
+- fits medians and interquartile ranges only on eligible training-reference rows;
+- records and excludes features with zero training-reference IQR;
+- defines unusualness as the maximum absolute robust z-score;
+- derives and freezes the alarm threshold from training-reference scores;
+- applies the frozen parameters unchanged to validation rows;
+- keeps the test partition locked;
+- preserves the uncertainty of unlabeled observations;
+- reports alarm burden without describing it as a false-positive rate.
+
+### Verification Evidence
+
+Focused robust-distance test suite:
+
+```text
+Command: python -m unittest tests.test_robust_distance -v
+Tests run: 12
+Failures: 0
+Errors: 0
+```
+
+Complete repository regression suite:
+
+```text
+Command: python -m unittest discover -s tests -v
+Tests run: 86
+Failures: 0
+Errors: 0
+Elapsed time: 2.765 seconds
+```
+
+Production execution:
+
+```text
+Eligible training-reference rows: 734,015
+Validation rows scored: 329,624
+Test rows scored: 0
+Processing status: robust_distance_validation_completed
+```
+
+Frozen fitted parameters:
+
+```text
+Fit partition: train
+Retained features: 48
+Excluded zero-IQR features: 9
+Threshold quantile: 0.995
+Frozen threshold: 7857.013759410036
+Test partition used: false
+Parameter status: frozen_before_validation
+```
+
+Validation-stage evidence:
+
+```text
+Validation alarm burden: 0.00886109023344634
+Validation alarm burden percentage: approximately 0.8861%
+Alarms per 24 observed hours: approximately 76.56
+Documented validation events: 2
+Documented events covered: 1
+Documented-event coverage fraction: 0.5
+Covered event: uci_air_leak_2020_05_29
+First-alarm latency for covered event: 23,228 seconds
+Uncovered event: uci_air_leak_2020_06_05
+```
+
+The covered-event alarm occurred approximately 6 hours and 27 minutes after the documented interval began. These results establish reproducible baseline evidence but do not establish strong predictive performance.
+
+### Governed Generated Artifacts
+
+The following generated artifacts were verified as non-empty and remain excluded from Git:
+
+```text
+outputs/metropt3_robust_distance_parameters.json
+data/processed/metropt3_validation_robust_distance.parquet
+outputs/metropt3_robust_distance_validation_report.json
+```
+
+Verified file sizes:
+
+```text
+metropt3_robust_distance_parameters.json: 7,084 bytes
+metropt3_validation_robust_distance.parquet: 2,322,058 bytes
+metropt3_robust_distance_validation_report.json: 3,030 bytes
+```
+
+The generated evidence records source and contract checksums, fitted parameters, output checksums, row counts, software versions, governance controls, score summaries, alarm burden, documented-event coverage, and first-alarm latency.
+
+### Repository Evidence
+
+Implementation commit:
+
+```text
+Commit: 2dcf55a37bbbe523271bc8aff91379f6bc67869e
+Message: Implement robust-distance validation baseline
+Scope: 4 files changed, 639 insertions
+Push: origin/main advanced from 7b03292 to 2dcf55a
+```
+
+Local `HEAD` and `origin/main` matched at the full commit identity after the push.
+
+Verified repository state before this engineering-log update:
+
+```text
+Branch: main
+Tracking branch: origin/main
+Ahead/behind: none
+Working tree: clean
+```
+
+### Engineering Interpretation
+
+The baseline detected one of the two documented validation events, missed the other, and generated approximately 76.56 alarms per 24 observed hours. The baseline therefore requires governed validation diagnosis before test evaluation or comparison with a more advanced model.
+
+Several retained features have very small but nonzero training-reference IQRs. These values can produce disproportionately large standardized contributions and require explicit diagnostic analysis. Their presence is not, by itself, evidence of an implementation error.
+
+Alarm burden is not a false-positive rate because unlabeled operational observations are not verified healthy examples. Accuracy, precision, specificity, false-positive rate, ROC-AUC, and verified-healthy claims remain unsupported.
+
+### Current Engineering Workstream
+
+The transparent training-reference robust-distance baseline is implemented, tested, reproducible, and evaluated on the validation partition. Its fitted parameters and training-derived threshold are frozen. The test partition remains locked.
+
+The active workstream is governed validation-stage baseline diagnosis and final baseline-decision freezing.
+
+### Next Engineering Milestone
+
+Perform and validate a governed diagnostic analysis of the frozen robust-distance baseline using training-reference and validation evidence only while keeping the test partition locked.
+
+The analysis must:
+
+- identify the retained features that dominate extreme scores and alarm rows;
+- quantify the influence of very small nonzero IQRs;
+- analyze alarm concentration by observation segment, operating state, and time;
+- preserve the distinction between documented-event alarms and alarms on unlabeled rows;
+- investigate the missed June 5 event and delayed May 29 detection;
+- compare only a bounded set of training-derived threshold candidates;
+- document proposed feature or threshold revisions with explicit evidence;
+- freeze the complete baseline decision before opening the test partition;
+- continue prohibiting unsupported classification and verified-healthy claims;
+- generate auditable configuration, reports, checksums, tests, and reproducibility evidence.
+
