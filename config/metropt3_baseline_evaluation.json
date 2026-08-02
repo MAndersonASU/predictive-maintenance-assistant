@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "name": "MetroPT-3 Air Production Unit",
+    "feature_contract_path": "config/metropt3_feature_engineering.json",
+    "feature_contract_sha256": "7f92fbb63806ae1a9c529d37d0f8b101cc992cf7194e28ea26c9e21a7f171242",
+    "feature_parquet_path": "data/processed/metropt3_features.parquet",
+    "feature_evidence_path": "outputs/metropt3_feature_engineering_report.json"
+  },
+  "population": {
+    "partition_order": ["train", "validation", "test"],
+    "documented_positive_state": "documented_failure",
+    "unlabeled_reference_state": "unverified",
+    "excluded_states": ["excluded_pre_event", "excluded_partition_buffer"],
+    "require_no_exclusion_reason": true,
+    "require_full_30_row_history": true,
+    "unverified_rows_are_negative": false,
+    "reference_population_interpretation": "unlabeled_operational_reference_not_verified_healthy"
+  },
+  "baseline": {
+    "family": "training_reference_robust_distance",
+    "feature_source": "numeric_model_features_excluding_governance_and_history_identifiers",
+    "preprocessing": {
+      "method": "median_and_interquartile_range",
+      "fit_partition": "train",
+      "fit_state": "unverified",
+      "fit_on_eligible_reference_rows_only": true,
+      "apply_frozen_parameters_to_later_partitions": true,
+      "zero_iqr_policy": "exclude_feature_and_record_reason"
+    },
+    "score": {
+      "method": "maximum_absolute_robust_z_score",
+      "direction": "higher_is_more_unusual_relative_to_training_reference"
+    },
+    "alarm_threshold": {
+      "method": "training_reference_score_quantile",
+      "quantile": 0.995,
+      "fit_partition": "train",
+      "freeze_before_validation": true,
+      "test_partition_locked_until_method_is_frozen": true
+    }
+  },
+  "evaluation": {
+    "chronological_only": true,
+    "segment_safe": true,
+    "validation_precedes_test": true,
+    "known_event_metrics": [
+      "documented_event_coverage",
+      "first_alarm_latency_seconds",
+      "alarm_contiguity_within_documented_event"
+    ],
+    "unlabeled_operation_metrics": [
+      "alarm_burden_fraction",
+      "alarms_per_24_observed_hours",
+      "score_distribution_drift"
+    ],
+    "unsupported_metrics": [
+      "accuracy",
+      "precision",
+      "specificity",
+      "false_positive_rate",
+      "roc_auc"
+    ],
+    "alarm_burden_is_false_positive_rate": false
+  },
+  "governance": {
+    "learned_preprocessing_enabled_for_this_validation": false,
+    "model_fitting_enabled_for_this_validation": false,
+    "score_generation_enabled_for_this_validation": false,
+    "alarm_generation_enabled_for_this_validation": false,
+    "performance_reporting_enabled_for_this_validation": false
+  },
+  "outputs": {
+    "eligibility_parquet": "data/processed/metropt3_baseline_eligibility.parquet",
+    "validation_report": "outputs/metropt3_baseline_evaluation_contract_report.json",
+    "compression": "zstd"
+  }
+}
