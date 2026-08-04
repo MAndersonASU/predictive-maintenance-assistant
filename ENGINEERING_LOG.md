@@ -1,3 +1,4 @@
+ Get-Content .\ENGINEERING_LOG.md -Raw
 # Engineering Log
 
 ## Project
@@ -15,11 +16,11 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `2dcf55a37bbbe523271bc8aff91379f6bc67869e`
-- Commit message: `Implement robust-distance validation baseline`
-- Local and remote implementation commit identity: matched at `2dcf55a37bbbe523271bc8aff91379f6bc67869e`
+- Latest verified implementation commit: `f16c7ab8c750d7b16825f54f0e366d485be1dd65`
+- Commit message: `Diagnose robust-distance validation behavior`
+- Local and remote implementation commit identity: matched at `f16c7ab8c750d7b16825f54f0e366d485be1dd65`
 - Working tree after the implementation push and before this engineering-log update: clean
-- Complete repository test suite: 86 passing tests
+- Complete repository test suite: 106 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
@@ -29,7 +30,7 @@ This log records only implemented and verified engineering work. Planned capabil
 - Initialized the Git repository and established `main` as the default branch.
 - Connected the repository to GitHub through `origin`.
 - Created the professional project structure and README.
-- Excluded virtual environments, credentials, environment files, private keys, caches, logs, local databases, model artifacts, raw data, processed data, and generated outputs.
+- Excluded virtual environments, credentials, environment files, private keys, caches, logs, local databases, model artifacts, raw data, processed data, andgenerated outputs.
 - Verified representative ignore behavior and public-repository safety controls.
 
 ### Source Governance
@@ -235,7 +236,7 @@ Verified Day 8 implementation commit and push:
 
 ### Governed Row-Level Target Materialization
 
-Day 9 implemented the audited translation from governed event metadata to row-level target states without inventing a negative class or crossing observation gaps.
+Day 9 implemented the audited translation from governed event metadata to row-level target states without inventing a negative class or crossing observationgaps.
 
 Implemented artifacts:
 
@@ -435,6 +436,8 @@ src/predictive_maintenance/analysis/target_definition.py
 src/predictive_maintenance/analysis/target_materialization.py
 src/predictive_maintenance/analysis/feature_engineering.py
 src/predictive_maintenance/analysis/baseline_evaluation.py
+src/predictive_maintenance/analysis/robust_distance.py
+src/predictive_maintenance/analysis/robust_distance_diagnosis.py
 ```
 
 Controlled test modules:
@@ -447,6 +450,8 @@ tests/test_target_definition.py
 tests/test_target_materialization.py
 tests/test_feature_engineering.py
 tests/test_baseline_evaluation.py
+tests/test_robust_distance.py
+tests/test_robust_distance_diagnosis.py
 ```
 
 Professional documentation and governed configuration:
@@ -456,6 +461,8 @@ ENGINEERING_LOG.md
 config/metropt3_target_definition.json
 config/metropt3_feature_engineering.json
 config/metropt3_baseline_evaluation.json
+config/metropt3_robust_distance.json
+config/metropt3_robust_distance_diagnosis.json
 docs/eda_method.md
 docs/eda_findings.md
 docs/target_definition_method.md
@@ -463,6 +470,8 @@ docs/failure_event_provenance.md
 docs/target_materialization_method.md
 docs/feature_engineering_method.md
 docs/baseline_evaluation_method.md
+docs/robust_distance_method.md
+docs/robust_distance_diagnosis_method.md
 ```
 
 ## Architecture Decisions
@@ -501,7 +510,7 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ### Engineering Log Maintenance
 
-`ENGINEERING_LOG.md` must be updated for each completed engineering milestone with verified files, validations, evidence, architecture decisions, commit and push state, repository state, and one exact next milestone.
+`ENGINEERING_LOG.md` must be updated for each completed engineering milestone with verified files, validations, evidence, architecture decisions, commit andpush state, repository state, and one exact next milestone.
 
 ## Current Engineering Workstream
 
@@ -631,7 +640,7 @@ metropt3_validation_robust_distance.parquet: 2,322,058 bytes
 metropt3_robust_distance_validation_report.json: 3,030 bytes
 ```
 
-The generated evidence records source and contract checksums, fitted parameters, output checksums, row counts, software versions, governance controls, score summaries, alarm burden, documented-event coverage, and first-alarm latency.
+The generated evidence records source and contract checksums, fitted parameters, output checksums, row counts, software versions, governance controls, scoresummaries, alarm burden, documented-event coverage, and first-alarm latency.
 
 ### Repository Evidence
 
@@ -663,26 +672,138 @@ Several retained features have very small but nonzero training-reference IQRs. T
 
 Alarm burden is not a false-positive rate because unlabeled operational observations are not verified healthy examples. Accuracy, precision, specificity, false-positive rate, ROC-AUC, and verified-healthy claims remain unsupported.
 
+## Frozen Robust-Distance Validation Diagnosis
+
+Status: Implemented, tested, and synchronized on August 4, 2026.
+
+### Implemented Scope
+
+Created and validated:
+
+```text
+config/metropt3_robust_distance_diagnosis.json
+docs/robust_distance_diagnosis_method.md
+src/predictive_maintenance/analysis/robust_distance_diagnosis.py
+tests/test_robust_distance_diagnosis.py
+```
+
+The diagnosis:
+
+- uses eligible training-reference and validation evidence only;
+- reuses the frozen Day 12 feature medians, IQRs, and baseline decision without refitting them;
+- compares only the bounded training-derived threshold quantiles `0.990`, `0.995`, and `0.999`;
+- identifies dominant robust-distance contributions and retained features with very small nonzero IQRs;
+- analyzes alarm concentration by observation segment, UTC hour, and an explicit ordered eight-indicator operating state;
+- preserves unlabeled-row uncertainty and does not interpret alarm burden as a false-positive rate;
+- keeps the test partition locked and rejects test rows in the diagnostic population.
+
+The ordered operating-state indicators are:
+
+```text
+COMP
+DV_eletric
+Towers
+MPG
+LPS
+Pressure_switch
+Oil_level
+Caudal_impulses
+```
+
+### Verification Evidence
+
+Focused diagnosis tests:
+
+```text
+Command: python -m pytest .\tests\test_robust_distance_diagnosis.py -v
+Tests collected: 20
+Tests passed: 20
+Failures: 0
+Errors: 0
+Elapsed time: 0.23 seconds
+```
+
+Complete repository regression suite:
+
+```text
+Command: python -m pytest
+Tests collected: 106
+Tests passed: 106
+Failures: 0
+Errors: 0
+Elapsed time: 3.07 seconds
+```
+
+Production diagnosis:
+
+```text
+Processing status: robust_distance_diagnosis_completed
+Eligible training-reference rows: 734,015
+Validation rows scored: 329,624
+Test rows: 0
+```
+
+Operating-state totals reconcile to the validation population:
+
+```text
+Observed operating states: 12
+Validation-scored rows: 329,624
+Alarm rows: 2,747
+Eligible unlabeled alarm-burden rows: 310,007
+Test rows: 0
+```
+
+Selected state-level evidence:
+
+- The dominant operating state contained 242,167 scored rows and 2,622 alarms. Its alarm-burden fraction was `0.010828088606967639`, approximately 1.083%, over 242,148 eligible unlabeled burden rows.
+- A smaller state contained 251 scored and eligible unlabeled burden rows with 42 alarms. Its alarm-burden fraction was `0.16733067729083664`, approximately 16.73%.
+- A three-row state contained one alarm and a burden fraction of `0.3333333333333333`. This is recorded as rare-state evidence and is not treated as a stable rate estimate.
+- Alarm-burden fractions use eligible unlabeled burden rows as their denominator, not all scored rows.
+
+These burdens are not false-positive rates because the operational rows are not verified healthy negatives.
+
+### Governed Generated Artifact
+
+The regenerated diagnostic report remains excluded from Git:
+
+```text
+outputs/metropt3_robust_distance_diagnostic_report.json
+```
+
+The report records input checksums, diagnostic populations, frozen-baseline evidence, dominant features, small-IQR evidence, alarm concentration by segment, UTC hour, and operating state, bounded training-derived threshold candidates, documented-event coverage and latency, the frozen baseline decision, and limitations.
+
+### Repository Evidence
+
+Implementation commit:
+
+```text
+Commit: f16c7ab8c750d7b16825f54f0e366d485be1dd65
+Message: Diagnose robust-distance validation behavior
+Scope: 4 files changed, 525 insertions
+Push: origin/main advanced from 739baca to f16c7ab
+```
+
+Verified repository state before this engineering-log update:
+
+```text
+Branch: main
+Tracking branch: origin/main
+Local HEAD: f16c7ab8c750d7b16825f54f0e366d485be1dd65
+Remote origin/main: f16c7ab8c750d7b16825f54f0e366d485be1dd65
+Ahead/behind: none
+Working tree: clean
+```
+
+### Engineering Interpretation
+
+The diagnosis confirms that alarms are concentrated in particular operating states and that rare states can produce numerically large burden fractions from very small samples. State-level burden therefore requires its row count and eligible denominator for interpretation. The diagnostic evidence does not establish verified false positives, failure probability, accuracy, precision, specificity, or ROC AUC.
+
+The baseline family remains `maximum_absolute_robust_z_score`, the configured selected threshold quantile remains `0.995`, and the test partition remains locked. The complete baseline decision is frozen after validation diagnosis.
+
 ### Current Engineering Workstream
 
-The transparent training-reference robust-distance baseline is implemented, tested, reproducible, and evaluated on the validation partition. Its fitted parameters and training-derived threshold are frozen. The test partition remains locked.
-
-The active workstream is governed validation-stage baseline diagnosis and final baseline-decision freezing.
+The Day 13 robust-distance validation diagnosis is implemented, tested, committed, pushed, and synchronized. The engineering-log update remains the active repository step. Day 13 is not closed until this log update is committed and pushed and the learner explicitly confirms `OK — Day 13 complete`.
 
 ### Next Engineering Milestone
 
-Perform and validate a governed diagnostic analysis of the frozen robust-distance baseline using training-reference and validation evidence only while keeping the test partition locked.
-
-The analysis must:
-
-- identify the retained features that dominate extreme scores and alarm rows;
-- quantify the influence of very small nonzero IQRs;
-- analyze alarm concentration by observation segment, operating state, and time;
-- preserve the distinction between documented-event alarms and alarms on unlabeled rows;
-- investigate the missed June 5 event and delayed May 29 detection;
-- compare only a bounded set of training-derived threshold candidates;
-- document proposed feature or threshold revisions with explicit evidence;
-- freeze the complete baseline decision before opening the test partition;
-- continue prohibiting unsupported classification and verified-healthy claims;
-- generate auditable configuration, reports, checksums, tests, and reproducibility evidence.
-
+Commit and push this verified Day 13 engineering-log update, confirm that local `HEAD` and `origin/main` match with a clean working tree, and then stop for the learner's explicit Day 13 completion confirmation. Do not open or score the test partition in this step.
