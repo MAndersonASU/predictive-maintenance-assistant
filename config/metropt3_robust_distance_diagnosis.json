@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "inputs": {
+    "feature_parquet": "data/processed/metropt3_features.parquet",
+    "eligibility_parquet": "data/processed/metropt3_baseline_eligibility.parquet",
+    "frozen_parameters": "outputs/metropt3_robust_distance_parameters.json",
+    "validation_scores": "data/processed/metropt3_validation_robust_distance.parquet",
+    "validation_report": "outputs/metropt3_robust_distance_validation_report.json"
+  },
+  "diagnosis": {
+    "threshold_quantiles": [0.99, 0.995, 0.999],
+    "selected_threshold_quantile": 0.995,
+    "small_iqr_ratio_limit": 0.001,
+    "top_feature_count": 10,
+    "top_segment_count": 10,
+    "time_bucket": "hour",
+    "operating_state_features": [
+      "COMP",
+      "DV_eletric",
+      "Towers",
+      "MPG",
+      "LPS",
+      "Pressure_switch",
+      "Oil_level",
+      "Caudal_impulses"
+    ],
+    "top_operating_state_count": 32
+  },
+  "governance": {
+    "parameters_must_be_frozen": true,
+    "threshold_candidates_training_derived_only": true,
+    "validation_only_diagnosis": true,
+    "test_partition_locked": true,
+    "unverified_rows_are_verified_healthy": false,
+    "alarm_burden_is_false_positive_rate": false
+  },
+  "outputs": {
+    "report": "outputs/metropt3_robust_distance_diagnostic_report.json"
+  }
+}
