@@ -1,4 +1,3 @@
- Get-Content .\ENGINEERING_LOG.md -Raw
 # Engineering Log
 
 ## Project
@@ -16,13 +15,12 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `f16c7ab8c750d7b16825f54f0e366d485be1dd65`
-- Commit message: `Diagnose robust-distance validation behavior`
-- Local and remote implementation commit identity: matched at `f16c7ab8c750d7b16825f54f0e366d485be1dd65`
+- Latest verified implementation commit: `e979eea9957d548f372c37c29141ca7d500b93fb`
+- Commit message: `Evaluate frozen robust-distance baseline on test data`
+- Local and remote implementation commit identity: matched at `e979eea9957d548f372c37c29141ca7d500b93fb`
 - Working tree after the implementation push and before this engineering-log update: clean
-- Complete repository test suite: 106 passing tests
+- Complete repository test suite: 129 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
-
 ## Implemented Milestones
 
 ### Repository Foundation and Protection
@@ -438,6 +436,7 @@ src/predictive_maintenance/analysis/feature_engineering.py
 src/predictive_maintenance/analysis/baseline_evaluation.py
 src/predictive_maintenance/analysis/robust_distance.py
 src/predictive_maintenance/analysis/robust_distance_diagnosis.py
+src/predictive_maintenance/analysis/robust_distance_test_evaluation.py
 ```
 
 Controlled test modules:
@@ -452,6 +451,7 @@ tests/test_feature_engineering.py
 tests/test_baseline_evaluation.py
 tests/test_robust_distance.py
 tests/test_robust_distance_diagnosis.py
+tests/test_robust_distance_test_evaluation.py
 ```
 
 Professional documentation and governed configuration:
@@ -463,6 +463,7 @@ config/metropt3_feature_engineering.json
 config/metropt3_baseline_evaluation.json
 config/metropt3_robust_distance.json
 config/metropt3_robust_distance_diagnosis.json
+config/metropt3_robust_distance_test_evaluation.json
 docs/eda_method.md
 docs/eda_findings.md
 docs/target_definition_method.md
@@ -472,6 +473,7 @@ docs/feature_engineering_method.md
 docs/baseline_evaluation_method.md
 docs/robust_distance_method.md
 docs/robust_distance_diagnosis_method.md
+docs/robust_distance_test_evaluation_method.md
 ```
 
 ## Architecture Decisions
@@ -514,27 +516,24 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ## Current Engineering Workstream
 
-Leakage-safe feature engineering and the governed baseline-evaluation contract are complete. The eligible populations, chronology, segment-safe history requirement, future transparent baseline, supported operational metrics, and prohibited claims are now explicit and validated. No learned preprocessing, model, score, alarm, or performance result has yet been produced.
+The transparent robust-distance baseline has completed governed training-reference fitting, validation-stage evaluation, frozen validation diagnosis, and one-time test-partition evaluation.
 
-The active workstream is now implementation of the transparent training-reference robust-distance baseline under the frozen Day 11 contract.
+The baseline is now a finalized reference result. Its test evidence must not be used to revise the threshold, retained features, fitted parameters, preprocessing, or baseline design.
 
 ## Next Engineering Milestone
 
-Implement and validate the transparent robust-distance baseline for validation-stage analysis while keeping the test partition locked.
+Define a governed advanced-model comparison contract before fitting an advanced model.
 
 The milestone must:
 
-- select numeric model features only through the governed contract;
-- fit medians and interquartile ranges on the 734,015 eligible training-reference rows only;
-- record and exclude zero-IQR features with explicit reasons;
-- apply the frozen training-derived parameters unchanged to eligible validation rows;
-- calculate the maximum absolute robust z-score as unusualness, not failure probability;
-- derive and freeze the candidate alarm threshold from eligible training-reference scores before validation analysis;
-- report only supported validation-stage operational evidence, including known-event coverage, alarm latency, score stability, and alarm burden;
-- preserve unlabeled uncertainty and avoid accuracy, precision, specificity, false-positive-rate, or healthy-class claims;
-- keep the test partition locked until the complete baseline method and validation decisions are frozen;
-- generate auditable model parameters, checksums, row counts, schema, and reproducibility evidence before any advanced-model comparison.
-
+- preserve the transparent robust-distance baseline as a finalized reference;
+- prohibit use of baseline test evidence for feature selection, preprocessing decisions, threshold selection, or hyperparameter tuning;
+- restrict advanced-model development and selection to governed training and validation evidence;
+- define the candidate model family, eligibility population, preprocessing fit scope, tuning bounds, operational metrics, and unsupported claims before training;
+- preserve chronological, segment-safe, and partition-bounded controls;
+- preserve unlabeled uncertainty without inventing a verified healthy class;
+- keep the advanced-model test partition locked until the complete method and validation decision are frozen;
+- document a fair and reproducible future comparison before any advanced-model implementation.
 ## Robust-Distance Validation Baseline
 
 Status: Implemented and verified on August 2, 2026.
@@ -800,10 +799,145 @@ The diagnosis confirms that alarms are concentrated in particular operating stat
 
 The baseline family remains `maximum_absolute_robust_z_score`, the configured selected threshold quantile remains `0.995`, and the test partition remains locked. The complete baseline decision is frozen after validation diagnosis.
 
-### Current Engineering Workstream
+## One-Time Frozen Robust-Distance Test Evaluation
 
-The Day 13 robust-distance validation diagnosis is implemented, tested, committed, pushed, and synchronized. The engineering-log update remains the active repository step. Day 13 is not closed until this log update is committed and pushed and the learner explicitly confirms `OK — Day 13 complete`.
+Status: Implemented, tested, executed, committed, pushed, and synchronized on August 5, 2026.
 
-### Next Engineering Milestone
+### Implemented Scope
 
-Commit and push this verified Day 13 engineering-log update, confirm that local `HEAD` and `origin/main` match with a clean working tree, and then stop for the learner's explicit Day 13 completion confirmation. Do not open or score the test partition in this step.
+Created and validated:
+
+```text
+config/metropt3_robust_distance_test_evaluation.json
+docs/robust_distance_test_evaluation_method.md
+src/predictive_maintenance/analysis/robust_distance_test_evaluation.py
+tests/test_robust_distance_test_evaluation.py
+```
+
+The evaluator:
+
+- loads the previously frozen retained features, medians, IQR values, threshold quantile, and threshold;
+- rejects parameter, threshold, validation-decision, or evidence-chain mismatches;
+- performs no refitting and no threshold revision;
+- scores only eligible rows in the locked `test` partition;
+- writes zero training or validation rows to the test-score output;
+- reports documented-event coverage, first-alarm latency, score evidence, and unlabeled alarm burden;
+- preserves the interpretation that unverified operational rows are not verified healthy negatives;
+- blocks unsupported classification, false-positive-rate, and failure-probability claims.
+
+### Verification Evidence
+
+Focused test suite:
+
+```text
+Command: python -m pytest tests/test_robust_distance_test_evaluation.py -q
+Tests passed: 23
+Failures: 0
+Errors: 0
+Elapsed time: 0.23 seconds
+```
+
+Complete repository regression suite:
+
+```text
+Command: python -m pytest -q
+Tests passed: 129
+Failures: 0
+Errors: 0
+Elapsed time: 4.36 seconds
+```
+
+Production execution:
+
+```text
+Processing status: robust_distance_test_evaluation_completed
+Retained features: 48
+Threshold quantile: 0.995
+Frozen threshold: 7857.013759410036
+Test rows scored: 429,867
+Test alarm rows: 4,670
+Training rows scored: 0
+Validation rows scored: 0
+```
+
+Documented test-event evidence:
+
+```text
+Documented events: 1
+Documented events covered: 1
+Coverage fraction: 1.0
+Event: uci_air_leak_2020_07_15
+Event scored rows: 1,593
+Alarm rows within the documented event: 1
+First-alarm latency: 15,804 seconds
+```
+
+The first documented-event alarm occurred approximately 4 hours and 23 minutes after the scored event interval began. Coverage of one event does not establish general predictive performance.
+
+Eligible unlabeled burden evidence:
+
+```text
+Eligible unlabeled burden rows: 428,274
+Unlabeled alarm count: 4,669
+Alarm-burden fraction: 0.010901899251413815
+Alarm-burden percentage: approximately 1.0902%
+Alarms per 24 observed hours: approximately 94.19
+```
+
+These alarms are operational burden observations, not verified false positives.
+
+### Governed Generated Artifacts
+
+The following generated artifacts were verified as non-empty and remain excluded from Git:
+
+```text
+data/processed/metropt3_test_robust_distance.parquet
+outputs/metropt3_robust_distance_test_report.json
+```
+
+Verified file evidence:
+
+```text
+Test-score Parquet size: 3,199,394 bytes
+Test-score Parquet SHA-256: 55512A95D274A91559520CA781A290D05E6D0B07E7C4C5198F4F33716AAF268A
+Test report size: 3,288 bytes
+Test report SHA-256: 0892615A7A7E291BD84AF8AA461999ED171447E108BE91E63EB8339629C29DB4
+```
+
+The test-score Parquet contains only the test partition:
+
+```text
+Partition: test
+Scored rows: 429,867
+Alarm rows: 4,670
+```
+
+### Repository Evidence
+
+Implementation commit:
+
+```text
+Commit: e979eea9957d548f372c37c29141ca7d500b93fb
+Message: Evaluate frozen robust-distance baseline on test data
+Scope: 4 files changed, 1,013 insertions
+Push: origin/main advanced from a913f37 to e979eea
+```
+
+Verified synchronized state after the implementation push:
+
+```text
+Branch: main
+Tracking branch: origin/main
+Local HEAD: e979eea9957d548f372c37c29141ca7d500b93fb
+Remote origin/main: e979eea9957d548f372c37c29141ca7d500b93fb
+Ahead/behind: none
+Working tree: clean
+```
+
+### Engineering Interpretation
+
+The frozen test evaluation provides final transparent-baseline evidence. The baseline covered the one documented test event but produced only one alarm within its 1,593 scored event rows, with a latency of 15,804 seconds.
+
+The test alarm burden was higher than the validation alarm burden. This observation may be reported as evidence of changed operational burden, but it must not be used to retune the finalized baseline.
+
+The result does not establish failure probability, accuracy, precision, specificity, false-positive rate, ROC AUC, or verified healthy-negative performance. Future advanced-model development must remain restricted to governed training and validation evidence until its own method is frozen.
