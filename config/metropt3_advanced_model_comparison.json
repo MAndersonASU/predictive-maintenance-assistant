@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "baseline_reference": {
+    "source_commit": "1b03c4ae695e04da1f03304f7154b35f1da92d1a",
+    "finalized": true,
+    "family": "maximum_absolute_robust_z_score",
+    "retained_feature_count": 48,
+    "selected_threshold_quantile": 0.995,
+    "frozen_threshold": 7857.013759410036,
+    "committed_sources": [
+      "config/metropt3_baseline_evaluation.json",
+      "config/metropt3_robust_distance.json",
+      "config/metropt3_robust_distance_diagnosis.json",
+      "config/metropt3_robust_distance_test_evaluation.json"
+    ],
+    "generated_sources": [
+      "outputs/metropt3_baseline_evaluation_contract_report.json",
+      "outputs/metropt3_robust_distance_parameters.json",
+      "outputs/metropt3_robust_distance_validation_report.json",
+      "outputs/metropt3_robust_distance_diagnostic_report.json",
+      "outputs/metropt3_robust_distance_test_report.json"
+    ],
+    "test_report": {
+      "path": "outputs/metropt3_robust_distance_test_report.json",
+      "sha256": "0892615a7a7e291bd84af8aa461999ed171447e108be91e63eb8339629c29db4",
+      "design_or_tuning_use": "prohibited",
+      "future_comparison_use": "reference_only_after_advanced_method_and_validation_decision_are_frozen"
+    }
+  },
+  "population": {
+    "partition_order": ["train", "validation", "test"],
+    "development_partitions": ["train", "validation"],
+    "test_partition_access_enabled": false,
+    "fit_partition": "train",
+    "selection_partition": "validation",
+    "fit_eligibility_column": "eligible_for_reference_fit",
+    "scoring_eligibility_column": "eligible_for_scoring",
+    "known_event_eligibility_column": "eligible_for_known_event_evaluation",
+    "alarm_burden_eligibility_column": "eligible_for_alarm_burden",
+    "documented_positive_state": "documented_failure",
+    "unlabeled_state": "unverified",
+    "unverified_rows_are_verified_healthy": false,
+    "require_no_exclusion_reason": true,
+    "require_full_30_row_history": true,
+    "chronological_only": true,
+    "segment_safe": true,
+    "partition_bounded": true
+  },
+  "candidate_model": {
+    "family": "isolation_forest",
+    "implementation": "sklearn.ensemble.IsolationForest",
+    "objective": "unsupervised_anomaly_scoring",
+    "features": {
+      "source": "frozen_robust_distance_retained_features",
+      "count": 48,
+      "same_features_for_every_candidate": true,
+      "test_data_feature_selection_prohibited": true
+    },
+    "preprocessing": {
+      "fit_scope": "eligible_training_reference_rows_only",
+      "missing_or_nonfinite_policy": "reject_before_fit",
+      "scaling": "none",
+      "validation_fit_prohibited": true,
+      "test_fit_prohibited": true
+    },
+    "fixed_parameters": {
+      "contamination": "auto",
+      "bootstrap": false,
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "bounded_grid": {
+      "n_estimators": [100, 200],
+      "max_samples": [1024, 4096],
+      "max_features": [0.5, 1.0]
+    },
+    "candidate_count": 8,
+    "score": {
+      "method": "negative_score_samples",
+      "direction": "higher_is_more_unusual"
+    },
+    "alarm_threshold": {
+      "method": "eligible_training_score_quantile",
+      "quantile": 0.995,
+      "fit_partition": "train",
+      "freeze_before_validation": true,
+      "validation_threshold_tuning_prohibited": true,
+      "test_threshold_tuning_prohibited": true
+    }
+  },
+  "validation_selection": {
+    "partition": "validation",
+    "test_evidence_available_to_selection": false,
+    "rule": "lexicographic",
+    "ordered_criteria": [
+      {
+        "metric": "documented_event_coverage",
+        "direction": "maximize"
+      },
+      {
+        "metric": "mean_first_alarm_latency_seconds_for_covered_events",
+        "direction": "minimize"
+      },
+      {
+        "metric": "alarms_per_24_observed_hours",
+        "direction": "minimize"
+      },
+      {
+        "metric": "candidate_complexity_rank",
+        "direction": "minimize"
+      }
+    ],
+    "complexity_tie_break_order": [
+      "n_estimators",
+      "max_samples",
+      "max_features"
+    ],
+    "supported_metrics": [
+      "documented_event_coverage",
+      "first_alarm_latency_seconds",
+      "alarm_contiguity_within_documented_event",
+      "alarm_burden_fraction",
+      "alarms_per_24_observed_hours",
+      "score_distribution_drift"
+    ],
+    "unsupported_metrics": [
+      "accuracy",
+      "precision",
+      "recall_as_population_sensitivity",
+      "specificity",
+      "false_positive_rate",
+      "roc_auc",
+      "failure_probability"
+    ],
+    "alarm_burden_is_false_positive_rate": false
+  },
+  "test_lock": {
+    "locked": true,
+    "one_time_future_evaluation": true,
+    "baseline_test_evidence_cannot_select_candidate": true,
+    "unlock_conditions": [
+      "comparison_contract_validated",
+      "candidate_implementation_tested",
+      "bounded_grid_evaluated_on_validation_only",
+      "winning_candidate_and_threshold_frozen",
+      "validation_decision_report_checksummed",
+      "explicit_separate_test_authorization"
+    ]
+  },
+  "governance": {
+    "model_fitting_enabled_for_this_validation": false,
+    "learned_preprocessing_enabled_for_this_validation": false,
+    "candidate_scoring_enabled_for_this_validation": false,
+    "candidate_selection_enabled_for_this_validation": false,
+    "advanced_test_evaluation_enabled_for_this_validation": false,
+    "baseline_revision_enabled": false,
+    "performance_claims_enabled_for_this_validation": false
+  },
+  "outputs": {
+    "validation_report": "outputs/metropt3_advanced_model_comparison_contract_report.json"
+  }
+}
