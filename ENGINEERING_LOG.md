@@ -1034,4 +1034,3 @@ Local HEAD and origin/main: matched after push
 The comparison rules were fixed before model fitting. This prevents candidate-family expansion, validation-threshold tuning, test-driven selection, and unfair feature or preprocessing changes after results are observed.
 
 The contract does not demonstrate advanced-model performance. The next milestone is the governed eight-candidate Isolation Forest training-and-validation workflow. Advanced-model test evaluation remains locked.
-
