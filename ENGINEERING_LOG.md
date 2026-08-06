@@ -15,11 +15,11 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `e979eea9957d548f372c37c29141ca7d500b93fb`
-- Commit message: `Evaluate frozen robust-distance baseline on test data`
-- Local and remote implementation commit identity: matched at `e979eea9957d548f372c37c29141ca7d500b93fb`
+- Latest verified implementation commit: `26f0024481f59dec65d1c0cd502d2b8e9d249762`
+- Commit message: `Define governed advanced-model comparison contract`
+- Local and remote implementation commit identity: matched at `26f0024481f59dec65d1c0cd502d2b8e9d249762`
 - Working tree after the implementation push and before this engineering-log update: clean
-- Complete repository test suite: 129 passing tests
+- Complete repository test suite: 151 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 ## Implemented Milestones
 
@@ -516,24 +516,26 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ## Current Engineering Workstream
 
-The transparent robust-distance baseline has completed governed training-reference fitting, validation-stage evaluation, frozen validation diagnosis, and one-time test-partition evaluation.
+The governed advanced-model comparison contract is implemented and validated. It fixes one bounded `IsolationForest` family, a shared frozen 48-feature set, training-only fitting and threshold derivation, validation-only deterministic candidate selection, supported operational evidence, prohibited claims, and a complete advanced-model test lock.
 
-The baseline is now a finalized reference result. Its test evidence must not be used to revise the threshold, retained features, fitted parameters, preprocessing, or baseline design.
+No advanced model has been fitted, scored, selected, or evaluated on test data. The transparent robust-distance baseline remains a finalized reference, and its test evidence remains prohibited from advanced-model design or tuning.
 
 ## Next Engineering Milestone
 
-Define a governed advanced-model comparison contract before fitting an advanced model.
+Implement and validate the governed Isolation Forest training-and-validation candidate workflow under the frozen comparison contract while keeping the advanced-model test partition locked.
 
 The milestone must:
 
-- preserve the transparent robust-distance baseline as a finalized reference;
-- prohibit use of baseline test evidence for feature selection, preprocessing decisions, threshold selection, or hyperparameter tuning;
-- restrict advanced-model development and selection to governed training and validation evidence;
-- define the candidate model family, eligibility population, preprocessing fit scope, tuning bounds, operational metrics, and unsupported claims before training;
-- preserve chronological, segment-safe, and partition-bounded controls;
-- preserve unlabeled uncertainty without inventing a verified healthy class;
-- keep the advanced-model test partition locked until the complete method and validation decision are frozen;
-- document a fair and reproducible future comparison before any advanced-model implementation.
+- use only the eight predetermined Isolation Forest candidates;
+- fit every candidate on eligible training-reference rows only;
+- use the same frozen 48-feature set for every candidate;
+- derive each candidate threshold from eligible training scores at the fixed 0.995 quantile;
+- apply frozen candidate parameters and thresholds to validation rows only;
+- calculate only supported operational validation evidence;
+- apply the frozen lexicographic selection rule without test evidence;
+- freeze the selected candidate, threshold, and validation decision before any separate test authorization;
+- preserve unlabeled uncertainty and all prohibited-claim controls.
+
 ## Robust-Distance Validation Baseline
 
 Status: Implemented and verified on August 2, 2026.
@@ -941,3 +943,95 @@ The frozen test evaluation provides final transparent-baseline evidence. The bas
 The test alarm burden was higher than the validation alarm burden. This observation may be reported as evidence of changed operational burden, but it must not be used to retune the finalized baseline.
 
 The result does not establish failure probability, accuracy, precision, specificity, false-positive rate, ROC AUC, or verified healthy-negative performance. Future advanced-model development must remain restricted to governed training and validation evidence until its own method is frozen.
+
+## Governed Advanced-Model Comparison Contract
+
+Status: Implemented, tested, validated, committed, pushed, and synchronized on August 5, 2026.
+
+### Implemented Scope
+
+Created and validated:
+
+```text
+config/metropt3_advanced_model_comparison.json
+docs/advanced_model_comparison_method.md
+src/predictive_maintenance/analysis/advanced_model_comparison.py
+tests/test_advanced_model_comparison.py
+```
+
+The contract validator:
+
+- preserves the finalized robust-distance baseline as an immutable reference;
+- prohibits baseline test evidence from candidate design, feature selection, preprocessing, hyperparameter selection, threshold selection, or validation ranking;
+- authorizes only `sklearn.ensemble.IsolationForest` for this bounded comparison;
+- requires the same frozen 48-feature set for all candidates;
+- restricts fitting and threshold derivation to eligible training-reference rows;
+- restricts candidate ranking to validation evidence;
+- freezes a deterministic lexicographic selection rule;
+- keeps advanced-model test access disabled;
+- performs no model fitting, scoring, alarm generation, candidate selection, or advanced test evaluation during contract validation.
+
+### Bounded Candidate Definition
+
+```text
+contamination: auto
+bootstrap: false
+random_state: 42
+n_jobs: -1
+n_estimators: 100, 200
+max_samples: 1024, 4096
+max_features: 0.5, 1.0
+candidate count: 8
+```
+
+Each candidate threshold must be the 0.995 quantile of that candidate's eligible training-reference scores and must remain frozen before validation.
+
+### Deterministic Validation Selection
+
+Candidates are ranked lexicographically using validation evidence only:
+
+1. maximize documented-event coverage;
+2. minimize mean first-alarm latency for covered events;
+3. minimize alarms per 24 observed hours;
+4. minimize deterministic candidate-complexity rank.
+
+Alarm burden is operational evidence, not a false-positive rate. Accuracy, precision, population sensitivity, specificity, false-positive rate, ROC AUC, and failure-probability claims remain unsupported.
+
+### Verification Evidence
+
+```text
+JSON validation: passed
+Python compilation: passed
+Focused tests: 22 passed in 0.23 seconds
+Complete repository suite: 151 passed in 3.39 seconds
+Processing status: advanced_model_comparison_contract_validated
+Candidate family: isolation_forest
+Candidate count: 8
+Advanced test partition locked: true
+```
+
+### Governed Generated Artifact
+
+```text
+outputs/metropt3_advanced_model_comparison_contract_report.json
+File size: 4,851 bytes
+Ignore rule: .gitignore line 31, outputs/*
+```
+
+The generated report remains excluded from Git.
+
+### Repository Evidence
+
+```text
+Commit: 26f0024481f59dec65d1c0cd502d2b8e9d249762
+Message: Define governed advanced-model comparison contract
+Scope: four new professional files
+Local HEAD and origin/main: matched after push
+```
+
+### Engineering Interpretation
+
+The comparison rules were fixed before model fitting. This prevents candidate-family expansion, validation-threshold tuning, test-driven selection, and unfair feature or preprocessing changes after results are observed.
+
+The contract does not demonstrate advanced-model performance. The next milestone is the governed eight-candidate Isolation Forest training-and-validation workflow. Advanced-model test evaluation remains locked.
+
