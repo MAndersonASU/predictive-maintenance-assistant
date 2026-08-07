@@ -1,94 +1,59 @@
 # Intelligent Predictive Maintenance and Technical Knowledge Assistant
 
-A production-oriented AI engineering system for analyzing industrial sensor data, estimating equipment failure risk, and retrieving evidence-based maintenance information from technical documentation.
+A professional AI engineering portfolio project that combines governed industrial time-series analysis, anomaly detection, and a planned citation-grounded technical-knowledge assistant.
 
-## Project Overview
+## Current Verified Capability
 
-This project combines machine learning, time-series analysis, data engineering, retrieval-augmented generation, and agent-based tool routing in a single predictive-maintenance platform.
+The machine-learning foundation is complete through held-out evaluation. The repository includes reproducible MetroPT-3 acquisition and integrity checks, schema/data-quality validation, Parquet and DuckDB access, gap-aware exploratory analysis, governed event provenance and target materialization, causal feature engineering, a transparent robust-distance benchmark, and a bounded Isolation Forest comparison.
 
-The system is designed around the MetroPT-3 dataset, which contains real operational sensor measurements from a metro-train Air Production Unit compressor. The project will use these measurements to identify abnormal operating behavior and support failure-risk analysis.
+The selected advanced candidate is `iforest_ne200_ms4096_mf1p0` with frozen threshold `0.601902290159477`. It was selected using validation evidence only and evaluated once on the locked test partition after explicit authorization. Test evidence did not change the model, feature set, or threshold.
 
-## System Objectives
+## Machine-Learning Evaluation
 
-* Process and validate real industrial time-series data
-* Analyze compressor pressure, temperature, motor-current, and control signals
-* Develop and compare anomaly-detection and failure-prediction models
-* Store processed data, predictions, and maintenance events
-* Retrieve relevant information from authoritative technical documents
-* Generate evidence-based responses with source citations
-* Route requests between machine-learning models, databases, and retrieval tools
-* Provide reproducible evaluation, monitoring, and deployment workflows
+| Measure | Isolation Forest | Robust-distance baseline |
+|---|---:|---:|
+| Documented-event coverage | 1.000 | 1.000 |
+| Mean first-alarm latency, covered events (s) | 218.000 | 15804.000 |
+| Alarms per 24 observed hours | 69.863 | 94.192 |
 
-## Planned Architecture
+These are governed operational measures. Alarm burden is not a false-positive rate, unusualness is not failure probability, and unverified operational rows are not treated as verified healthy negatives.
+
+## Architecture
 
 ```text
-MetroPT-3 Sensor Data
-        ↓
-Data Validation and Processing
-        ↓
-Feature Engineering
-        ↓
-Predictive Maintenance Models
-        ↓
-Prediction and Anomaly Database
-        ↓
-API and Monitoring Services
-        ↓
-Technical Knowledge Assistant
-
-Technical Documents
-        ↓
-Document Processing and Chunking
-        ↓
-Embeddings and Vector Search
-        ↓
-Retrieval-Augmented Generation
-        ↓
-Evidence-Based Maintenance Responses
+Governed Sources
+    -> validation and checksums
+    -> Parquet / DuckDB
+    -> governed targets
+    -> causal features
+    -> transparent baseline + frozen Isolation Forest
+    -> held-out evaluation
+    -> technical-knowledge retrieval (next)
+    -> APIs / persistence / monitoring
+    -> Docker / demonstration interface
 ```
 
-## Current Project Status
+## Reproducibility
 
-The repository foundation has been established with:
+With the virtual environment active from the repository root:
 
-* Version control using Git and GitHub
-* A structured project directory
-* Environment and secret-management rules
-* Initial project documentation
-* An isolated development environment
-* A reproducible source-control workflow
+```powershell
+$env:PYTHONPATH = "src"
+python -m pytest -q
+```
 
-The next implementation milestone focuses on data-source governance, MetroPT-3 ingestion, schema validation, and exploratory analysis.
-
-## Technology Roadmap
-
-The expected technology stack includes:
-
-* Python
-* pandas and NumPy
-* scikit-learn
-* DuckDB and Parquet
-* PostgreSQL and pgvector
-* OpenAI APIs
-* FastAPI
-* Docker
-* Automated tests and evaluation pipelines
-
-Technology selections may be refined as system requirements and benchmark results become available.
-
-## Data and Documentation
-
-The project uses real public industrial data and authoritative technical references.
-
-Source information, licensing, document classification, version details, and equipment-match status will be maintained through structured data and document manifests.
-
-Large raw datasets, private configuration files, API keys, generated model artifacts, and restricted technical documents will not be committed directly to the public repository.
+The one-time held-out advanced-model evaluation is governed by `config/metropt3_isolation_forest_test_evaluation.json` and refuses overwrite after completion.
 
 ## Project Principles
 
-* Reproducible data processing
-* Honest and measurable model evaluation
-* Clear separation between verified capabilities and planned work
-* Secure handling of credentials and sensitive configuration
-* Traceable technical sources and model outputs
-* Production-oriented testing, monitoring, and documentation
+- Reproducible data and model evidence
+- Chronological and gap-aware leakage controls
+- Transparent baselines before advanced models
+- Test data reserved for final reporting
+- No unsupported performance or business-impact claims
+- Traceable technical sources and citations
+- Secure exclusion of secrets, raw/processed large data, generated outputs, and model artifacts from Git
+
+## Next Release Milestone
+
+Build the governed technical-document corpus and deterministic extraction/chunking pipeline. Exact equipment documentation will only be labeled as such when manufacturer and model identity are independently verified.

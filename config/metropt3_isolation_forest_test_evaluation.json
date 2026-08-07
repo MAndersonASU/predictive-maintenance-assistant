@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "authorization": {
+    "one_time_test_evaluation_authorized": true,
+    "authorization_scope": "frozen_selected_candidate_only",
+    "authorized_candidate_id": "iforest_ne200_ms4096_mf1p0",
+    "authorized_threshold": 0.601902290159477
+  },
+  "inputs": {
+    "feature_parquet": "data/processed/metropt3_features.parquet",
+    "feature_report": "outputs/metropt3_feature_engineering_report.json",
+    "eligibility_parquet": "data/processed/metropt3_baseline_eligibility.parquet",
+    "eligibility_report": "outputs/metropt3_baseline_evaluation_contract_report.json",
+    "frozen_feature_parameters": "outputs/metropt3_robust_distance_parameters.json",
+    "selected_model": "outputs/metropt3_selected_isolation_forest.joblib",
+    "validation_report": "outputs/metropt3_isolation_forest_validation_report.json",
+    "baseline_test_report": "outputs/metropt3_robust_distance_test_report.json"
+  },
+  "evaluation": {
+    "partition": "test",
+    "scoring_eligibility_column": "eligible_for_scoring",
+    "known_event_eligibility_column": "eligible_for_known_event_evaluation",
+    "alarm_burden_eligibility_column": "eligible_for_alarm_burden",
+    "expected_retained_feature_count": 48,
+    "expected_sampling_seconds": 10.0,
+    "matrix_dtype": "float32",
+    "threshold_comparison": "strictly_greater_than"
+  },
+  "governance": {
+    "model_must_be_loaded_without_refit": true,
+    "threshold_must_be_loaded_without_revision": true,
+    "candidate_reselection_enabled": false,
+    "feature_changes_enabled": false,
+    "test_driven_model_change_enabled": false,
+    "unverified_rows_are_verified_healthy": false,
+    "alarm_burden_is_false_positive_rate": false,
+    "unusualness_is_failure_probability": false,
+    "unsupported_classification_metrics_enabled": false
+  },
+  "outputs": {
+    "test_scores": "data/processed/metropt3_test_isolation_forest.parquet",
+    "test_report": "outputs/metropt3_isolation_forest_test_report.json",
+    "parquet_compression": "zstd"
+  }
+}
