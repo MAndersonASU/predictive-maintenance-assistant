@@ -15,12 +15,13 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `8872c5a225f26294ed5a397a40bf3f701992a876`
-- Commit message: `Train and validate governed Isolation Forest candidates`
-- Local and remote implementation commit identity: matched at `8872c5a225f26294ed5a397a40bf3f701992a876`
-- Working tree after the implementation push and before this engineering-log update: clean
-- Complete repository test suite: 174 passing tests
-- Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
+- Latest verified implementation commit: `f4ba8cfb181a238139e1ac031a9960752e587636`
+- Commit message: `Finalize governed machine-learning release`
+- Local and remote implementation commit identity: matched at `f4ba8cfb181a238139e1ac031a9960752e587636`
+- Complete repository test suite: 203 passing tests
+- Advanced-model test access: consumed exactly once by the governed held-out evaluation
+- Generated datasets, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
+
 ## Implemented Milestones
 
 ### Repository Foundation and Protection
@@ -516,15 +517,22 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ## Current Engineering Workstream
 
-The governed eight-candidate `IsolationForest` training-and-validation workflow is implemented and validated. All candidates used the same frozen 48-feature set, were fitted only on 734,015 eligible training-reference rows, derived their own 0.995 training-score thresholds before validation, and were ranked only on 329,624 validation rows under the frozen lexicographic rule.
+The governed machine-learning workstream is complete through the separately authorized one-time held-out evaluation. The selected candidate remains `iforest_ne200_ms4096_mf1p0` with the unchanged frozen threshold `0.601902290159477` and the same frozen 48-feature set. Test evidence did not trigger refitting, threshold revision, feature changes, or candidate reselection.
 
-The selected candidate is `iforest_ne200_ms4096_mf1p0` with `n_estimators=200`, `max_samples=4096`, `max_features=1.0`, `contamination='auto'`, `bootstrap=False`, `random_state=42`, and `n_jobs=-1`. Its frozen threshold is `0.601902290159477`. The validation decision is frozen. The advanced-model test partition remains locked and zero test rows were scored.
+Held-out operational evidence:
+
+- Isolation Forest documented-event coverage fraction: 1.0
+- Isolation Forest mean first-alarm latency for covered events: 218.0 seconds
+- Isolation Forest alarms per 24 observed hours: 69.86256461984617
+- Robust-distance baseline documented-event coverage fraction: 1.0
+- Robust-distance baseline mean first-alarm latency for covered events: 15804.0 seconds
+- Robust-distance baseline alarms per 24 observed hours: 94.19240953221535
+
+These are governed operational measures, not evidence of a verified healthy negative class. Alarm burden is not a false-positive rate, and unusualness is not a failure probability.
 
 ## Next Engineering Milestone
 
-Perform the separately authorized one-time advanced-model test comparison using only the frozen selected Isolation Forest candidate and threshold. The test workflow must perform no refitting, feature changes, threshold changes, or candidate reselection; must compare the advanced-model test evidence transparently with the already-finalized robust-distance baseline; and must record limitations and the final model decision.
-
-Do not access the advanced-model test partition until the learner explicitly authorizes this separate test evaluation.
+Build the governed technical-document corpus and deterministic extraction/chunking pipeline. Record source identity, publisher, URL or DOI, license or usage status, equipment relevance, retrieval identity or checksum, local status, and exact-equipment/general-reference classification before ingestion. Then implement deterministic extraction, normalization, metadata preservation, chunk identifiers, overlap rules, provenance checks, controlled tests, and ignored generated outputs.
 
 ## Robust-Distance Validation Baseline
 
@@ -1186,3 +1194,32 @@ Working tree after implementation push: clean
 The bounded advanced-model comparison is now frozen after validation. The selected Isolation Forest candidate covered all documented validation events represented by the governed coverage metric, with a mean first-alarm latency of 11,579 seconds and 54.17993787237062 alarms per 24 observed hours.
 
 This evidence is sufficient to freeze the candidate and threshold for the next governed step, but it is not test evidence and does not establish general predictive performance. The advanced-model test partition remains locked. A one-time test comparison may occur only after separate learner authorization and without refitting, threshold revision, feature changes, or candidate reselection.
+
+### Frozen Machine-Learning Release
+
+The governed machine-learning workstream was finalized with one separately authorized held-out evaluation of the already-frozen Isolation Forest candidate.
+
+Verified release evidence:
+
+- Implementation commit: `f4ba8cfb181a238139e1ac031a9960752e587636`
+- Complete repository test suite: 203 passing tests
+- Frozen candidate: `iforest_ne200_ms4096_mf1p0`
+- Frozen threshold: `0.601902290159477`
+- Frozen model SHA-256: `fa23b81d214161488abf601a8b9852f2467347e53d02fca3653a13cdaaaeec1a`
+- Eligible advanced-model test rows scored: 429867
+- Documented events represented in the governed test evidence: 1
+- Documented events covered: 1
+- Isolation Forest documented-event coverage fraction: 1.0
+- Isolation Forest mean first-alarm latency for covered events: 218.0 seconds
+- Isolation Forest alarms per 24 observed hours: 69.86256461984617
+- Robust-distance baseline documented-event coverage fraction: 1.0
+- Robust-distance baseline mean first-alarm latency for covered events: 15804.0 seconds
+- Robust-distance baseline alarms per 24 observed hours: 94.19240953221535
+- Advanced-model test report SHA-256: `fc36bb22f37c3431f3f645804e8b4d6fba7c67ba7916d373f4eb9540f4c1552a`
+- Advanced-model test-score Parquet SHA-256: `578cf1fff7d4a9fceef995bb14f1462008bc49ad7ee6b13ee0b8bf96a61712f8`
+- Advanced-model test access: consumed exactly once by the governed release evaluation
+- Test-driven refit, feature change, threshold change, or candidate reselection: none
+- Robust-distance detector: retained as the finalized transparent benchmark
+- Generated model, score Parquet, and JSON evidence: excluded from Git under governed ignore rules
+
+The machine-learning release documentation includes the model card, held-out evaluation report, data/feature governance summary, architecture, reproducibility commands, and updated README. The next core milestone is the governed technical-document corpus with deterministic extraction and chunking.
