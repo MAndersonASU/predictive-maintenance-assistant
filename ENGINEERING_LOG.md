@@ -15,11 +15,11 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `26f0024481f59dec65d1c0cd502d2b8e9d249762`
-- Commit message: `Define governed advanced-model comparison contract`
-- Local and remote implementation commit identity: matched at `26f0024481f59dec65d1c0cd502d2b8e9d249762`
+- Latest verified implementation commit: `8872c5a225f26294ed5a397a40bf3f701992a876`
+- Commit message: `Train and validate governed Isolation Forest candidates`
+- Local and remote implementation commit identity: matched at `8872c5a225f26294ed5a397a40bf3f701992a876`
 - Working tree after the implementation push and before this engineering-log update: clean
-- Complete repository test suite: 151 passing tests
+- Complete repository test suite: 174 passing tests
 - Generated datasets, reports, figures, and temporary files: excluded from Git under governed ignore rules
 ## Implemented Milestones
 
@@ -516,25 +516,15 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 ## Current Engineering Workstream
 
-The governed advanced-model comparison contract is implemented and validated. It fixes one bounded `IsolationForest` family, a shared frozen 48-feature set, training-only fitting and threshold derivation, validation-only deterministic candidate selection, supported operational evidence, prohibited claims, and a complete advanced-model test lock.
+The governed eight-candidate `IsolationForest` training-and-validation workflow is implemented and validated. All candidates used the same frozen 48-feature set, were fitted only on 734,015 eligible training-reference rows, derived their own 0.995 training-score thresholds before validation, and were ranked only on 329,624 validation rows under the frozen lexicographic rule.
 
-No advanced model has been fitted, scored, selected, or evaluated on test data. The transparent robust-distance baseline remains a finalized reference, and its test evidence remains prohibited from advanced-model design or tuning.
+The selected candidate is `iforest_ne200_ms4096_mf1p0` with `n_estimators=200`, `max_samples=4096`, `max_features=1.0`, `contamination='auto'`, `bootstrap=False`, `random_state=42`, and `n_jobs=-1`. Its frozen threshold is `0.601902290159477`. The validation decision is frozen. The advanced-model test partition remains locked and zero test rows were scored.
 
 ## Next Engineering Milestone
 
-Implement and validate the governed Isolation Forest training-and-validation candidate workflow under the frozen comparison contract while keeping the advanced-model test partition locked.
+Perform the separately authorized one-time advanced-model test comparison using only the frozen selected Isolation Forest candidate and threshold. The test workflow must perform no refitting, feature changes, threshold changes, or candidate reselection; must compare the advanced-model test evidence transparently with the already-finalized robust-distance baseline; and must record limitations and the final model decision.
 
-The milestone must:
-
-- use only the eight predetermined Isolation Forest candidates;
-- fit every candidate on eligible training-reference rows only;
-- use the same frozen 48-feature set for every candidate;
-- derive each candidate threshold from eligible training scores at the fixed 0.995 quantile;
-- apply frozen candidate parameters and thresholds to validation rows only;
-- calculate only supported operational validation evidence;
-- apply the frozen lexicographic selection rule without test evidence;
-- freeze the selected candidate, threshold, and validation decision before any separate test authorization;
-- preserve unlabeled uncertainty and all prohibited-claim controls.
+Do not access the advanced-model test partition until the learner explicitly authorizes this separate test evaluation.
 
 ## Robust-Distance Validation Baseline
 
@@ -954,9 +944,13 @@ Created and validated:
 
 ```text
 config/metropt3_advanced_model_comparison.json
+config/metropt3_isolation_forest_validation.json
 docs/advanced_model_comparison_method.md
+docs/isolation_forest_validation_method.md
 src/predictive_maintenance/analysis/advanced_model_comparison.py
+src/predictive_maintenance/analysis/isolation_forest_validation.py
 tests/test_advanced_model_comparison.py
+tests/test_isolation_forest_validation.py
 ```
 
 The contract validator:
@@ -1034,3 +1028,161 @@ Local HEAD and origin/main: matched after push
 The comparison rules were fixed before model fitting. This prevents candidate-family expansion, validation-threshold tuning, test-driven selection, and unfair feature or preprocessing changes after results are observed.
 
 The contract does not demonstrate advanced-model performance. The next milestone is the governed eight-candidate Isolation Forest training-and-validation workflow. Advanced-model test evaluation remains locked.
+
+## Governed Isolation Forest Training and Validation
+
+Status: Implemented, tested, executed, frozen after validation, committed, pushed, and synchronized on August 7, 2026.
+
+### Implemented Scope
+
+Created and validated:
+
+```text
+config/metropt3_isolation_forest_validation.json
+docs/isolation_forest_validation_method.md
+src/predictive_maintenance/analysis/isolation_forest_validation.py
+tests/test_isolation_forest_validation.py
+```
+
+Updated dependency control:
+
+```text
+requirements.txt
+scikit-learn==1.8.0
+```
+
+The workflow:
+
+- preserves the finalized robust-distance baseline and the frozen Day 15 comparison contract;
+- uses only the predetermined eight `sklearn.ensemble.IsolationForest` candidates;
+- uses the same frozen 48-feature set for every candidate;
+- fits every candidate only on eligible training-reference rows;
+- rejects missing or non-finite candidate inputs rather than fitting replacement preprocessing;
+- derives each candidate alarm threshold from the 0.995 quantile of its eligible training-reference scores;
+- freezes each candidate and threshold before validation;
+- scores validation rows only;
+- calculates only governed operational validation evidence;
+- selects one candidate using the frozen lexicographic order: maximize documented-event coverage, minimize covered-event mean first-alarm latency, minimize alarms per 24 observed hours, then minimize candidate complexity;
+- persists the selected model and validation decision as ignored generated evidence;
+- keeps the advanced-model test partition locked.
+
+### Verification Evidence
+
+Dependency validation:
+
+```text
+scikit-learn: 1.8.0
+duckdb: 1.5.5
+pyarrow: 25.0.0
+pip check: No broken requirements found
+```
+
+Focused controlled test suite:
+
+```text
+Command: python -m unittest tests.test_isolation_forest_validation -v
+Tests run: 23
+Failures: 0
+Errors: 0
+```
+
+Authoritative complete repository suite:
+
+```text
+Command: python -m pytest -q
+Tests passed: 174
+Failures: 0
+Errors: 0
+Elapsed time: 4.39 seconds
+```
+
+Production training and validation:
+
+```text
+Processing status: isolation_forest_validation_completed
+Candidate count: 8
+Eligible training-reference rows: 734,015
+Validation rows scored: 329,624
+Test rows scored: 0
+Advanced-model test partition locked: true
+```
+
+Frozen selected candidate:
+
+```text
+Candidate: iforest_ne200_ms4096_mf1p0
+n_estimators: 200
+max_samples: 4096
+max_features: 1.0
+contamination: auto
+bootstrap: false
+random_state: 42
+n_jobs: -1
+Frozen threshold quantile: 0.995
+Frozen threshold: 0.601902290159477
+Validation decision status: frozen_after_validation
+```
+
+Selected-candidate validation evidence:
+
+```text
+Documented-event coverage fraction: 1.0
+Mean first-alarm latency for covered events: 11,579 seconds
+Alarms per 24 observed hours: 54.17993787237062
+Test rows scored: 0
+```
+
+These are validation-stage operational metrics. Alarm burden is not a false-positive rate, and the unusualness score is not a failure probability.
+
+### Governed Generated Artifacts
+
+The following generated artifacts were verified and remain excluded from Git:
+
+```text
+outputs/metropt3_selected_isolation_forest.joblib
+data/processed/metropt3_validation_isolation_forest.parquet
+outputs/metropt3_isolation_forest_validation_report.json
+```
+
+Verified SHA-256 evidence:
+
+```text
+Validation report: c3f7cbb5a19bb6004cc13ccdd04535de8acdc2a8cba635d333345115f9615ced
+Selected model: fa23b81d214161488abf601a8b9852f2467347e53d02fca3653a13cdaaaeec1a
+Validation-score Parquet: 3312f670178d34b97d914181da68a04c9cd5ef862be155384333ee07c72c24ab
+```
+
+Ignore verification:
+
+```text
+outputs/metropt3_selected_isolation_forest.joblib -> *.joblib
+outputs/metropt3_isolation_forest_validation_report.json -> outputs/*
+data/processed/metropt3_validation_isolation_forest.parquet -> data/processed/
+```
+
+### Repository Evidence
+
+Implementation commit:
+
+```text
+Commit: 8872c5a225f26294ed5a397a40bf3f701992a876
+Message: Train and validate governed Isolation Forest candidates
+Local HEAD and origin/main: matched after push
+```
+
+Verified repository state before this engineering-log update:
+
+```text
+Branch: main
+Tracking branch: origin/main
+Local HEAD: 8872c5a225f26294ed5a397a40bf3f701992a876
+Remote origin/main: 8872c5a225f26294ed5a397a40bf3f701992a876
+Ahead/behind: none
+Working tree after implementation push: clean
+```
+
+### Engineering Interpretation
+
+The bounded advanced-model comparison is now frozen after validation. The selected Isolation Forest candidate covered all documented validation events represented by the governed coverage metric, with a mean first-alarm latency of 11,579 seconds and 54.17993787237062 alarms per 24 observed hours.
+
+This evidence is sufficient to freeze the candidate and threshold for the next governed step, but it is not test evidence and does not establish general predictive performance. The advanced-model test partition remains locked. A one-time test comparison may occur only after separate learner authorization and without refitting, threshold revision, feature changes, or candidate reselection.
