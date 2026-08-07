@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "comparison_contract": {
+    "path": "config/metropt3_advanced_model_comparison.json",
+    "validation_report_path": "outputs/metropt3_advanced_model_comparison_contract_report.json",
+    "required_status": "valid"
+  },
+  "dataset": {
+    "feature_parquet_path": "data/processed/metropt3_features.parquet",
+    "feature_evidence_path": "outputs/metropt3_feature_engineering_report.json",
+    "eligibility_parquet_path": "data/processed/metropt3_baseline_eligibility.parquet",
+    "eligibility_evidence_path": "outputs/metropt3_baseline_evaluation_contract_report.json",
+    "frozen_feature_parameters_path": "outputs/metropt3_robust_distance_parameters.json"
+  },
+  "execution": {
+    "fit_partition": "train",
+    "selection_partition": "validation",
+    "fit_eligibility_column": "eligible_for_reference_fit",
+    "scoring_eligibility_column": "eligible_for_scoring",
+    "known_event_eligibility_column": "eligible_for_known_event_evaluation",
+    "alarm_burden_eligibility_column": "eligible_for_alarm_burden",
+    "expected_retained_feature_count": 48,
+    "expected_sampling_seconds": 10.0,
+    "matrix_dtype": "float32",
+    "threshold_comparison": "strictly_greater_than"
+  },
+  "governance": {
+    "model_fitting_enabled": true,
+    "candidate_scoring_enabled": true,
+    "candidate_selection_enabled": true,
+    "validation_threshold_tuning_enabled": false,
+    "test_partition_access_enabled": false,
+    "test_scoring_enabled": false,
+    "baseline_revision_enabled": false,
+    "unsupported_classification_metrics_enabled": false,
+    "unverified_rows_are_verified_healthy": false,
+    "alarm_burden_is_false_positive_rate": false
+  },
+  "outputs": {
+    "selected_model": "outputs/metropt3_selected_isolation_forest.joblib",
+    "selected_validation_scores": "data/processed/metropt3_validation_isolation_forest.parquet",
+    "validation_decision_report": "outputs/metropt3_isolation_forest_validation_report.json",
+    "parquet_compression": "zstd",
+    "joblib_compression": 3
+  }
+}
