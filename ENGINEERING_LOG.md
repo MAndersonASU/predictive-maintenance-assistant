@@ -15,12 +15,13 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `f4ba8cfb181a238139e1ac031a9960752e587636`
-- Commit message: `Finalize governed machine-learning release`
-- Local and remote implementation commit identity: matched at `f4ba8cfb181a238139e1ac031a9960752e587636`
-- Complete repository test suite: 203 passing tests
-- Advanced-model test access: consumed exactly once by the governed held-out evaluation
-- Generated datasets, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
+- Latest verified implementation commit: `3909a985259ccbc42a01b99b12cd18fa3b3a724a`
+- Commit message: `Build governed technical knowledge corpus`
+- Local and remote implementation commit identity: matched at `3909a985259ccbc42a01b99b12cd18fa3b3a724a`
+- Complete repository test suite: 236 passing tests
+- Advanced-model test access: consumed exactly once by the governed held-out evaluation; no additional held-out scoring occurred
+- Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
+- Generated datasets, downloaded knowledge sources, normalized text, chunks, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
 
@@ -515,24 +516,113 @@ The repository contains source code, tests, schemas, configuration, manifests, d
 
 `ENGINEERING_LOG.md` must be updated for each completed engineering milestone with verified files, validations, evidence, architecture decisions, commit andpush state, repository state, and one exact next milestone.
 
+### Governed Technical Knowledge Corpus and Deterministic Chunking
+
+Implemented the bounded technical-document foundation used by later retrieval and citation-grounded answering.
+
+Committed artifacts:
+
+```text
+config/knowledge_corpus.json
+docs/knowledge_corpus_method.md
+src/predictive_maintenance/knowledge/__init__.py
+src/predictive_maintenance/knowledge/corpus.py
+tests/test_knowledge_corpus.py
+requirements.txt
+```
+
+Governance and processing controls:
+
+- bounded corpus membership is declared before ingestion;
+- source identity, publisher, source URL or DOI, retrieval identity, license or usage status, equipment relevance, local path, and source classification are preserved;
+- exact dataset/project evidence remains distinguishable from authoritative general compressed-air guidance;
+- the related Scientific Data MetroPT article is explicitly scoped as a 2022 collection and is not assumed to be byte-, schema-, or time-period-identical to the 2020 UCI MetroPT-3 corpus used by this project;
+- the U.S. Department of Energy compressed-air sourcebook is classified as authoritative general guidance and is never represented as the exact MetroPT equipment manual;
+- PDF extraction uses `pypdf==6.14.2`; HTML extraction uses the Python standard-library parser;
+- normalization is deterministic and conservative, including Unicode NFKC normalization and whitespace normalization without semantic rewriting;
+- chunks are bounded to 220 words with 40-word overlap and a 20-word preferred minimum tail;
+- PDF page boundaries are preserved as provenance units and chunks do not cross extraction-unit boundaries;
+- chunk identifiers and chunk-text checksums are deterministic;
+- every chunk retains source identity, classification, equipment-relevance boundary, retrieval identity, source checksum, locator, ordering fields, word count, and chunk checksum;
+- source-content completeness gates require minimum extracted word counts and stable required markers before chunking;
+- prior generated corpus evidence is invalidated before a refresh so a failed run cannot leave an older successful report or chunk file that could be mistaken for current evidence;
+- downloaded documents, normalized text, chunks, and runtime reports remain under governed ignored paths.
+
+Verified live corpus evidence:
+
+```text
+Corpus ID: predictive_maintenance_technical_knowledge_v1
+Governed sources: 3
+Deterministic chunks: 354
+Provenance validation: passed
+Chunk corpus SHA-256: 4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d
+```
+
+Source-level evidence:
+
+```text
+metropt3_uci_description
+  Classification: exact_dataset_source
+  Extracted words: 410
+  Extraction units: 3
+  Chunks: 3
+  Source SHA-256: b00fac0e8899854078309bef4adaa480d82ecf14dc81c5097c3646973e824127
+
+metropt_scientific_data_2022
+  Classification: exact_dataset_source
+  Extracted words: 3,677
+  Extraction units: 1
+  Chunks: 21
+  Source SHA-256: d3d7d2a097b1c19f1e77017da7f5d96e1a93ec7fd05ace23782a6753ec77bf3d
+
+doe_compressed_air_sourcebook
+  Classification: authoritative_general_reference
+  Extracted words: 53,645
+  Extraction units: 114
+  Chunks: 330
+  Source SHA-256: 3280284235b8daef10f7d9e6a21aada90d7b804b805cc9ef842903aeca009c22
+```
+
+The independently calculated SHA-256 of `data/interim/knowledge/chunks.jsonl` matched the report value exactly.
+
+Verified correction record:
+
+- The first live Scientific Data retrieval produced only one short chunk because the publisher endpoint returned incomplete landing/interstitial content. The workflow was corrected to use the complete PubMed Central archival full text while preserving the Scientific Data publisher identity and DOI, and source-completeness gates were added.
+- A subsequent run correctly stopped because a UCI PDF narrative phrase was too brittle as an extraction marker. The rule was replaced by a stable `MetroPT` identity marker plus a minimum extracted-word threshold.
+- Failed-run evidence invalidation was added so stale successful reports or chunk files cannot survive a failed refresh and be mistaken for current evidence.
+- Regression tests cover both source-completeness failures and stale-evidence invalidation.
+
+Verified testing and repository state:
+
+```text
+Focused knowledge-corpus tests: 33 passing
+Complete repository suite: 236 passing
+Complete-suite elapsed time: 4.42 seconds
+pip check: no broken requirements
+Whitespace check before commit: passed
+Implementation commit: 3909a985259ccbc42a01b99b12cd18fa3b3a724a
+Commit message: Build governed technical knowledge corpus
+Local HEAD and origin/main after push: matched
+Working tree after implementation push: clean
+```
+
+Generated corpus evidence remains excluded from Git:
+
+```text
+data/raw/knowledge/
+data/interim/knowledge/
+outputs/knowledge_corpus_report.json
+```
+
 ## Current Engineering Workstream
 
-The governed machine-learning workstream is complete through the separately authorized one-time held-out evaluation. The selected candidate remains `iforest_ne200_ms4096_mf1p0` with the unchanged frozen threshold `0.601902290159477` and the same frozen 48-feature set. Test evidence did not trigger refitting, threshold revision, feature changes, or candidate reselection.
+The governed technical-knowledge foundation is implemented and verified through deterministic source materialization, extraction, normalization, chunking, provenance preservation, source-content completeness validation, and stale-evidence protection.
 
-Held-out operational evidence:
-
-- Isolation Forest documented-event coverage fraction: 1.0
-- Isolation Forest mean first-alarm latency for covered events: 218.0 seconds
-- Isolation Forest alarms per 24 observed hours: 69.86256461984617
-- Robust-distance baseline documented-event coverage fraction: 1.0
-- Robust-distance baseline mean first-alarm latency for covered events: 15804.0 seconds
-- Robust-distance baseline alarms per 24 observed hours: 94.19240953221535
-
-These are governed operational measures, not evidence of a verified healthy negative class. Alarm burden is not a false-positive rate, and unusualness is not a failure probability.
+The active corpus contains three governed sources and 354 deterministic chunks. Source identity and exact-dataset/general-reference boundaries survive into every chunk. No embeddings, retrieval index, reranking, or answer-generation behavior has yet been implemented.
 
 ## Next Engineering Milestone
 
-Build the governed technical-document corpus and deterministic extraction/chunking pipeline. Record source identity, publisher, URL or DOI, license or usage status, equipment relevance, retrieval identity or checksum, local status, and exact-equipment/general-reference classification before ingestion. Then implement deterministic extraction, normalization, metadata preservation, chunk identifiers, overlap rules, provenance checks, controlled tests, and ignored generated outputs.
+Implement reproducible embeddings plus keyword/hybrid retrieval over the governed chunk corpus. Preserve source and locator metadata through every retrieval result, define bounded retrieval and ranking parameters before evaluation, verify deterministic behavior with controlled tests and reproducible evidence, and keep retrieval implementation separate from later reranking and citation-grounded answer generation.
 
 ## Robust-Distance Validation Baseline
 
