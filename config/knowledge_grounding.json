@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "grounding_id": "predictive_maintenance_grounded_answers_v1",
+  "report_path": "outputs/knowledge_grounding_report.json",
+  "retrieval": {
+    "candidate_k": 12
+  },
+  "reranking": {
+    "hybrid_weight": 0.55,
+    "coverage_weight": 0.3,
+    "phrase_weight": 0.1,
+    "classification_weight": 0.05,
+    "minimum_rerank_score": 0.08,
+    "max_evidence_chunks": 4
+  },
+  "answer": {
+    "max_sentences_per_chunk": 2,
+    "max_total_sentences": 5,
+    "minimum_evidence_chunks": 1,
+    "citation_prefix": "S",
+    "exact_equipment_classification": "exact_equipment_source",
+    "exact_dataset_classification": "exact_dataset_source",
+    "general_classification": "authoritative_general_reference",
+    "equipment_specific_markers": [
+      "metropt compressor",
+      "metropt equipment",
+      "this compressor",
+      "this unit",
+      "manufacturer-specified",
+      "manufacturer specified",
+      "service manual",
+      "part number",
+      "model-specific",
+      "model specific",
+      "exact equipment"
+    ],
+    "dataset_specific_markers": [
+      "metropt",
+      "metropt-3",
+      "dataset",
+      "uci",
+      "sensor data",
+      "failure event",
+      "sampling interval"
+    ],
+    "insufficient_evidence_message": "Insufficient governed evidence to answer this request safely."
+  }
+}
