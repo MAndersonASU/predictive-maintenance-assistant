@@ -15,13 +15,14 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `28dbbcb65c065e2d7fb0ef08320dec2bd72813b6`
-- Commit message: `Implement governed hybrid knowledge retrieval`
-- Local and remote implementation commit identity: matched at `28dbbcb65c065e2d7fb0ef08320dec2bd72813b6`
-- Complete repository test suite: 252 passing tests
+- Latest verified implementation commit: `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
+- Commit message: `Implement governed citation-grounded answers`
+- Local and remote implementation commit identity: matched at `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
+- Complete repository test suite: 276 passing tests
 - Advanced-model test access: consumed exactly once by the governed held-out evaluation; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
 - Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA vector embeddings and bounded hybrid fusion; provenance preserved through results
+- Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal are implemented; exact-equipment claims require exact-equipment evidence
 - Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
@@ -1402,4 +1403,44 @@ Verified release evidence:
 - Robust-distance detector: retained as the finalized transparent benchmark
 - Generated model, score Parquet, and JSON evidence: excluded from Git under governed ignore rules
 
-The machine-learning release documentation includes the model card, held-out evaluation report, data/feature governance summary, architecture, reproducibility commands, and updated README. The next core milestone is the governed technical-document corpus with deterministic extraction and chunking.
+The machine-learning release documentation includes the model card, held-out evaluation report, data/feature governance summary, architecture, reproducibility commands, and updated README. That technical-document corpus milestone was subsequently implemented and verified before the current grounded-answer work.
+
+## Governed Reranking and Citation-Grounded Answer Assembly
+
+Status: Implemented, tested, smoke-validated, committed, pushed, and synchronized.
+
+### Implemented Scope
+
+Created and validated:
+
+```text
+config/knowledge_grounding.json
+docs/knowledge_grounding_method.md
+src/predictive_maintenance/knowledge/grounding.py
+tests/test_knowledge_grounding.py
+```
+
+The implementation preserves the existing 354-chunk governed corpus and governed retrieval index, adds deterministic reranking and stable source citations, bounds evidence assembly, and refuses equipment-specific instructions unless exact equipment evidence exists.
+
+### Verification Evidence
+
+```text
+Focused grounding tests: 24 passing
+Complete repository suite: 276 passing
+Grounding smoke-report status: passed
+Grounding report SHA-256: a31b3d4f0564aeb713350f776da357db1d8f179378e18562c2c8b9d3f82429c6
+Implementation commit: 39ea32bc649ecce5b539dbacdc2a35ed8c6a1105
+HEAD and origin/main: matched
+```
+
+Smoke validation covers dataset-context answering, authoritative general compressed-air guidance, and explicit refusal of manufacturer-specific MetroPT compressor instructions when no exact equipment manual is governed.
+
+The smoke report is implementation evidence only. Formal retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations remain the next separately governed evaluation milestone.
+
+### Governance Boundaries
+
+- Source identity, classification, locators, and checksums survive retrieval through answer assembly.
+- General authoritative guidance is never relabeled as exact MetroPT equipment guidance.
+- The existing retrieval index is not rebuilt or modified by this stage.
+- No external reranker, LLM API, secret, or remote inference service is introduced.
+- Insufficient evidence produces an explicit refusal rather than unsupported equipment-specific instructions.
