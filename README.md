@@ -1,5 +1,7 @@
 # Intelligent Predictive Maintenance and Technical Knowledge Assistant
 
+[![CI](https://github.com/MAndersonASU/predictive-maintenance-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/MAndersonASU/predictive-maintenance-assistant/actions/workflows/ci.yml)
+
 A professional engineering portfolio project that combines governed industrial time-series analysis, anomaly detection, and citation-grounded technical knowledge retrieval for predictive-maintenance applications.
 
 ## Current Verified Capability
@@ -11,7 +13,7 @@ The repository is implemented and verified through four connected foundations:
 3. **Governed technical knowledge** — a three-source corpus with explicit source roles, deterministic extraction and chunking, provenance preservation, and source-completeness controls.
 4. **Citation-grounded answers** — TF-IDF keyword retrieval, deterministic 128-dimensional LSA embeddings, bounded hybrid retrieval, deterministic reranking, bounded evidence assembly, stable citations, and explicit insufficient-evidence refusal.
 
-The complete repository suite currently contains **276 passing tests**.
+The complete repository suite currently contains **278 passing tests**.
 
 ## Machine-Learning Release
 
@@ -60,17 +62,38 @@ Governed Technical Sources
 
 See [`docs/system_architecture.md`](docs/system_architecture.md) for the current integrated architecture and [`docs/ml_architecture.md`](docs/ml_architecture.md) for the machine-learning subsystem.
 
-## Reproducibility
+## Quick Start
 
-From the repository root with the project virtual environment active:
+The repository uses a `src/` layout. The commands below create an isolated environment, install runtime and development dependencies, and run only safe regression checks.
+
+### Windows PowerShell
 
 ```powershell
+git clone https://github.com/MAndersonASU/predictive-maintenance-assistant.git
+cd predictive-maintenance-assistant
+
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+python -m pip install --upgrade pip
+python -m pip install -r requirements-dev.txt
+
 $env:PYTHONPATH = "src"
 python -m pytest -q
 python -m pip check
 ```
 
-Generated datasets, reports, retrieval indexes, model artifacts, and downloaded technical sources remain outside Git under governed ignore rules.
+The governed held-out model evaluators are **not** part of routine verification and must not be rerun. See [`docs/ml_reproducibility.md`](docs/ml_reproducibility.md) for the frozen-release boundary.
+
+## Continuous Integration
+
+GitHub Actions runs Python compilation, the complete regression suite, and dependency consistency checks on pushes to `main` and on pull requests targeting `main`.
+
+The CI workflow intentionally does **not** execute data acquisition, model fitting, held-out scoring, corpus downloads, or other governed production workflows.
+
+## Reproducibility
+
+Generated datasets, reports, retrieval indexes, model artifacts, and downloaded technical sources remain outside Git under governed ignore rules. Runtime and development dependencies are declared in `requirements.txt` and `requirements-dev.txt`.
 
 ## Key Documentation
 
