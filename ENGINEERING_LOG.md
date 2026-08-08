@@ -15,13 +15,14 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `3909a985259ccbc42a01b99b12cd18fa3b3a724a`
-- Commit message: `Build governed technical knowledge corpus`
-- Local and remote implementation commit identity: matched at `3909a985259ccbc42a01b99b12cd18fa3b3a724a`
-- Complete repository test suite: 236 passing tests
+- Latest verified implementation commit: `28dbbcb65c065e2d7fb0ef08320dec2bd72813b6`
+- Commit message: `Implement governed hybrid knowledge retrieval`
+- Local and remote implementation commit identity: matched at `28dbbcb65c065e2d7fb0ef08320dec2bd72813b6`
+- Complete repository test suite: 252 passing tests
 - Advanced-model test access: consumed exactly once by the governed held-out evaluation; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
-- Generated datasets, downloaded knowledge sources, normalized text, chunks, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
+- Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA vector embeddings and bounded hybrid fusion; provenance preserved through results
+- Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
 
@@ -614,15 +615,104 @@ data/interim/knowledge/
 outputs/knowledge_corpus_report.json
 ```
 
+### Governed Embeddings and Hybrid Knowledge Retrieval
+
+Implemented a bounded reproducible retrieval layer over the verified governed chunk corpus.
+
+Committed artifacts:
+
+```text
+config/knowledge_retrieval.json
+docs/knowledge_retrieval_method.md
+src/predictive_maintenance/knowledge/retrieval.py
+tests/test_knowledge_retrieval.py
+```
+
+Retrieval contract and controls:
+
+- the input corpus is frozen to 354 governed chunks with SHA-256 `4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d`;
+- keyword representation uses scikit-learn TF-IDF with one- and two-word features, L2 normalization, sublinear term frequency, and a 16,000-feature vocabulary cap;
+- vector representation uses deterministic 128-component latent semantic analysis with randomized `TruncatedSVD`, `random_state=42`, and seven iterations;
+- hybrid fusion weights vector similarity at `0.65` and keyword similarity at `0.35`;
+- candidate generation is bounded to 30 candidates from each retrieval path, with default `top_k=8` and maximum `top_k=12`;
+- saved indexes are rejected when the retrieval configuration or governed chunk corpus does not match the identities used at index construction;
+- retrieval results preserve source ID, title, publisher, URL, DOI, classification, equipment relevance, license or usage status, retrieval identity, scope note, source checksum, locator, ordering fields, word count, chunk checksum, and chunk text;
+- reranking, citation rendering, answer generation, and insufficient-evidence refusal remain outside this retrieval layer;
+- generated retrieval artifacts remain under ignored `data/interim/` and `outputs/` paths.
+
+Verified live retrieval evidence:
+
+```text
+Corpus ID: predictive_maintenance_technical_knowledge_v1
+Chunk count: 354
+Corpus SHA-256: 4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d
+Retrieval ID: predictive_maintenance_hybrid_retrieval_v1
+Configuration fingerprint: 979eebb3e9fb115d10e70b55fbfaea03f375803e006091788eb6a673c68c37c1
+Keyword vocabulary size: 16000
+Embedding method: lsa_tfidf
+Embedding dimension: 128
+Explained-variance-ratio sum: 0.5937216799895125
+Index signature: 96bd60cb61a6782245a36e23f3e72b3db37a20eef00f93f70afc589b774d3a09
+Vocabulary signature: f8b192db56a996df7486c8051a92edf5112830cd2cf1f0a165d52809f5069805
+Document-embedding SHA-256: 6dacfa4a4f343a6ec55231a421e15c7a542ce4fd7ac91db5ba47f36d3df7e716
+SVD-components SHA-256: 8e0462a2c9add27380c5f186f93cc9fae18e9b3d0f581af140af1247e10e2dc9
+```
+
+Determinism checks after a second rebuild all matched exactly:
+
+```text
+Index signature: matched
+Document-embedding checksum: matched
+SVD-components checksum: matched
+Vocabulary signature: matched
+```
+
+Controlled retrieval smoke evidence:
+
+- A MetroPT-focused query returned MetroPT exact-dataset sources in all five displayed results, including the UCI MetroPT-3 description.
+- A compressed-air maintenance query returned the U.S. Department of Energy sourcebook in all five displayed results, with classification preserved as `authoritative_general_reference` and page locators preserved.
+- These smoke checks verify implementation behavior and provenance boundaries; they are not retrieval-quality evaluation claims.
+
+Verified correction record:
+
+- Windows PowerShell exposed a CLI serialization defect when retrieved evidence contained the Unicode character `∆` and the console attempted `cp1252` encoding.
+- CLI JSON output was changed to ASCII-safe JSON escaping while preserving Unicode content after JSON parsing.
+- A regression test verifies Unicode evidence round-trips correctly through CLI JSON serialization.
+- Public repository documentation was checked before commit for internal learning-timeline terminology; no prohibited daily-learning wording remained in the committed artifacts.
+
+Verified testing and repository state:
+
+```text
+Focused retrieval tests: 16 passing
+Complete repository suite: 252 passing
+Complete-suite elapsed time: 4.65 seconds
+pip check: no broken requirements
+Whitespace check before commit: passed
+Implementation commit: 28dbbcb65c065e2d7fb0ef08320dec2bd72813b6
+Commit message: Implement governed hybrid knowledge retrieval
+Local HEAD and origin/main after push: matched
+Working tree after implementation push: clean
+```
+
+Generated retrieval evidence remains excluded from Git:
+
+```text
+data/interim/knowledge/retrieval/hybrid_index.joblib
+  SHA-256: 2700dac28adfc9a80a9bd28c3af177237d45e845ef94c37cd4e68b421d4442b7
+
+outputs/knowledge_retrieval_report.json
+  SHA-256: 5ae4406eba7765c3159ce6d6f7c7600e26bd0bcf1b915732ecdf73d50a46a187
+```
+
 ## Current Engineering Workstream
 
-The governed technical-knowledge foundation is implemented and verified through deterministic source materialization, extraction, normalization, chunking, provenance preservation, source-content completeness validation, and stale-evidence protection.
+The governed technical-knowledge workflow is implemented and verified through deterministic source materialization, extraction, normalization, chunking, reproducible keyword/vector representation, bounded hybrid retrieval, provenance preservation, source-content completeness validation, stale-evidence protection, and retrieval-index identity checks.
 
-The active corpus contains three governed sources and 354 deterministic chunks. Source identity and exact-dataset/general-reference boundaries survive into every chunk. No embeddings, retrieval index, reranking, or answer-generation behavior has yet been implemented.
+The active corpus contains three governed sources and 354 deterministic chunks. Retrieval preserves source identity, classification, equipment-relevance boundaries, checksums, locators, and chunk text. Reranking, citation formatting, answer generation, and insufficient-evidence refusal behavior remain intentionally unimplemented so retrieval can be evaluated as a separate layer.
 
 ## Next Engineering Milestone
 
-Implement reproducible embeddings plus keyword/hybrid retrieval over the governed chunk corpus. Preserve source and locator metadata through every retrieval result, define bounded retrieval and ranking parameters before evaluation, verify deterministic behavior with controlled tests and reproducible evidence, and keep retrieval implementation separate from later reranking and citation-grounded answer generation.
+Add deterministic reranking and citation-grounded answer assembly over the governed retrieval results. Preserve source identity through evidence selection and answer generation, render traceable citations, distinguish exact MetroPT evidence from authoritative general guidance, implement explicit insufficient-evidence refusal behavior, and keep later retrieval/answer evaluation separate from implementation.
 
 ## Robust-Distance Validation Baseline
 
