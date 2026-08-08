@@ -115,7 +115,7 @@ def _quote_literal(value: str | Path) -> str:
 
 
 def validate_execution_contract(contract: dict[str, Any]) -> None:
-    """Validate the Day 16 execution authorization without changing Day 15."""
+    """Validate the Isolation Forest execution authorization without changing the frozen comparison contract."""
     if contract.get("schema_version") != 1:
         raise IsolationForestValidationError("schema_version must be 1.")
     for section in ("comparison_contract", "dataset", "execution", "governance", "outputs"):
@@ -385,9 +385,9 @@ def _validate_comparison_evidence(
         raise IsolationForestValidationError("The comparison validation report does not match the current contract.")
     scope = comparison_report.get("scope", {})
     if scope.get("advanced_model_fitted") is not False or scope.get("advanced_test_partition_accessed") is not False:
-        raise IsolationForestValidationError("Day 15 evidence must show no model fitting and no test access.")
+        raise IsolationForestValidationError("The frozen comparison evidence must show no model fitting and no held-out test access.")
     if comparison_report.get("candidate_boundary", {}).get("candidate_count") != 8:
-        raise IsolationForestValidationError("Day 15 evidence must authorize exactly eight candidates.")
+        raise IsolationForestValidationError("The frozen comparison evidence must authorize exactly eight candidates.")
     return comparison_contract, comparison_report
 
 

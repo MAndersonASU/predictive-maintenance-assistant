@@ -36,7 +36,7 @@ def _report():
     }
 
 
-def test_build_documents_contains_all_release_artifacts():
+def test_build_documents_contains_only_ml_release_artifacts():
     module = importlib.import_module(MODULE_NAME)
     docs = module.build_documents(_report())
     assert set(docs) == {
@@ -45,7 +45,6 @@ def test_build_documents_contains_all_release_artifacts():
         "docs/data_feature_governance.md",
         "docs/ml_architecture.md",
         "docs/ml_reproducibility.md",
-        "README.md",
     }
 
 
@@ -59,9 +58,17 @@ def test_evaluation_report_says_not_reselection():
     assert "not a test-driven model-selection step" in module.build_documents(_report())["docs/ml_evaluation_report.md"]
 
 
-def test_readme_reports_frozen_candidate():
+def test_generator_does_not_overwrite_repository_readme():
     module = importlib.import_module(MODULE_NAME)
-    assert "iforest_ne200_ms4096_mf1p0" in module.build_documents(_report())["README.md"]
+    docs = module.build_documents(_report())
+    assert "README.md" not in docs
+
+
+def test_ml_architecture_is_explicitly_subsystem_scoped():
+    module = importlib.import_module(MODULE_NAME)
+    architecture = module.build_documents(_report())["docs/ml_architecture.md"]
+    assert "Machine-Learning Subsystem Architecture" in architecture
+    assert "system_architecture.md" in architecture
 
 
 def test_reproducibility_warns_against_rerun():

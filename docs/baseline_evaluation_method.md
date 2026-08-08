@@ -1,35 +1,37 @@
 # MetroPT-3 Baseline and Temporal-Evaluation Contract
 
+> **Record status:** Implemented historical contract. The transparent robust-distance baseline and later advanced-model evaluation were implemented under these frozen controls; the contract remains authoritative for population and metric semantics.
+
 ## Purpose
 
-This contract defines who may be used to establish a future transparent anomaly baseline, how later observations may be scored, and which evaluation statements the available evidence can support. The validation workflow materializes row-level eligibility evidence only. It does not fit preprocessing, train a model, calculate anomaly scores, generate alarms, or report performance.
+This contract defines who may establish the transparent anomaly reference, how later observations may be scored, and which evaluation statements the available evidence can support. The validation workflow materializes row-level eligibility evidence only.
 
 ## Target interpretation
 
-The dataset contains documented failure intervals but no verified healthy-negative class. A row with `target_state = unverified` is therefore an unlabeled operational observation, not a confirmed normal or negative example. Documented-failure rows are verified positives for event-oriented evaluation. Pre-event exclusions, chronological partition buffers, incomplete 30-row histories, and rows with any exclusion reason are ineligible.
+The dataset contains documented failure intervals but no verified healthy-negative class. A row with `target_state = unverified` is an unlabeled operational observation, not a confirmed normal or negative example. Documented-failure rows are verified positives for event-oriented evaluation. Pre-event exclusions, chronological partition buffers, incomplete 30-row histories, and rows with exclusion reasons are ineligible.
 
-The future reference population is restricted to eligible `unverified` rows in the training partition. It represents the observed training-period operating mixture. Contamination by unrecorded abnormal behavior remains possible and must be stated as a limitation.
+The reference population is restricted to eligible `unverified` rows in the training partition. It represents the observed training-period operating mixture; contamination by unrecorded abnormal behavior remains possible.
 
-## Transparent baseline
+## Transparent baseline contract
 
-The selected baseline is a training-reference robust-distance method. A later implementation may fit each numeric model feature's median and interquartile range on eligible training-reference rows only. Features with zero interquartile range must be excluded with a recorded reason. The same frozen parameters must then be applied unchanged to validation and test rows.
+The governed baseline fits each numeric feature's median and interquartile range on eligible training-reference rows only. Features with zero interquartile range are excluded with a recorded reason. Frozen parameters are applied unchanged to validation and test rows.
 
-The planned score is the maximum absolute robust z-score across retained features. It is an unusualness score relative to the unlabeled training reference, not a probability of failure. A candidate alarm threshold may use the 99.5th percentile of eligible training-reference scores. The threshold must be frozen before validation begins, and the test partition must remain locked until the complete method is frozen.
+The score is the maximum absolute robust z-score across retained features. It is unusualness relative to the unlabeled training reference, not a failure probability. The threshold uses the 99.5th percentile of eligible training-reference scores and is frozen before validation.
 
 ## Temporal and segment controls
 
-Training precedes validation, and validation precedes test. Random splitting is prohibited. Eligible rows require the complete causal 30-row history already produced inside a single segment and partition. No preprocessing parameter, feature history, threshold choice, or evaluation relationship may cross backward from a later partition.
+Training precedes validation, and validation precedes test. Random splitting is prohibited. Eligible rows require complete causal history inside one segment and partition. No fitted parameter, feature history, threshold choice, or evaluation relationship may leak backward from a later partition.
 
 ## Supported evaluation language
 
-Documented events can support event coverage, first-alarm latency, and alarm contiguity within the recorded event interval. Unlabeled operating periods can support alarm burden, alarms per 24 observed hours, and score-distribution drift. Alarm burden describes operational review load; it is not a false-positive rate because the absence of a documented event does not verify a healthy negative.
+Documented events support event coverage, first-alarm latency, and alarm contiguity within recorded event intervals. Unlabeled operating periods support alarm burden, alarms per 24 observed hours, and score-distribution drift.
 
-Accuracy, precision, specificity, false-positive rate, and ROC AUC are unsupported under the current labels. Standard row-level recall is also not the primary measure because long events would dominate the count; documented-event coverage is reported at the event level instead.
+Alarm burden is operational review load, not a false-positive rate. Accuracy, precision, specificity, false-positive rate, ROC AUC, calibrated failure probability, and verified healthy-class claims are unsupported.
 
 ## Validation evidence
 
-The workflow verifies the feature-contract checksum, the feature Parquet checksum against its evidence report, required governance columns, row counts, target consistency, non-empty eligibility populations, and strict chronological partition order. It writes an ignored eligibility Parquet file and an ignored JSON validation report atomically. The report records population counts and explicitly confirms that no healthy-negative class, fitted preprocessing, model, scores, alarms, or performance metrics were created.
+The workflow verifies feature identity, Parquet checksums, governance columns, row counts, target consistency, non-empty eligibility populations, and chronological ordering. It writes ignored eligibility Parquet and JSON evidence atomically.
 
-## Bounded endpoint
+## Contract boundary
 
-This milestone ends when the committed contract, validation module, controlled tests, generated eligibility evidence, and professional documentation are verified and synchronized. Baseline fitting, threshold selection, validation analysis, test evaluation, model comparison, and performance reporting remain outside this milestone.
+This file governs eligibility, leakage controls, baseline semantics, and supported metrics. Baseline fitting, diagnosis, held-out evaluation, and advanced-model comparison are implemented as separate governed components.

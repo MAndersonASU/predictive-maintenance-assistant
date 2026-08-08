@@ -472,7 +472,7 @@ def extract_pdf_units(path: Path) -> list[ExtractedUnit]:
     if not units:
         raise CorpusError(
             f"PDF produced no extractable text: {path}. "
-            "Scanned-image OCR is intentionally outside this deterministic Day 18 pipeline."
+            "Scanned-image OCR is intentionally outside this deterministic corpus pipeline."
         )
     return units
 

@@ -1,25 +1,27 @@
 # MetroPT-3 Transparent Robust-Distance Baseline
 
+> **Record status:** Implemented validation-stage specification. The baseline was subsequently evaluated once on governed held-out evidence and remains the transparent benchmark.
+
 ## Purpose
 
-This implementation establishes a transparent anomaly score relative to the eligible unlabeled training-reference population. It does not infer a verified healthy class or a probability of failure. The test partition remains locked.
+This implementation establishes a transparent anomaly score relative to the eligible unlabeled training-reference population. It does not infer a verified healthy class or a probability of failure. At this validation stage, the test partition remained locked.
 
 ## Frozen training-reference fit
 
-For every numeric model feature, the workflow fits the median and interquartile range (IQR) using only rows marked `eligible_for_reference_fit` in the training partition. A feature with zero IQR cannot provide a scaled distance, so it is excluded and recorded with the reason `zero_iqr_in_eligible_training_reference`.
+For every numeric model feature, the workflow fits the median and interquartile range (IQR) using only rows marked `eligible_for_reference_fit` in the training partition. A zero-IQR feature is excluded with a recorded reason.
 
-For retained feature $j$, the robust distance component is the absolute difference from the training median divided by the training IQR. A row's score is the maximum component across retained features. The alarm threshold is the 99.5th percentile of scores from the same eligible training-reference population. The fitted medians, IQRs, exclusions, and threshold are frozen before validation.
+For retained feature `j`, the robust distance component is the absolute difference from the training median divided by the training IQR. A row's score is the maximum component across retained features. The alarm threshold is the 99.5th percentile of scores from the same eligible training-reference population. Medians, IQRs, exclusions, and threshold are frozen before validation.
 
-## Validation and test lock
+## Validation and test boundary
 
-The frozen parameters are applied only to eligible validation rows. The generated score file contains validation rows and no test rows. The implementation reports the number of scored validation rows, training and validation score summaries, documented-event coverage, first-alarm latency, alarm burden over unlabeled validation observations, and alarms per 24 observed hours.
+Frozen parameters are applied to eligible validation rows. The validation score file contains no test rows. The implementation reports score summaries, documented-event coverage, first-alarm latency, alarm burden over unlabeled validation observations, and alarms per 24 observed hours.
 
-Alarm burden is operational review load, not a false-positive rate. Unverified observations are not confirmed healthy negatives, so accuracy, precision, specificity, false-positive rate, and ROC AUC remain unsupported.
+Alarm burden is operational review load, not a false-positive rate. Unverified observations are not confirmed healthy negatives.
 
 ## Reproducibility and evidence
 
-The workflow verifies the upstream feature and eligibility Parquet checksums against their evidence reports, confirms matching timestamps and row counts, writes outputs atomically, and records output checksums. Generated parameters, validation scores, and reports remain ignored artifacts. The committed source files define the reproducible method and its controlled tests.
+The workflow verifies upstream feature and eligibility checksums, matching timestamps and row counts, atomic outputs, and output checksums. Generated parameters, validation scores, and reports remain ignored artifacts.
 
-## Bounded endpoint
+## Component boundary
 
-This milestone ends after the configuration, implementation, tests, generated validation evidence, documentation, and repository synchronization are verified. Test evaluation, model comparison, advanced models, deployment, and performance claims remain outside this milestone.
+This file describes the validation-stage robust-distance implementation. Held-out evaluation, advanced-model comparison, and the frozen release decision are documented in their respective components and do not alter this baseline fitting contract.

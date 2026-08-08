@@ -1,4 +1,4 @@
-"""Generate the machine-learning release documentation from frozen evidence."""
+"""Generate machine-learning-specific release documentation from frozen evidence."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ DEFAULT_REPORT = PROJECT_ROOT / "outputs" / "metropt3_isolation_forest_test_repo
 
 
 class MLReleaseDocumentationError(ValueError):
-    pass
+    """Raised when frozen ML release evidence is invalid or unavailable."""
 
 
 def _read_report(path: Path) -> dict[str, Any]:
@@ -35,6 +35,7 @@ def _fmt(value: Any, digits: int = 3) -> str:
 
 
 def build_documents(report: dict[str, Any]) -> dict[str, str]:
+    """Build ML-specific documents without overwriting repository-level status docs."""
     model = report["frozen_model"]
     test = report["advanced_model_test"]
     comparison = report["baseline_comparison"]
@@ -124,7 +125,11 @@ The release uses the frozen 48-feature set derived from causal, partition-bounde
 Training is used for fitting and threshold derivation, validation is used for candidate selection, and test is held out until the final one-time evaluation. The transparent robust-distance baseline was finalized before advanced-model development and is not revised from advanced-model evidence.
 """
 
-    architecture = """# Machine-Learning Architecture
+    architecture = """# Machine-Learning Subsystem Architecture
+
+## Status
+
+The machine-learning subsystem is implemented and frozen through its governed held-out evaluation. This file describes only the ML path. The current cross-workstream architecture, including the implemented technical-knowledge and grounding layers, is documented in `docs/system_architecture.md`.
 
 ```text
 Governed MetroPT-3 Source
@@ -160,7 +165,7 @@ Evidence                              |
                             ML Release Documentation
 ```
 
-The knowledge-retrieval, API, persistence, monitoring, Docker, and demonstration layers remain separate subsequent release milestones.
+The robust-distance detector remains the transparent benchmark. The selected Isolation Forest candidate remains frozen at the validation-selected configuration and threshold. Held-out evidence is reporting evidence only and cannot be used for refitting, feature revision, threshold revision, or candidate reselection.
 """
 
     reproducibility = f"""# Machine-Learning Reproducibility
@@ -181,73 +186,12 @@ Frozen threshold: `{model['threshold']}`
 Model SHA-256: `{model['model_sha256']}`
 """
 
-    readme = f"""# Intelligent Predictive Maintenance and Technical Knowledge Assistant
-
-A professional AI engineering portfolio project that combines governed industrial time-series analysis, anomaly detection, and a planned citation-grounded technical-knowledge assistant.
-
-## Current Verified Capability
-
-The machine-learning foundation is complete through held-out evaluation. The repository includes reproducible MetroPT-3 acquisition and integrity checks, schema/data-quality validation, Parquet and DuckDB access, gap-aware exploratory analysis, governed event provenance and target materialization, causal feature engineering, a transparent robust-distance benchmark, and a bounded Isolation Forest comparison.
-
-The selected advanced candidate is `{model['candidate_id']}` with frozen threshold `{model['threshold']}`. It was selected using validation evidence only and evaluated once on the locked test partition after explicit authorization. Test evidence did not change the model, feature set, or threshold.
-
-## Machine-Learning Evaluation
-
-| Measure | Isolation Forest | Robust-distance baseline |
-|---|---:|---:|
-| Documented-event coverage | {_fmt(adv['documented_event_coverage_fraction'])} | {_fmt(base['documented_event_coverage_fraction'])} |
-| Mean first-alarm latency, covered events (s) | {_fmt(adv['mean_first_alarm_latency_seconds_for_covered_events'])} | {_fmt(base['mean_first_alarm_latency_seconds_for_covered_events'])} |
-| Alarms per 24 observed hours | {_fmt(adv['alarms_per_24_observed_hours'])} | {_fmt(base['alarms_per_24_observed_hours'])} |
-
-These are governed operational measures. Alarm burden is not a false-positive rate, unusualness is not failure probability, and unverified operational rows are not treated as verified healthy negatives.
-
-## Architecture
-
-```text
-Governed Sources
-    -> validation and checksums
-    -> Parquet / DuckDB
-    -> governed targets
-    -> causal features
-    -> transparent baseline + frozen Isolation Forest
-    -> held-out evaluation
-    -> technical-knowledge retrieval (next)
-    -> APIs / persistence / monitoring
-    -> Docker / demonstration interface
-```
-
-## Reproducibility
-
-With the virtual environment active from the repository root:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m pytest -q
-```
-
-The one-time held-out advanced-model evaluation is governed by `config/metropt3_isolation_forest_test_evaluation.json` and refuses overwrite after completion.
-
-## Project Principles
-
-- Reproducible data and model evidence
-- Chronological and gap-aware leakage controls
-- Transparent baselines before advanced models
-- Test data reserved for final reporting
-- No unsupported performance or business-impact claims
-- Traceable technical sources and citations
-- Secure exclusion of secrets, raw/processed large data, generated outputs, and model artifacts from Git
-
-## Next Release Milestone
-
-Build the governed technical-document corpus and deterministic extraction/chunking pipeline. Exact equipment documentation will only be labeled as such when manufacturer and model identity are independently verified.
-"""
     return {
         "docs/model_card.md": model_card,
         "docs/ml_evaluation_report.md": evaluation_report,
         "docs/data_feature_governance.md": governance,
         "docs/ml_architecture.md": architecture,
         "docs/ml_reproducibility.md": reproducibility,
-        "README.md": readme,
     }
 
 
@@ -264,7 +208,9 @@ def write_documents(report_path: Path = DEFAULT_REPORT) -> list[Path]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate frozen machine-learning release documentation.")
+    parser = argparse.ArgumentParser(
+        description="Generate frozen machine-learning-specific release documentation."
+    )
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     args = parser.parse_args()
     try:
@@ -272,7 +218,15 @@ def main() -> int:
     except (MLReleaseDocumentationError, OSError, json.JSONDecodeError) as error:
         print(f"ERROR: {error}")
         return 1
-    print(json.dumps({"processing_status": "ml_release_documentation_generated", "files": [p.as_posix() for p in paths]}, indent=2))
+    print(
+        json.dumps(
+            {
+                "processing_status": "ml_release_documentation_generated",
+                "files": [p.as_posix() for p in paths],
+            },
+            indent=2,
+        )
+    )
     return 0
 
 

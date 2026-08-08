@@ -15,14 +15,15 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified implementation commit: `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
+- Latest verified capability implementation commit: `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
 - Commit message: `Implement governed citation-grounded answers`
 - Local and remote implementation commit identity: matched at `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
 - Complete repository test suite: 276 passing tests
-- Advanced-model test access: consumed exactly once by the governed held-out evaluation; no additional held-out scoring occurred
+- Advanced-model held-out access: consumed exactly once; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
-- Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA vector embeddings and bounded hybrid fusion; provenance preserved through results
-- Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal are implemented; exact-equipment claims require exact-equipment evidence
+- Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA embeddings and bounded hybrid fusion
+- Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal
+- Exact-equipment instructions require governed exact-equipment evidence
 - Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
 ## Implemented Milestones
@@ -160,11 +161,11 @@ The validator enforces:
 - the policy that unlabeled rows are not automatically assumed healthy;
 - atomic validation-report writing and actionable errors.
 
-Day 7 established the governed validation framework without creating row-level labels. Verified Day 7 implementation commit: `607bac4` (`Implement governed target definition and temporal evaluation`). The Day 7 checkpoint documentation commit was `d9fc5b9`.
+Target Governance established the governed validation framework without creating row-level labels. Verified Target Governance implementation commit: `607bac4` (`Implement governed target definition and temporal evaluation`). The Target Governance status record documentation commit was `d9fc5b9`.
 
 ### Exact MetroPT-3 Failure-Event Provenance
 
-Day 8 replaced the ambiguous design placeholder with four intervals documented by the exact 2020 MetroPT-3 UCI dataset source.
+Failure-Event Provenance replaced the ambiguous design placeholder with four intervals documented by the exact 2020 MetroPT-3 UCI dataset source.
 
 Governed source identity:
 
@@ -186,7 +187,7 @@ Documented intervals:
 
 The May 29-30 source entry also says `Maintenance on 30Apr at 12:00`. This conflicts with the event dates. The project preserves the statement as one unresolved provenance conflict and does not silently correct, reinterpret, or use it to change the documented event interval.
 
-Day 8 implementation changes:
+Failure-Event Provenance implementation changes:
 
 - Upgraded the governed specification to schema version 2.
 - Added exact dataset source identifiers, access dates, dataset-match controls, and source-conflict records.
@@ -196,7 +197,7 @@ Day 8 implementation changes:
 - Preserved the four records as event metadata rather than row-level labels.
 - Strengthened target-definition tests from 9 to 16.
 
-Verified Day 8 validation report:
+Verified Failure-Event Provenance validation report:
 
 - Status: `valid`
 - Schema version: 2
@@ -214,7 +215,7 @@ Verified Day 8 validation report:
 - Performance metrics reported: no
 - Remaining `.part` files: 0
 
-Verified Day 8 testing:
+Verified Failure-Event Provenance testing:
 
 - Python syntax compilation: passed
 - Focused target-definition tests: 16 passing
@@ -226,7 +227,7 @@ Verified Day 8 testing:
 - Failures: 0
 - Errors: 0
 
-Verified Day 8 implementation commit and push:
+Verified Failure-Event Provenance implementation commit and push:
 
 - Commit: `4ab2333b2684447e62fa45fc6e0fe0aaf989b863`
 - Message: `Document MetroPT-3 failure-event provenance`
@@ -238,7 +239,7 @@ Verified Day 8 implementation commit and push:
 
 ### Governed Row-Level Target Materialization
 
-Day 9 implemented the audited translation from governed event metadata to row-level target states without inventing a negative class or crossing observationgaps.
+Target Materialization implemented the audited translation from governed event metadata to row-level target states without inventing a negative class or crossing observationgaps.
 
 Implemented artifacts:
 
@@ -288,7 +289,7 @@ Verified testing:
 - Failures: 0
 - Errors: 0
 
-Verified Day 9 implementation commit and push:
+Verified Target Materialization implementation commit and push:
 
 - Commit: `c16a9465fed7755d1b3a86ab84f489b83d6a886f`
 - Message: `Materialize governed MetroPT-3 target states`
@@ -300,7 +301,7 @@ Verified Day 9 implementation commit and push:
 
 ### Leakage-Safe MetroPT-3 Feature Engineering
 
-Day 10 implemented the reproducible feature layer over the governed sensor history and row-level target states.
+Feature Engineering implemented the reproducible feature layer over the governed sensor history and row-level target states.
 
 Implemented artifacts:
 
@@ -354,7 +355,7 @@ outputs/metropt3_feature_engineering_report.json
 
 ### Governed Baseline-Evaluation Contract
 
-Day 11 defined and validated the population, chronology, leakage controls, future transparent baseline, permitted metrics, and prohibited claims before any baseline fitting or performance reporting.
+Baseline Evaluation Contract defined and validated the population, chronology, leakage controls, future transparent baseline, permitted metrics, and prohibited claims before any baseline fitting or performance reporting.
 
 Implemented artifacts:
 
@@ -707,13 +708,15 @@ outputs/knowledge_retrieval_report.json
 
 ## Current Engineering Workstream
 
-The governed technical-knowledge workflow is implemented and verified through deterministic source materialization, extraction, normalization, chunking, reproducible keyword/vector representation, bounded hybrid retrieval, provenance preservation, source-content completeness validation, stale-evidence protection, and retrieval-index identity checks.
+The data-engineering and machine-learning workstreams are frozen through governed held-out evaluation. The technical-knowledge workstream is implemented through deterministic source materialization, extraction, normalization, chunking, reproducible keyword/vector representation, bounded hybrid retrieval, deterministic reranking, provenance-preserving citation assembly, and explicit insufficient-evidence refusal.
 
-The active corpus contains three governed sources and 354 deterministic chunks. Retrieval preserves source identity, classification, equipment-relevance boundaries, checksums, locators, and chunk text. Reranking, citation formatting, answer generation, and insufficient-evidence refusal behavior remain intentionally unimplemented so retrieval can be evaluated as a separate layer.
+The active corpus contains three governed sources and 354 deterministic chunks. Source identity, classification, equipment-relevance boundaries, checksums, locators, and chunk text survive retrieval through answer assembly.
+
+Implementation smoke checks verify deterministic behavior and source-governance boundaries. They are not formal claims of retrieval quality, citation correctness, faithfulness, or answer usefulness.
 
 ## Next Engineering Milestone
 
-Add deterministic reranking and citation-grounded answer assembly over the governed retrieval results. Preserve source identity through evidence selection and answer generation, render traceable citations, distinguish exact MetroPT evidence from authoritative general guidance, implement explicit insufficient-evidence refusal behavior, and keep later retrieval/answer evaluation separate from implementation.
+Create a governed retrieval and grounded-answer evaluation set. Evaluate retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations separately. Preserve the distinction between implementation smoke checks and formal quality evidence, and do not revise the frozen machine-learning release from retrieval or answer-evaluation results.
 
 ## Robust-Distance Validation Baseline
 
@@ -870,7 +873,7 @@ tests/test_robust_distance_diagnosis.py
 The diagnosis:
 
 - uses eligible training-reference and validation evidence only;
-- reuses the frozen Day 12 feature medians, IQRs, and baseline decision without refitting them;
+- reuses the frozen Robust-Distance Validation feature medians, IQRs, and baseline decision without refitting them;
 - compares only the bounded training-derived threshold quantiles `0.990`, `0.995`, and `0.999`;
 - identifies dominant robust-distance contributions and retained features with very small nonzero IQRs;
 - analyzes alarm concentration by observation segment, UTC hour, and an explicit ordered eight-indicator operating state;
@@ -1242,7 +1245,7 @@ scikit-learn==1.8.0
 
 The workflow:
 
-- preserves the finalized robust-distance baseline and the frozen Day 15 comparison contract;
+- preserves the finalized robust-distance baseline and the frozen Advanced-Model Comparison Contract comparison contract;
 - uses only the predetermined eight `sklearn.ensemble.IsolationForest` candidates;
 - uses the same frozen 48-feature set for every candidate;
 - fits every candidate only on eligible training-reference rows;
@@ -1374,7 +1377,7 @@ Working tree after implementation push: clean
 
 The bounded advanced-model comparison is now frozen after validation. The selected Isolation Forest candidate covered all documented validation events represented by the governed coverage metric, with a mean first-alarm latency of 11,579 seconds and 54.17993787237062 alarms per 24 observed hours.
 
-This evidence is sufficient to freeze the candidate and threshold for the next governed step, but it is not test evidence and does not establish general predictive performance. The advanced-model test partition remains locked. A one-time test comparison may occur only after separate learner authorization and without refitting, threshold revision, feature changes, or candidate reselection.
+This evidence is sufficient to freeze the candidate and threshold for the next governed step, but it is not test evidence and does not establish general predictive performance. The advanced-model test partition remains locked. A one-time test comparison may occur only after separate project maintainer authorization and without refitting, threshold revision, feature changes, or candidate reselection.
 
 ### Frozen Machine-Learning Release
 

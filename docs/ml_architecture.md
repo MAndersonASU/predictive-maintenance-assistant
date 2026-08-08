@@ -1,4 +1,8 @@
-# Machine-Learning Architecture
+# Machine-Learning Subsystem Architecture
+
+## Status
+
+The machine-learning subsystem is implemented and frozen through its governed held-out evaluation. This file describes only the ML path. The current cross-workstream architecture, including the implemented technical-knowledge and grounding layers, is documented in [`system_architecture.md`](system_architecture.md).
 
 ```text
 Governed MetroPT-3 Source
@@ -34,4 +38,4 @@ Evidence                              |
                             ML Release Documentation
 ```
 
-The knowledge-retrieval, API, persistence, monitoring, Docker, and demonstration layers remain separate subsequent release milestones.
+The robust-distance detector remains the transparent benchmark. The selected Isolation Forest candidate remains frozen at the validation-selected configuration and threshold. Held-out evidence is reporting evidence only and cannot be used for refitting, feature revision, threshold revision, or candidate reselection.

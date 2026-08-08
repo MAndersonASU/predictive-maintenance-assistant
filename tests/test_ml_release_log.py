@@ -53,7 +53,7 @@ def _log():
 
 ## Current Verified State
 
-old state
+current state
 
 ## Implemented Milestones
 
@@ -61,11 +61,11 @@ history
 
 ## Current Engineering Workstream
 
-old workstream
+current workstream
 
 ## Next Engineering Milestone
 
-old milestone
+current milestone
 
 ## Robust-Distance Validation Baseline
 
@@ -73,16 +73,16 @@ baseline history
 """
 
 
-def test_finalize_updates_current_sections():
+def test_finalize_preserves_current_cross_workstream_sections():
     module = importlib.import_module(MODULE_NAME)
     sha = "a" * 40
+    original = _log()
     updated = module.finalize_log_text(
-        _log(), _report(), sha, "Finalize release", 199, "reportsha"
+        original, _report(), sha, "Finalize release", 199, "reportsha"
     )
-    assert f"Latest verified implementation commit: `{sha}`" in updated
-    assert "Complete repository test suite: 199 passing tests" in updated
-    assert "Advanced-model test access: consumed exactly once" in updated
-    assert "Build the governed technical-document corpus" in updated
+    assert "current state" in updated
+    assert "current workstream" in updated
+    assert "current milestone" in updated
 
 
 def test_finalize_appends_release_block_once():
@@ -103,6 +103,13 @@ def test_release_block_contains_baseline_comparison():
     assert "15804.0 seconds" in block
     assert "94.2" in block
     assert "reportsha" in block
+
+
+def test_release_block_does_not_claim_current_next_milestone():
+    module = importlib.import_module(MODULE_NAME)
+    block = module.render_release_block(_report(), "c" * 40, 199, "reportsha")
+    assert "next core milestone" not in block.lower()
+    assert "current workstream" not in block.lower()
 
 
 def test_invalid_commit_is_rejected():

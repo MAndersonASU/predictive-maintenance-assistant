@@ -1,7 +1,7 @@
 """One-time held-out test evaluation for the frozen MetroPT-3 Isolation Forest.
 
 This module never fits, refits, tunes, changes features, changes the frozen
-threshold, or reselects a candidate. It validates the Day 16 frozen evidence,
+threshold, or reselects a candidate. It validates the frozen Isolation Forest validation evidence,
 loads the selected model artifact, scores eligible test rows exactly once, and
 reports transparent comparison evidence against the already-finalized
 robust-distance baseline.
@@ -205,7 +205,7 @@ def _validate_frozen_evidence(
     expected_feature_hash = validation.get("inputs", {}).get("retained_feature_names_sha256")
     actual_feature_hash = hashlib.sha256(("\n".join(feature_names) + "\n").encode("utf-8")).hexdigest()
     if expected_feature_hash != actual_feature_hash:
-        raise IsolationForestTestEvaluationError("Frozen feature-name identity does not match Day 16 evidence.")
+        raise IsolationForestTestEvaluationError("Frozen feature-name identity does not match the Isolation Forest validation evidence.")
 
     if baseline.get("status") != "valid":
         raise IsolationForestTestEvaluationError("Finalized robust-distance baseline test evidence is not valid.")

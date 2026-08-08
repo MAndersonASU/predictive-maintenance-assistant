@@ -1,6 +1,8 @@
 # Machine-Learning Release Documentation Method
 
-The release-documentation generator reads only the frozen one-time Isolation Forest test report and converts verified evidence into public repository documentation.
+## Purpose
+
+The release-documentation generator converts only frozen machine-learning evidence into ML-specific public repository documentation.
 
 Generated committed artifacts:
 
@@ -9,6 +11,7 @@ Generated committed artifacts:
 - `docs/data_feature_governance.md`
 - `docs/ml_architecture.md`
 - `docs/ml_reproducibility.md`
-- `README.md`
 
-The generator does not perform model selection or modify generated evaluation evidence. The engineering log is finalized separately after the implementation commit exists so that the exact commit SHA and authoritative complete-test count can be recorded without fabrication.
+The generator intentionally does **not** generate `README.md` or the integrated system architecture. Those repository-level documents span machine learning, governed technical knowledge, retrieval, grounding, and later application layers and therefore must not be overwritten by an ML-only evidence generator.
+
+The generator does not perform model selection or modify generated evaluation evidence. Historical engineering-log finalization is handled separately and must not overwrite the repository's current cross-workstream status.

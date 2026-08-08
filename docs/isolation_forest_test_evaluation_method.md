@@ -1,8 +1,10 @@
 # Isolation Forest One-Time Test Evaluation Method
 
+> **Record status:** Implemented and consumed exactly once for the frozen selected Isolation Forest release. Successful outputs are protected against overwrite.
+
 ## Purpose
 
-This stage consumes the separately authorized advanced-model test access exactly once. It evaluates only the Isolation Forest candidate frozen after validation.
+This stage consumes the separately authorized advanced-model held-out access exactly once. It evaluates only the Isolation Forest candidate frozen after validation.
 
 ## Frozen inputs
 
@@ -10,9 +12,9 @@ This stage consumes the separately authorized advanced-model test access exactly
 - Threshold: `0.601902290159477`
 - Feature count: 48
 - Model artifact: `outputs/metropt3_selected_isolation_forest.joblib`
-- Test partition: locked until this stage
+- Held-out partition: locked until this evaluation stage
 
-The evaluator validates the model SHA-256 against the Day 16 validation report and validates the frozen feature identity before test scoring.
+The evaluator validates the model SHA-256 against the frozen Isolation Forest validation report and verifies the frozen feature identity before scoring.
 
 ## Test-time prohibitions
 
@@ -20,9 +22,9 @@ The evaluator cannot fit or refit the model, revise the threshold, change featur
 
 ## Evidence
 
-Only rows in the chronological `test` partition that are marked `eligible_for_scoring` are scored. Documented-event coverage, first-alarm latency for covered events, alarm burden, score summaries, and a transparent comparison with the already-finalized robust-distance baseline are recorded.
+Only eligible rows in the chronological `test` partition are scored. Documented-event coverage, first-alarm latency, alarm burden, score summaries, and a transparent comparison with the finalized robust-distance baseline are recorded.
 
-The comparison is reporting evidence only. Test evidence does not authorize model changes.
+The comparison is reporting evidence only. Held-out evidence does not authorize model changes.
 
 ## One-time lock
 
