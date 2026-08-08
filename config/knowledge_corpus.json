@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "corpus_id": "predictive_maintenance_technical_knowledge_v1",
+  "description": "Bounded authoritative corpus for MetroPT evidence and general compressed-air guidance.",
+  "chunking": {
+    "max_words": 220,
+    "overlap_words": 40,
+    "minimum_words": 20
+  },
+  "sources": [
+    {
+      "source_id": "metropt3_uci_description",
+      "title": "MetroPT-3 Dataset — Data Description",
+      "publisher": "UCI Machine Learning Repository",
+      "source_url": "https://archive.ics.uci.edu/dataset/791/metropt+3+dataset",
+      "doi": "10.24432/C5VW3R",
+      "retrieval_identity": "UCI dataset 791; archive member Data Description_Metro.pdf",
+      "license_or_usage_status": "CC BY 4.0",
+      "equipment_relevance": "Exact MetroPT-3 dataset documentation for the monitored train Air Production Unit; not a manufacturer equipment manual.",
+      "classification": "exact_dataset_source",
+      "format": "pdf",
+      "acquisition": "existing_local",
+      "local_path": "data/raw/Data Description_Metro.pdf",
+      "scope_note": "Exact UCI MetroPT-3 documentation for the 2020 1,516,948-row corpus used by this project.",
+      "minimum_extracted_words": 250,
+      "required_text_markers": [
+        "MetroPT"
+      ]
+    },
+    {
+      "source_id": "metropt_scientific_data_2022",
+      "title": "The MetroPT dataset for predictive maintenance",
+      "publisher": "Scientific Data / Springer Nature",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9747912/",
+      "doi": "10.1038/s41597-022-01877-3",
+      "retrieval_identity": "Scientific Data 9, Article 764 (2022), DOI 10.1038/s41597-022-01877-3; full-text archival copy via PubMed Central PMCID PMC9747912",
+      "license_or_usage_status": "CC BY 4.0",
+      "equipment_relevance": "Authoritative MetroPT project/dataset source describing an Air Production Unit and predictive-maintenance context; not a manufacturer equipment manual.",
+      "classification": "exact_dataset_source",
+      "format": "html",
+      "acquisition": "remote",
+      "local_path": "data/raw/knowledge/metropt_scientific_data_2022_pmc.html",
+      "scope_note": "Related MetroPT Scientific Data source describing a 2022 collection; it is not assumed to be byte-, schema-, or time-period-identical to UCI MetroPT-3.",
+      "minimum_extracted_words": 1500,
+      "required_text_markers": [
+        "The MetroPT dataset for predictive maintenance",
+        "Technical Validation",
+        "Data Records"
+      ]
+    },
+    {
+      "source_id": "doe_compressed_air_sourcebook",
+      "title": "Improving Compressed Air System Performance: A Sourcebook for Industry",
+      "publisher": "U.S. Department of Energy",
+      "source_url": "https://www.energy.gov/sites/default/files/2016/03/f30/Improving%20Compressed%20Air%20Sourcebook%20version%203.pdf",
+      "doi": "",
+      "retrieval_identity": "U.S. Department of Energy Advanced Manufacturing Office, Improving Compressed Air System Performance: A Sourcebook for Industry, Third Edition",
+      "license_or_usage_status": "Authoritative public technical reference; retained locally for governed retrieval. Redistribution rights are not asserted by this project.",
+      "equipment_relevance": "General compressed-air operation and maintenance guidance only; never represent as the exact MetroPT equipment manual.",
+      "classification": "authoritative_general_reference",
+      "format": "pdf",
+      "acquisition": "remote",
+      "local_path": "data/raw/knowledge/doe_compressed_air_sourcebook.pdf",
+      "scope_note": "General compressed-air reference only; no MetroPT dataset or exact-equipment identity is implied.",
+      "minimum_extracted_words": 10000,
+      "required_text_markers": [
+        "Improving Compressed Air System Performance",
+        "Sourcebook for Industry"
+      ]
+    }
+  ]
+}
