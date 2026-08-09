@@ -1,2 +1,11 @@
+# Pinned development/test verification environment for CPython 3.14.
 -r requirements.txt
-pytest>=8,<10
+numpy==2.4.6
+scipy==1.18.0
+joblib==1.5.3
+threadpoolctl==3.6.0
+pytest==9.1.1
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+pygments==2.20.0

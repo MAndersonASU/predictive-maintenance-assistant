@@ -64,7 +64,7 @@ See [`docs/system_architecture.md`](docs/system_architecture.md) for the current
 
 ## Quick Start
 
-The repository uses a `src/` layout. The commands below create an isolated environment, install runtime and development dependencies, and run only safe regression checks.
+The repository uses a `src/` layout. The commands below create an isolated environment, install the pinned development/test dependency set, and run only safe regression checks.
 
 ### Windows PowerShell
 
@@ -83,17 +83,21 @@ python -m pytest -q
 python -m pip check
 ```
 
+`requirements-dev.txt` pins the complete development/test dependency set used by CI on CPython 3.14 so fresh-clone verification does not silently drift with transitive dependency releases.
+
 The governed held-out model evaluators are **not** part of routine verification and must not be rerun. See [`docs/ml_reproducibility.md`](docs/ml_reproducibility.md) for the frozen-release boundary.
 
 ## Continuous Integration
 
 GitHub Actions runs Python compilation, the complete regression suite, and dependency consistency checks on pushes to `main` and on pull requests targeting `main`.
 
+The workflow uses Node 24-compatible official action majors and the same pinned development/test dependencies documented in `requirements-dev.txt`.
+
 The CI workflow intentionally does **not** execute data acquisition, model fitting, held-out scoring, corpus downloads, or other governed production workflows.
 
 ## Reproducibility
 
-Generated datasets, reports, retrieval indexes, model artifacts, and downloaded technical sources remain outside Git under governed ignore rules. Runtime and development dependencies are declared in `requirements.txt` and `requirements-dev.txt`.
+Generated datasets, reports, retrieval indexes, model artifacts, and downloaded technical sources remain outside Git under governed ignore rules. Runtime dependencies are declared in `requirements.txt`; the development/test verification environment is fully pinned in `requirements-dev.txt`.
 
 ## Key Documentation
 
