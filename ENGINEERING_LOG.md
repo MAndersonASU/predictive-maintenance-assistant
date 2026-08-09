@@ -1447,3 +1447,36 @@ The smoke report is implementation evidence only. Formal retrieval quality, cita
 - The existing retrieval index is not rebuilt or modified by this stage.
 - No external reranker, LLM API, secret, or remote inference service is introduced.
 - Insufficient evidence produces an explicit refusal rather than unsupported equipment-specific instructions.
+
+## Repository Verification and Governance Hardening
+
+Status: Implemented, regression-tested, CI-verified, branch-protected, committed, pushed, and synchronized.
+
+### Implemented Scope
+
+- Updated GitHub Actions to the Node 24-compatible official `actions/checkout@v6` and `actions/setup-python@v6` action majors.
+- Replaced the open-ended development/test dependency range with an exact CPython 3.14 verification dependency set in `requirements-dev.txt`.
+- Pinned NumPy below the 2.5 deprecation boundary that produced the previously observed third-party `joblib.numpy_pickle` warning while preserving the frozen runtime model and evaluation boundaries.
+- Removed redundant `.gitkeep` placeholders from nonempty or unused repository directories while preserving `outputs/.gitkeep`, which is required by the governed output ignore rule.
+- Enabled `main` branch protection with the `Python verification` status check required for protected changes, force pushes disabled, and branch deletion disabled. Administrator bypass remains available so the current single-maintainer workflow is not blocked.
+- Preserved all historical commits and verified SHAs; no history rewrite occurred.
+- No license was added because repository licensing remains an explicit maintainer legal choice rather than an automatic engineering change.
+
+### Verification Evidence
+
+```text
+Implementation commit: 89104d101f574f422c45be6d7ef7325ef76229d8
+GitHub Actions run: 31285828469
+Complete repository suite: 278 passing tests
+Pytest warning count in governed CI verification: 0
+Dependency consistency: no broken requirements
+Production Python modules changed by this hardening milestone: none
+Held-out model evaluation rerun: no
+Frozen model, feature set, threshold, corpus, and retrieval index changed: no
+```
+
+### Engineering Interpretation
+
+Repository verification is now reproducible across fresh CPython 3.14 environments, CI no longer relies on Node 20-targeted action majors, and the default branch has explicit protection against unsafe force-push or deletion behavior. The machine-learning release and governed knowledge artifacts remain unchanged.
+
+The next governed capability milestone remains retrieval and grounded-answer evaluation, with retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations reported separately.
