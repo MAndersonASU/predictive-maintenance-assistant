@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "application_id": "predictive_maintenance_application_v1",
+  "api": {
+    "title": "Intelligent Predictive Maintenance and Technical Knowledge Assistant",
+    "version": "1.0.0",
+    "prefix": "/api/v1",
+    "query_max_characters": 1000,
+    "retrieval_default_top_k": 5,
+    "retrieval_max_top_k": 12,
+    "history_default_limit": 20,
+    "history_max_limit": 100
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8000,
+    "require_loopback_bind": true
+  },
+  "persistence": {
+    "database_path": "data/interim/application/application.sqlite3",
+    "max_records": 5000,
+    "max_events": 10000,
+    "max_evaluations": 5000
+  },
+  "prediction": {
+    "model_path": "outputs/metropt3_selected_isolation_forest.joblib",
+    "model_sha256": "fa23b81d214161488abf601a8b9852f2467347e53d02fca3653a13cdaaaeec1a",
+    "feature_parameters_path": "outputs/metropt3_robust_distance_parameters.json",
+    "validation_report_path": "outputs/metropt3_isolation_forest_validation_report.json",
+    "candidate_id": "iforest_ne200_ms4096_mf1p0",
+    "threshold": 0.601902290159477,
+    "retained_feature_count": 48,
+    "matrix_dtype": "float32",
+    "threshold_comparison": "strictly_greater_than"
+  },
+  "knowledge": {
+    "retrieval_config_path": "config/knowledge_retrieval.json",
+    "grounding_config_path": "config/knowledge_grounding.json",
+    "chunk_path": "data/interim/knowledge/chunks.jsonl",
+    "chunk_sha256": "4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d",
+    "retrieval_index_path": "data/interim/knowledge/retrieval/hybrid_index.joblib",
+    "retrieval_index_sha256": "2700dac28adfc9a80a9bd28c3af177237d45e845ef94c37cd4e68b421d4442b7"
+  },
+  "security": {
+    "allowed_environment_variables": [],
+    "persist_raw_feature_values": false,
+    "persist_request_headers": false,
+    "authentication_enabled": false,
+    "public_network_exposure_allowed": false
+  }
+}
