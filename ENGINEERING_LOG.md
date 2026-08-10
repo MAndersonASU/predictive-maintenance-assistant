@@ -15,15 +15,16 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified capability implementation commit: `d11247a6a26d8be7b5a93fecd4eccfddcf8f3c22`
-- Commit message: `Implement governed citation-grounded answers`
-- Local and remote implementation commit identity: matched at `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
-- Complete repository test suite: 308 passing tests
+- Latest verified capability implementation commit: `7df00d0dcb14360c7f98d42403d6cc0b36573f30`
+- Commit message: `Add governed application foundation`
+- Local and remote implementation commit identity: matched at `7df00d0dcb14360c7f98d42403d6cc0b36573f30`
+- Complete repository test suite: 343 passing tests
 - Advanced-model held-out access: consumed exactly once; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
 - Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA embeddings and bounded hybrid fusion
 - Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal
 - Governed evaluation layer: frozen-artifact validation with separate retrieval-quality, citation-correctness, faithfulness, answer-usefulness, failure-case, and limitation reporting
+- Integrated application layer: loopback-only FastAPI contracts for frozen-model prediction, governed retrieval, citation-grounded answers, bounded SQLite persistence, structured operational events, readiness checks, monitoring counters, and sanitized failure behavior
 - Exact-equipment instructions require governed exact-equipment evidence
 - Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
@@ -1631,3 +1632,28 @@ The evaluation demonstrates strong structural citation traceability, extractive 
 These results are descriptive evidence for the current bounded three-source corpus and deterministic RAG implementation. They do not establish broad production quality, exhaustive factual coverage, safety certification, or business impact.
 
 The next governed capability milestone is the combined application foundation: prediction and retrieval APIs, persistence, and operational and security controls.
+
+## Integrated Application Foundation
+
+Status: Implemented, regression-tested, committed, pushed, and CI-verified.
+
+Implemented documented loopback-only prediction, retrieval, and grounded-answer API contracts; bounded SQLite persistence; structured operational events; health/readiness checks; local monitoring counters; configuration and secret-handling controls; sanitized failure behavior; and integration tests. The frozen Isolation Forest model, threshold, feature set, governed corpus, retrieval index, and grounding behavior were consumed read-only and were not rebuilt, refit, or retuned.
+
+Windows validation exposed SQLite handle retention during the first local regression attempt. The corrected implementation explicitly closes transaction-scoped SQLite connections, adds a closure regression test, and uses the supported Starlette HTTP test client dependency. The corrected validation completed with warnings treated as errors.
+
+```text
+Implementation commit: 7df00d0dcb14360c7f98d42403d6cc0b36573f30
+Commit message: Add governed application foundation
+CI workflow run: 31352440290
+Focused application tests passed: 35
+Complete repository tests passed locally: 343
+Complete repository tests passed in CI: 343
+Dependency consistency: no broken requirements
+Coding package: AI_ML_Journey_Day_22_Coding_Package_v2.zip
+Coding package SHA-256: eb8028a0f0e8817871d3f0872a3415e46a806ac06a139ffa43109839cb651e56
+Held-out evaluator rerun: no
+Frozen ML/RAG artifacts changed: no
+Public deployment claimed: no
+```
+
+The next core milestone is Docker-based reproducible execution for the integrated local system.
