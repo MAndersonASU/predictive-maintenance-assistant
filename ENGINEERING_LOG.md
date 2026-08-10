@@ -15,14 +15,15 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified capability implementation commit: `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
+- Latest verified capability implementation commit: `d11247a6a26d8be7b5a93fecd4eccfddcf8f3c22`
 - Commit message: `Implement governed citation-grounded answers`
 - Local and remote implementation commit identity: matched at `39ea32bc649ecce5b539dbacdc2a35ed8c6a1105`
-- Complete repository test suite: 278 passing tests
+- Complete repository test suite: 308 passing tests
 - Advanced-model held-out access: consumed exactly once; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
 - Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA embeddings and bounded hybrid fusion
 - Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal
+- Governed evaluation layer: frozen-artifact validation with separate retrieval-quality, citation-correctness, faithfulness, answer-usefulness, failure-case, and limitation reporting
 - Exact-equipment instructions require governed exact-equipment evidence
 - Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
@@ -1480,3 +1481,153 @@ Frozen model, feature set, threshold, corpus, and retrieval index changed: no
 Repository verification is now reproducible across fresh CPython 3.14 environments, CI no longer relies on Node 20-targeted action majors, and the default branch has explicit protection against unsafe force-push or deletion behavior. The machine-learning release and governed knowledge artifacts remain unchanged.
 
 The next governed capability milestone remains retrieval and grounded-answer evaluation, with retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations reported separately.
+
+## Governed Retrieval and Grounded-Answer Evaluation
+
+Status: Implemented, regression-tested, evaluated against frozen artifacts, CI-verified, committed, pushed, and synchronized on August 9, 2026.
+
+### Implemented Scope
+
+Created and validated:
+
+```text
+config/knowledge_evaluation.json
+docs/knowledge_evaluation_method.md
+src/predictive_maintenance/knowledge/evaluation.py
+tests/test_knowledge_evaluation.py
+```
+
+The governed evaluator:
+
+- uses a fixed twelve-case evaluation set spanning MetroPT dataset questions, authoritative general compressed-air questions, and exact-equipment refusal cases;
+- verifies the exact frozen corpus, retrieval-index, and grounding identities before evaluation;
+- evaluates retrieval before reranking and answer assembly;
+- reports retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations separately;
+- preserves source-classification boundaries between the exact 2020 UCI MetroPT-3 documentation, related MetroPT research, and authoritative general compressed-air guidance;
+- treats exact-equipment requests as refusal cases because no governed exact-equipment manual is present;
+- does not rebuild or retune the corpus, retrieval index, reranking configuration, or grounding behavior from evaluation results;
+- invalidates stale generated evaluation evidence before a new run;
+- introduces no external LLM judge, remote inference service, secret, or network-dependent evaluator.
+
+### Verification Evidence
+
+Local focused evaluation tests:
+
+```text
+Tests passed: 30
+Failures: 0
+Errors: 0
+```
+
+Local complete repository regression suite:
+
+```text
+Tests passed: 308
+Failures: 0
+Errors: 0
+Dependency consistency: no broken requirements
+```
+
+GitHub Actions verification:
+
+```text
+Implementation commit: d11247a6a26d8be7b5a93fecd4eccfddcf8f3c22
+Commit message: Add governed RAG evaluation
+CI workflow run: 31349968358
+Required job: Python verification
+Exact checked-out commit: d11247a6a26d8be7b5a93fecd4eccfddcf8f3c22
+Python compilation: passed
+Complete repository suite: 308 passed
+Dependency consistency: no broken requirements
+CI conclusion: success
+```
+
+### Governed Evaluation Evidence
+
+Generated report:
+
+```text
+outputs/knowledge_evaluation_report.json
+SHA-256: 32d906841726df4779fa1250cdcd96e0763fb6083c5de7bb4461fa6efc63cb00
+Evaluation ID: predictive_maintenance_rag_evaluation_v1
+Evaluation status: completed
+Evaluation cases: 12
+Measured failure cases: 3
+```
+
+Retrieval quality:
+
+```text
+Labeled source-retrieval cases: 8
+Source Hit@1: 0.625
+Source Hit@3: 0.625
+Source Hit@5: 0.625
+Mean reciprocal rank: 0.6458333333333334
+Top-1 expected source-classification rate: 1.0
+Exact-equipment boundary with no exact-equipment source retrieved: 1.0
+```
+
+Citation correctness:
+
+```text
+Citations emitted: 40
+Traceable citations: 40
+Citation traceability rate: 1.0
+Answered-case marker coverage rate: 1.0
+Source-scope alignment rate: 1.0
+```
+
+Faithfulness:
+
+```text
+Cited claims: 40
+Supported cited claims: 40
+Supported cited-claim rate: 1.0
+Exact-equipment refusal-boundary pass rate: 1.0
+```
+
+Answer-usefulness proxy:
+
+```text
+Expected-status rate: 1.0
+Expected-reason rate: 1.0
+Expected-intent rate: 1.0
+Mean concept coverage for answerable cases: 0.9375
+Usefulness-proxy pass rate: 1.0
+```
+
+Measured retrieval failure cases:
+
+```text
+dataset_air_production_unit: retrieval_source_miss_at_5
+dataset_sampling: retrieval_source_miss_at_5
+dataset_signals: retrieval_source_miss_at_5
+```
+
+A read-only follow-up retrieval diagnosis preserved these failures rather than retuning against them. For the Air Production Unit query, the exact UCI MetroPT-3 documentation appeared at rank 6. For the sampling and signal queries, the exact UCI source was absent from the top 12 while the related 2022 MetroPT Scientific Data source dominated the rankings. The related source remains explicitly distinct from the exact 2020 UCI MetroPT-3 documentation.
+
+### Frozen-Artifact Preservation
+
+```text
+Governed chunk corpus SHA-256:
+4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d
+
+Frozen hybrid retrieval-index SHA-256:
+2700dac28adfc9a80a9bd28c3af177237d45e845ef94c37cd4e68b421d4442b7
+
+Corpus rebuilt: no
+Retrieval index rebuilt: no
+Retrieval parameters retuned from evaluation evidence: no
+Grounding parameters retuned from evaluation evidence: no
+Held-out machine-learning evaluator rerun: no
+```
+
+The generated evaluation report remains excluded from Git under the existing `outputs/*` ignore rule.
+
+### Engineering Interpretation
+
+The evaluation demonstrates strong structural citation traceability, extractive faithfulness, source-scope citation alignment, expected answer/refusal behavior, and deterministic usefulness-proxy performance on the bounded governed set. It also exposes a concrete source-specific retrieval limitation: the frozen hybrid retriever does not place the exact UCI MetroPT-3 documentation within the top five for three UCI-specific questions.
+
+These results are descriptive evidence for the current bounded three-source corpus and deterministic RAG implementation. They do not establish broad production quality, exhaustive factual coverage, safety certification, or business impact.
+
+The next governed capability milestone is the combined application foundation: prediction and retrieval APIs, persistence, and operational and security controls.
