@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "evaluation_id": "predictive_maintenance_rag_evaluation_v1",
+  "report_path": "outputs/knowledge_evaluation_report.json",
+  "frozen_artifacts": {
+    "corpus_id": "predictive_maintenance_technical_knowledge_v1",
+    "retrieval_id": "predictive_maintenance_hybrid_retrieval_v1",
+    "grounding_id": "predictive_maintenance_grounded_answers_v1",
+    "expected_chunk_sha256": "4912c36622d38d44100c3965f457cb45e7de44358d9626c9558ca25b24be722d",
+    "expected_retrieval_index_sha256": "2700dac28adfc9a80a9bd28c3af177237d45e845ef94c37cd4e68b421d4442b7"
+  },
+  "retrieval": {
+    "evaluation_top_k": 12,
+    "metric_cutoffs": [1, 3, 5]
+  },
+  "usefulness": {
+    "minimum_concept_coverage": 0.5
+  },
+  "cases": [
+    {
+      "case_id": "dataset_air_production_unit",
+      "category": "dataset",
+      "query": "What does the UCI MetroPT-3 dataset monitor in the Air Production Unit?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "dataset_specific",
+      "relevant_source_ids": ["metropt3_uci_description"],
+      "expected_source_classifications": ["exact_dataset_source"],
+      "required_concepts": [
+        ["air production unit", "air production"],
+        ["metropt", "dataset"]
+      ]
+    },
+    {
+      "case_id": "dataset_sampling",
+      "category": "dataset",
+      "query": "What sampling interval is described for the MetroPT-3 sensor data?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "dataset_specific",
+      "relevant_source_ids": ["metropt3_uci_description"],
+      "expected_source_classifications": ["exact_dataset_source"],
+      "required_concepts": [
+        ["10 second", "10 seconds", "10-second", "sampling"],
+        ["metropt", "sensor"]
+      ]
+    },
+    {
+      "case_id": "dataset_signals",
+      "category": "dataset",
+      "query": "What types of sensor signals are included in the MetroPT-3 dataset?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "dataset_specific",
+      "relevant_source_ids": ["metropt3_uci_description"],
+      "expected_source_classifications": ["exact_dataset_source"],
+      "required_concepts": [
+        ["pressure", "temperature", "current", "sensor"],
+        ["metropt", "dataset"]
+      ]
+    },
+    {
+      "case_id": "dataset_predictive_maintenance_context",
+      "category": "dataset",
+      "query": "How is the MetroPT dataset positioned for predictive maintenance in the Scientific Data article?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "dataset_specific",
+      "relevant_source_ids": ["metropt_scientific_data_2022"],
+      "expected_source_classifications": ["exact_dataset_source"],
+      "required_concepts": [
+        ["predictive maintenance", "maintenance"],
+        ["metropt", "dataset"]
+      ]
+    },
+    {
+      "case_id": "general_leaks",
+      "category": "general_guidance",
+      "query": "Why are compressed-air leaks important maintenance targets?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "general",
+      "relevant_source_ids": ["doe_compressed_air_sourcebook"],
+      "expected_source_classifications": ["authoritative_general_reference"],
+      "required_concepts": [
+        ["leak", "leaks", "leakage"],
+        ["energy", "loss", "losses", "waste"]
+      ]
+    },
+    {
+      "case_id": "general_pressure_losses",
+      "category": "general_guidance",
+      "query": "How can pressure drop or pressure losses affect compressed-air system performance?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "general",
+      "relevant_source_ids": ["doe_compressed_air_sourcebook"],
+      "expected_source_classifications": ["authoritative_general_reference"],
+      "required_concepts": [
+        ["pressure drop", "pressure loss", "pressure losses"],
+        ["compressed air", "system"]
+      ]
+    },
+    {
+      "case_id": "general_maintenance",
+      "category": "general_guidance",
+      "query": "What general maintenance practices help sustain compressed-air system performance?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "general",
+      "relevant_source_ids": ["doe_compressed_air_sourcebook"],
+      "expected_source_classifications": ["authoritative_general_reference"],
+      "required_concepts": [
+        ["maintenance", "maintain"],
+        ["compressed air", "system"]
+      ]
+    },
+    {
+      "case_id": "general_system_approach",
+      "category": "general_guidance",
+      "query": "Why should compressed-air systems be evaluated as a system rather than only by compressor output?",
+      "expected_status": "answered",
+      "expected_reason_code": "grounded",
+      "expected_intent": "general",
+      "relevant_source_ids": ["doe_compressed_air_sourcebook"],
+      "expected_source_classifications": ["authoritative_general_reference"],
+      "required_concepts": [
+        ["system", "systems"],
+        ["compressed air", "compressor"]
+      ]
+    },
+    {
+      "case_id": "equipment_lubrication_interval",
+      "category": "equipment_boundary",
+      "query": "What is the manufacturer-specified lubrication interval for the MetroPT compressor?",
+      "expected_status": "insufficient_evidence",
+      "expected_reason_code": "no_exact_equipment_evidence",
+      "expected_intent": "equipment_specific",
+      "relevant_source_ids": [],
+      "expected_source_classifications": [],
+      "required_concepts": []
+    },
+    {
+      "case_id": "equipment_filter_part",
+      "category": "equipment_boundary",
+      "query": "What replacement filter part number does the MetroPT compressor require?",
+      "expected_status": "insufficient_evidence",
+      "expected_reason_code": "no_exact_equipment_evidence",
+      "expected_intent": "equipment_specific",
+      "relevant_source_ids": [],
+      "expected_source_classifications": [],
+      "required_concepts": []
+    },
+    {
+      "case_id": "equipment_pressure_setpoint",
+      "category": "equipment_boundary",
+      "query": "What exact pressure setpoint does the service manual specify for this compressor?",
+      "expected_status": "insufficient_evidence",
+      "expected_reason_code": "no_exact_equipment_evidence",
+      "expected_intent": "equipment_specific",
+      "relevant_source_ids": [],
+      "expected_source_classifications": [],
+      "required_concepts": []
+    },
+    {
+      "case_id": "equipment_lubricant_grade",
+      "category": "equipment_boundary",
+      "query": "Which lubricant grade is required by the exact MetroPT equipment manual?",
+      "expected_status": "insufficient_evidence",
+      "expected_reason_code": "no_exact_equipment_evidence",
+      "expected_intent": "equipment_specific",
+      "relevant_source_ids": [],
+      "expected_source_classifications": [],
+      "required_concepts": []
+    }
+  ],
+  "limitations": [
+    "The evaluation set is intentionally bounded to twelve governed cases and does not represent exhaustive user behavior.",
+    "Retrieval relevance is labeled at the governed source level rather than by exhaustive chunk-level relevance judgments.",
+    "Answer usefulness uses deterministic concept coverage and expected behavior as a reproducible proxy; it is not a human preference score.",
+    "Faithfulness is easier to verify for the current extractive answer assembler than it would be for a free-form generative model.",
+    "No governed exact-equipment manual is present, so equipment-specific cases evaluate refusal boundaries rather than equipment-answer quality.",
+    "Results describe only the current three-source corpus, frozen retrieval index, and deterministic grounding implementation.",
+    "No external LLM judge, remote inference service, secret, or network-dependent evaluator is used."
+  ]
+}
