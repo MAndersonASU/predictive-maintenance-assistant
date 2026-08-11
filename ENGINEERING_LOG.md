@@ -15,16 +15,19 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Latest verified capability implementation commit: `7df00d0dcb14360c7f98d42403d6cc0b36573f30`
-- Commit message: `Add governed application foundation`
-- Local and remote implementation commit identity: matched at `7df00d0dcb14360c7f98d42403d6cc0b36573f30`
-- Complete repository test suite: 343 passing tests
+- Latest verified capability implementation commit: `05d002da9659c6fb434e8cd6bb06a647bff23e1e`
+- Commit message: `Add reproducible container execution`
+- Local and remote implementation commit identity: matched at `05d002da9659c6fb434e8cd6bb06a647bff23e1e`
+- Complete repository test suite: 353 passing tests
 - Advanced-model held-out access: consumed exactly once; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
 - Governed retrieval layer: reproducible TF-IDF keyword retrieval plus 128-dimensional LSA embeddings and bounded hybrid fusion
 - Governed answer layer: deterministic reranking, provenance-preserving citations, bounded evidence assembly, and explicit insufficient-evidence refusal
 - Governed evaluation layer: frozen-artifact validation with separate retrieval-quality, citation-correctness, faithfulness, answer-usefulness, failure-case, and limitation reporting
 - Integrated application layer: loopback-only FastAPI contracts for frozen-model prediction, governed retrieval, citation-grounded answers, bounded SQLite persistence, structured operational events, readiness checks, monitoring counters, and sanitized failure behavior
+- Reproducible container execution: pinned Dockerfile frontend and Python 3.14.6 slim-bookworm base image, fully pinned container runtime dependency closure, deny-all build-context allowlist, unprivileged runtime user, read-only root filesystem, dropped Linux capabilities, no-new-privileges, loopback-only host publication, read-only governed artifact mounts, and Docker-managed writable application state
+- Container verification evidence: clean no-cache build passed; exact governed runtime dependency versions matched; image artifact/secret exclusion passed; health/readiness, prediction schema, retrieval, grounded-answer, exact-equipment refusal, and loopback network boundaries passed
+- Day 23 implementation CI: GitHub Actions run `31455513766` completed successfully on exact commit `05d002da9659c6fb434e8cd6bb06a647bff23e1e`; 353 tests passed and `pip check` reported no broken requirements
 - Exact-equipment instructions require governed exact-equipment evidence
 - Generated datasets, downloaded knowledge sources, normalized text, chunks, retrieval indexes, reports, figures, model artifacts, and temporary files: excluded from Git under governed ignore rules
 
@@ -1656,4 +1659,64 @@ Frozen ML/RAG artifacts changed: no
 Public deployment claimed: no
 ```
 
-The next core milestone is Docker-based reproducible execution for the integrated local system.
+## Reproducible Container Execution
+
+Status: Implemented, clean-build verified, committed, pushed, and CI-verified.
+
+The integrated local application is now containerized without changing the frozen machine-learning or governed RAG behavior. The deployment remains a bounded local demonstration and does not claim public production deployment.
+
+Implemented repository artifacts:
+
+- `.dockerignore`
+- `Dockerfile`
+- `compose.yaml`
+- `requirements-container.txt`
+- `docs/container_execution.md`
+- `tests/test_container_execution.py`
+
+Verified container controls:
+
+- Dockerfile frontend pinned by digest.
+- Python base image pinned to `python:3.14.6-slim-bookworm` by digest.
+- Container runtime dependency closure pinned exactly and aligned to the governed CPython 3.14 verification environment.
+- Clean `--no-cache` build reproduced the governed runtime versions, including NumPy `2.4.6`, SciPy `1.18.0`, scikit-learn `1.8.0`, Starlette `1.3.1`, FastAPI `0.139.2`, Pydantic `2.13.4`, and Uvicorn `0.51.0`.
+- `.dockerignore` uses a deny-all policy with a narrow allowlist for runtime source, configuration, Docker files, and dependency contracts.
+- Generated model, corpus, retrieval-index, database, secret, environment, repository-history, test, and documentation artifacts are excluded from the image build context unless explicitly required for runtime source/configuration.
+- Governed generated ML/RAG artifacts are mounted read-only and are not baked into the image.
+- Writable application state uses the Docker-managed `application_state` volume.
+- Container runs as UID/GID `10001:10001`, uses a read-only root filesystem, drops all Linux capabilities, enables `no-new-privileges`, and uses writable `/tmp` tmpfs.
+- Uvicorn binds `0.0.0.0:8000` only inside the isolated container namespace; Docker publishes the service only as host loopback `127.0.0.1:8000`.
+- `/health/live` and `/health/ready` passed with frozen model, chunk-corpus, and retrieval-index identities matched.
+- The frozen prediction schema remained 48 features.
+- Retrieval smoke verification returned governed evidence.
+- Citation-grounded answer smoke verification returned citations.
+- Exact-equipment requests preserved the `no_exact_equipment_evidence` refusal boundary.
+- No frozen machine-learning or RAG artifact was rebuilt, refit, retuned, or reevaluated.
+- The consumed advanced-model held-out evaluator was not rerun.
+
+Correction and package record:
+
+- Initial package: `AI_ML_Journey_Day_23_Coding_Package_v1.zip`; SHA-256 `bdd6947099db5650acdeb3ac27924d1c2076bf786d4ca63bdd77f5ef4e0cd54c`.
+- v1 passed functional container verification but the clean build exposed unpinned transitive dependency resolution.
+- Authoritative corrected package: `AI_ML_Journey_Day_23_Coding_Package_v2.zip`; SHA-256 `029555c4d0826286e8af3fa81092c50e4760661d3fa09fcd14524aa2ac941439`.
+- v2 added `requirements-container.txt`, pinned the full runtime dependency closure, pinned the Dockerfile frontend digest, and expanded the static container-contract tests from 8 to 10.
+- Focused container suite: 10 passing tests.
+- Complete local repository suite: 353 passing tests.
+
+Verified repository and CI evidence:
+
+```text
+Implementation commit: 05d002da9659c6fb434e8cd6bb06a647bff23e1e
+Commit message: Add reproducible container execution
+Implementation parent: 14d727be74ab1f598e58e20282a1a7b4b8b0f8c7
+GitHub Actions run: 31455513766
+Python verification: success
+CI repository tests: 353 passed
+CI dependency consistency: no broken requirements
+Local/remote implementation identity: matched
+Held-out evaluator rerun: no
+Frozen ML/RAG artifacts changed: no
+Public production deployment claimed: no
+```
+
+The next core milestone is the bounded professional demonstration interface and functional integration target.
