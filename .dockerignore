@@ -1,0 +1,11 @@
+# Deny the entire repository build context by default.
+# Only committed runtime source/configuration and dependency contracts are admitted.
+**
+!Dockerfile
+!.dockerignore
+!requirements.txt
+!requirements-container.txt
+!src/
+!src/**
+!config/
+!config/**

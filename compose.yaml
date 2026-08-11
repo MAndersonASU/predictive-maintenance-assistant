@@ -1,0 +1,56 @@
+name: predictive-maintenance-assistant
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: predictive-maintenance-assistant:local
+    restart: "no"
+    init: true
+    read_only: true
+    ports:
+      - "127.0.0.1:8000:8000"
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - type: bind
+        source: ./outputs/metropt3_selected_isolation_forest.joblib
+        target: /app/outputs/metropt3_selected_isolation_forest.joblib
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./outputs/metropt3_robust_distance_parameters.json
+        target: /app/outputs/metropt3_robust_distance_parameters.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./outputs/metropt3_isolation_forest_validation_report.json
+        target: /app/outputs/metropt3_isolation_forest_validation_report.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./data/interim/knowledge/chunks.jsonl
+        target: /app/data/interim/knowledge/chunks.jsonl
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./data/interim/knowledge/retrieval/hybrid_index.joblib
+        target: /app/data/interim/knowledge/retrieval/hybrid_index.joblib
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: volume
+        source: application_state
+        target: /app/data/interim/application
+
+volumes:
+  application_state:
