@@ -6,14 +6,16 @@ A professional engineering portfolio project that combines governed industrial t
 
 ## Current Verified Capability
 
-The repository is implemented and verified through four connected foundations:
+The repository is implemented as a bounded local release candidate through six connected foundations:
 
 1. **Governed data engineering** — reproducible MetroPT-3 acquisition, checksums, schema and data-quality validation, Parquet conversion, DuckDB access, and gap-aware exploratory analysis.
 2. **Governed machine learning** — auditable failure-event provenance, chronological target materialization, causal feature engineering, a transparent robust-distance benchmark, a bounded Isolation Forest comparison, and one-time held-out evaluation with frozen parameters.
 3. **Governed technical knowledge** — a three-source corpus with explicit source roles, deterministic extraction and chunking, provenance preservation, and source-completeness controls.
 4. **Citation-grounded answers** — TF-IDF keyword retrieval, deterministic 128-dimensional LSA embeddings, bounded hybrid retrieval, deterministic reranking, bounded evidence assembly, stable citations, and explicit insufficient-evidence refusal.
+5. **Application and operations** — loopback-only prediction, retrieval, and answer APIs; strict validation; bounded SQLite persistence; structured operational events; readiness; counters; and sanitized failures.
+6. **Reproducible professional demonstration** — a self-contained browser interface over the governed API path plus a pinned, hardened Docker runtime with read-only governed artifact mounts.
 
-The complete repository suite currently contains **278 passing tests**.
+The complete repository suite currently contains **362 passing tests**.
 
 ## Machine-Learning Release
 
@@ -37,9 +39,9 @@ The governed corpus contains **3 sources and 354 deterministic chunks**:
 
 Retrieval uses a 16,000-feature TF-IDF representation, deterministic 128-dimensional LSA embeddings, and bounded hybrid fusion. The grounding layer reranks results deterministically, preserves source identity and locators, creates stable `[S#]` citations, and refuses manufacturer- or model-specific equipment instructions when exact-equipment evidence is unavailable.
 
-The current grounding smoke validation is implementation evidence only. Formal retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations are evaluated separately.
+The frozen twelve-case RAG evaluation reports source Hit@1/3/5 of 0.625, mean reciprocal rank of 0.645833, 40/40 traceable citations, full source-scope alignment, full cited-claim support, and three preserved UCI-specific retrieval misses. These bounded results do not establish broad production quality or exhaustive factual coverage.
 
-## System Architecture
+## Integrated System Architecture
 
 ```text
 Governed MetroPT-3 Data
@@ -58,6 +60,12 @@ Governed Technical Sources
     -> deterministic reranking
     -> bounded evidence assembly + stable citations
     -> citation-grounded answer or explicit insufficient-evidence refusal
+
+Local Professional Interface
+    -> frozen prediction schema and scoring
+    -> retrieval + grounded answer + evidence inspection
+    -> readiness, counters, and bounded local review evidence
+    -> same loopback-only FastAPI contracts
 ```
 
 See [`docs/system_architecture.md`](docs/system_architecture.md) for the current integrated architecture and [`docs/ml_architecture.md`](docs/ml_architecture.md) for the machine-learning subsystem.
@@ -87,6 +95,29 @@ python -m pip check
 
 The governed held-out model evaluators are **not** part of routine verification and must not be rerun. See [`docs/ml_reproducibility.md`](docs/ml_reproducibility.md) for the frozen-release boundary.
 
+### Run the bounded local interface
+
+The configured governed artifacts must already exist at their documented ignored paths. With the virtual environment active:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m predictive_maintenance.application.api
+```
+
+Open `http://127.0.0.1:8000/` for the professional demonstration or `http://127.0.0.1:8000/docs` for OpenAPI documentation. The interface remains local-only and does not claim public deployment readiness.
+
+### Reproducible Docker start
+
+After confirming the same governed artifacts exist, use the hardened local container path:
+
+```powershell
+docker compose config --quiet
+docker compose build --no-cache
+docker compose up -d
+```
+
+See [`docs/container_execution.md`](docs/container_execution.md) for artifact mounts, clean-start checks, and teardown commands.
+
 ## Continuous Integration
 
 GitHub Actions runs Python compilation, the complete regression suite, and dependency consistency checks on pushes to `main` and on pull requests targeting `main`.
@@ -109,6 +140,9 @@ Generated datasets, reports, retrieval indexes, model artifacts, and downloaded 
 - [`docs/knowledge_corpus_method.md`](docs/knowledge_corpus_method.md) — governed technical corpus.
 - [`docs/knowledge_retrieval_method.md`](docs/knowledge_retrieval_method.md) — bounded hybrid retrieval.
 - [`docs/knowledge_grounding_method.md`](docs/knowledge_grounding_method.md) — reranking, citations, and refusal behavior.
+- [`docs/application_foundation.md`](docs/application_foundation.md) — loopback API, persistence, operations, and security controls.
+- [`docs/professional_demo.md`](docs/professional_demo.md) — demonstration workspaces, evidence presentation, and interface boundaries.
+- [`docs/container_execution.md`](docs/container_execution.md) — pinned, hardened reproducible local execution.
 
 ## Engineering Principles
 
@@ -121,6 +155,6 @@ Generated datasets, reports, retrieval indexes, model artifacts, and downloaded 
 - Exact-equipment claims require exact-equipment evidence.
 - Secrets, generated outputs, large data, local databases, and model artifacts remain outside Git.
 
-## Current Engineering Focus
+## Release-Candidate Boundary
 
-The next governed engineering milestone is **retrieval and grounded-answer evaluation**. It must evaluate retrieval quality, citation correctness, faithfulness, answer usefulness, failure cases, and limitations separately before application/API integration is treated as release-ready.
+The project is functionally integrated for bounded local demonstration. It is not a public production service, safety system, or proof of business impact. The next milestone is release hardening and portfolio/career packaging using verified evidence only.

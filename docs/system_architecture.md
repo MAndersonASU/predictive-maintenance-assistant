@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the current implemented architecture. Planned application, persistence, monitoring, container, and demonstration layers are identified separately and are not represented as completed capabilities.
+This document describes the implemented bounded local release candidate. The frozen machine-learning and governed knowledge artifacts remain read-only inputs to the API and demonstration layers.
 
 ## Governed Data and Machine-Learning Path
 
@@ -85,25 +85,33 @@ Grounded answer      Insufficient-evidence refusal
 
 Source identity, classification, checksums, locators, and scope notes survive the complete retrieval-to-answer path. General compressed-air guidance is never relabeled as exact MetroPT equipment instruction.
 
-## Current Integration Boundary
+## Implemented Application and Demonstration Path
 
-The data/ML and technical-knowledge subsystems are independently implemented and verified. The repository has not yet claimed completion of the application integration layer.
-
-The next governed milestone evaluates retrieval and grounded-answer quality before API integration.
-
-## Planned Application and Operations Layers
-
-The following remain planned and must be verified before being described as implemented:
+The two governed subsystems are connected through one loopback-only FastAPI application. The browser interface does not duplicate prediction or knowledge logic; it calls the same tested contracts used by other local clients.
 
 ```text
-Prediction / retrieval / grounded-answer APIs
-    -> bounded local persistence
-    -> structured logging and monitoring controls
-    -> configuration and secret handling
-    -> Docker reproducibility
-    -> professional demonstration interface
-    -> end-to-end integration and release validation
+Local browser at 127.0.0.1:8000
+    |
+    +--> prediction workspace --> GET schema --> POST predict --> frozen model
+    |
+    +--> knowledge workspace  --> POST retrieve + POST answer
+    |                                  |              |
+    |                                  v              v
+    |                              evidence      cited answer/refusal
+    |
+    +--> operations workspace --> readiness + counters + bounded review records
+                                      |
+                                      v
+                            bounded SQLite application state
 ```
+
+The interface is served from committed self-contained HTML, CSS, and JavaScript assets. It uses no CDN, remote font, analytics service, external inference service, or client-side persistence. Fixed asset routing prevents arbitrary filesystem access. A restrictive content-security policy permits connections only to the same local origin.
+
+FastAPI provides strict request models, sanitized error responses, request IDs, OpenAPI documentation, and liveness/readiness endpoints. SQLite stores bounded local summaries while excluding raw feature values by default. Docker reproduces the runtime with an unprivileged user, a read-only root filesystem, loopback-only host publication, read-only governed artifact mounts, and a Docker-managed writable state volume.
+
+## Release-Candidate Boundary
+
+The current implementation is a functionally integrated **bounded local demonstration release candidate**. It is not a public production deployment. Authentication is intentionally disabled under the loopback-only constraint. Public hosting would require separately implemented authentication, authorization, TLS, rate limiting, secret management, durable production persistence, network policy, and operational support controls.
 
 ## Evidence Boundaries
 
@@ -112,3 +120,5 @@ Prediction / retrieval / grounded-answer APIs
 - Grounding smoke checks are implementation checks, not formal faithfulness or usefulness claims.
 - Exact-equipment instructions require governed exact-equipment documentation.
 - Generated evidence and large runtime artifacts remain outside Git.
+- The demonstration interface does not rebuild, refit, retune, or reevaluate governed artifacts.
+- Local interaction counters and human-review records are demonstration evidence, not benchmark evidence.

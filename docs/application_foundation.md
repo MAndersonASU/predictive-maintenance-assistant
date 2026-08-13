@@ -21,6 +21,8 @@ The FastAPI application is created by `predictive_maintenance.application.api:cr
 
 FastAPI supplies OpenAPI and the local interactive documentation surface. The release is intentionally bound to loopback (`127.0.0.1`) and is not a public deployment.
 
+The root path (`/`) serves the self-contained professional demonstration interface. Its prediction, knowledge/evidence, and operations workspaces call only the contracts above; the interface does not introduce alternate model, retrieval, grounding, or persistence behavior. See [`professional_demo.md`](professional_demo.md).
+
 ## Persistence and privacy boundary
 
 SQLite is used because the current requirement is bounded local demonstration persistence rather than a production database service. The database is created under `data/interim/application/`, which is already excluded from Git. Every transaction-scoped SQLite connection is explicitly closed after commit or rollback so Windows does not retain database-file handles between requests or tests.

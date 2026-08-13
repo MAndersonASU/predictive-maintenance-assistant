@@ -143,6 +143,19 @@ class ApiTests(unittest.TestCase):
         for path in ("/api/v1/predict", "/api/v1/retrieve", "/api/v1/answer", "/api/v1/evaluations", "/health/ready"):
             self.assertIn(path, document["paths"])
 
+    def test_demo_to_api_path_is_functionally_integrated(self):
+        interface = self.client.get("/")
+        schema = self.client.get("/api/v1/prediction/schema")
+        prediction = self.client.post("/api/v1/predict", json={"features":{"a":1.0,"b":2.0}})
+        retrieval = self.client.post("/api/v1/retrieve", json={"query":"pressure","top_k":3})
+        answer = self.client.post("/api/v1/answer", json={"query":"manufacturer interval"})
+
+        self.assertEqual(interface.status_code, 200)
+        self.assertEqual(schema.json()["feature_count"], 2)
+        self.assertTrue(prediction.json()["alarm"])
+        self.assertEqual(retrieval.json()["results"][0]["chunk_id"], "c1")
+        self.assertEqual(answer.json()["reason_code"], "no_exact_equipment_evidence")
+
 
 if __name__ == "__main__":
     unittest.main()

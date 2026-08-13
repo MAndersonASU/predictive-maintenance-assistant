@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from .config import DEFAULT_CONFIG_PATH, PROJECT_ROOT, ApplicationConfig, load_config
+from .demo import register_demo_routes
 from .observability import MetricsRegistry, build_logger
 from .persistence import PersistenceError, SQLiteStore
 from .services import ApplicationDependencyError, ApplicationInputError, ApplicationServices
@@ -158,6 +159,7 @@ def create_app(
     app.state.services = service_container
     app.state.store = persistence
     app.state.metrics = registry
+    register_demo_routes(app)
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):

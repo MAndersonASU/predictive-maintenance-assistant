@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bounded local demonstration for governed predictive maintenance and citation-grounded technical knowledge.">
+  <title>Predictive Maintenance Assistant</title>
+  <link rel="stylesheet" href="/demo/styles.css">
+  <script src="/demo/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#overview" aria-label="Predictive Maintenance Assistant home">
+      <span class="brand-mark" aria-hidden="true">PM</span>
+      <span><strong>Predictive Maintenance</strong><small>Technical Knowledge Assistant</small></span>
+    </a>
+    <div class="system-status" aria-live="polite">
+      <span id="status-dot" class="status-dot"></span>
+      <span id="system-status">Checking governed services…</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview" class="hero">
+      <div>
+        <p class="eyebrow">BOUNDED LOCAL RELEASE CANDIDATE</p>
+        <h1>Turn machine signals into reviewable evidence.</h1>
+        <p class="hero-copy">Score one exact 48-feature observation with the frozen Isolation Forest, retrieve governed technical sources, and inspect citation-grounded answers through a single verified API path.</p>
+        <div class="scope-note"><strong>Evidence boundary:</strong> unusualness is not failure probability. General references are never presented as exact MetroPT equipment instructions.</div>
+      </div>
+      <div class="hero-card" aria-label="Implemented pipeline">
+        <span>Sensor features</span><b>→</b><span>Frozen model</span><b>→</b><span>Governed retrieval</span><b>→</b><span>Cited evidence</span>
+      </div>
+    </section>
+
+    <nav class="workspace-tabs" aria-label="Demonstration workspaces">
+      <button class="tab active" data-panel="knowledge-panel" type="button">Knowledge + evidence</button>
+      <button class="tab" data-panel="prediction-panel" type="button">Prediction</button>
+      <button class="tab" data-panel="operations-panel" type="button">Operations</button>
+    </nav>
+
+    <section id="knowledge-panel" class="panel active" aria-labelledby="knowledge-heading">
+      <div class="panel-heading">
+        <div><p class="eyebrow">GOVERNED RAG PATH</p><h2 id="knowledge-heading">Ask, retrieve, and verify</h2></div>
+        <span class="badge">3 sources · 354 chunks</span>
+      </div>
+      <form id="knowledge-form" class="query-form">
+        <label for="knowledge-query">Technical question</label>
+        <textarea id="knowledge-query" maxlength="1000" required placeholder="Example: What does the MetroPT dataset record, and how should compressor pressure be interpreted?"></textarea>
+        <div class="form-actions">
+          <label class="compact-field" for="top-k">Evidence results <input id="top-k" type="number" min="1" max="12" value="5"></label>
+          <button class="button primary" type="submit">Generate grounded answer</button>
+        </div>
+      </form>
+      <div id="knowledge-error" class="message error hidden" role="alert"></div>
+      <div id="answer-result" class="result-grid hidden" aria-live="polite">
+        <article class="answer-card">
+          <div class="result-title"><h3>Grounded answer</h3><span id="answer-status" class="badge"></span></div>
+          <p id="answer-text"></p>
+          <p id="answer-boundary" class="boundary"></p>
+        </article>
+        <aside class="evidence-card">
+          <div class="result-title"><h3>Evidence trail</h3><span id="evidence-count" class="badge"></span></div>
+          <div id="evidence-list"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="prediction-panel" class="panel" aria-labelledby="prediction-heading">
+      <div class="panel-heading">
+        <div><p class="eyebrow">FROZEN MODEL PATH</p><h2 id="prediction-heading">Score one governed observation</h2></div>
+        <span id="model-badge" class="badge">Loading schema…</span>
+      </div>
+      <p class="section-copy">Paste one JSON object whose keys exactly match the frozen feature schema. Use “Insert zero template” only to inspect the contract; synthetic zeros are not operational evidence.</p>
+      <div class="form-actions left">
+        <button id="load-template" class="button secondary" type="button">Insert zero template</button>
+        <button id="copy-schema" class="button ghost" type="button">Copy feature names</button>
+      </div>
+      <form id="prediction-form" class="query-form">
+        <label for="feature-json">Feature JSON</label>
+        <textarea id="feature-json" class="code-input" required spellcheck="false" placeholder='{"feature_name": 0.0}'></textarea>
+        <button class="button primary" type="submit">Run frozen prediction</button>
+      </form>
+      <div id="prediction-error" class="message error hidden" role="alert"></div>
+      <article id="prediction-result" class="prediction-result hidden" aria-live="polite">
+        <div><span class="metric-label">Decision</span><strong id="alarm-result"></strong></div>
+        <div><span class="metric-label">Unusualness</span><strong id="score-result"></strong></div>
+        <div><span class="metric-label">Frozen threshold</span><strong id="threshold-result"></strong></div>
+        <p id="prediction-interpretation"></p>
+      </article>
+    </section>
+
+    <section id="operations-panel" class="panel" aria-labelledby="operations-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LOCAL OPERATIONS</p><h2 id="operations-heading">Health and review evidence</h2></div><button id="refresh-operations" class="button secondary" type="button">Refresh</button></div>
+      <div class="operations-grid">
+        <article><span class="metric-label">Readiness</span><strong id="readiness-value">—</strong></article>
+        <article><span class="metric-label">Interactions</span><strong id="interaction-count">—</strong></article>
+        <article><span class="metric-label">Local reviews</span><strong id="review-count">—</strong></article>
+      </div>
+      <p class="boundary">Local review records and counters are demonstration evidence only. They do not alter model or RAG evaluation results.</p>
+    </section>
+  </main>
+
+  <footer><span>Local-only interface · no authentication · no public deployment claim</span><a href="/docs">OpenAPI documentation</a></footer>
+</body>
+</html>
