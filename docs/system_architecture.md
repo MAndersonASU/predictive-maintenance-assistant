@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the implemented bounded local release candidate. The frozen machine-learning and governed knowledge artifacts remain read-only inputs to the API and demonstration layers.
+This document describes the implemented bounded local release. The frozen machine-learning and governed knowledge artifacts remain read-only inputs to the API and demonstration layers.
 
 ## Governed Data and Machine-Learning Path
 
@@ -109,9 +109,9 @@ The interface is served from committed self-contained HTML, CSS, and JavaScript 
 
 FastAPI provides strict request models, sanitized error responses, request IDs, OpenAPI documentation, and liveness/readiness endpoints. SQLite stores bounded local summaries while excluding raw feature values by default. Docker reproduces the runtime with an unprivileged user, a read-only root filesystem, loopback-only host publication, read-only governed artifact mounts, and a Docker-managed writable state volume.
 
-## Release-Candidate Boundary
+## Release Boundary
 
-The current implementation is a functionally integrated **bounded local demonstration release candidate**. It is not a public production deployment. Authentication is intentionally disabled under the loopback-only constraint. Public hosting would require separately implemented authentication, authorization, TLS, rate limiting, secret management, durable production persistence, network policy, and operational support controls.
+The current implementation is a functionally integrated **bounded local demonstration release**. It is not a public production deployment. Authentication is intentionally disabled under the loopback-only constraint. Public hosting would require separately implemented authentication, authorization, TLS, rate limiting, secret management, durable production persistence, network policy, and operational support controls.
 
 ## Evidence Boundaries
 

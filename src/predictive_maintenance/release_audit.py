@@ -1,4 +1,4 @@
-"""Deterministic release-candidate audit for the bounded local system.
+"""Deterministic release audit for the bounded local system.
 
 This module validates committed release controls and the identities of the
 externally governed runtime artifacts. It does not fit a model, rebuild the
@@ -69,7 +69,7 @@ def _configured_artifacts(config: dict[str, Any]) -> Iterable[tuple[str, str, st
 
 
 def run_release_audit(repository_root: Path) -> dict[str, Any]:
-    """Audit one prepared local release candidate without changing it."""
+    """Audit one prepared bounded local release without changing it."""
 
     root = Path(repository_root).resolve()
     checks: list[AuditCheck] = []
