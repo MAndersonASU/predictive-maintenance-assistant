@@ -15,10 +15,10 @@ This log records only implemented and verified engineering work. Planned capabil
 - Active branch: `main`
 - Remote tracking branch: `origin/main`
 - Public repository: verified
-- Final verified repository commit: `be37ff7c771ddb0e01b833c212bffdaa3a56b42f`
-- Final verification commit message: `Record final release verification`
+- Final core release-verification commit: `be37ff7c771ddb0e01b833c212bffdaa3a56b42f`
+- Final core release-verification commit message: `Record final release verification`
 - Release-hardening implementation commit: `78f747a252ebaf3644f9998840ab13ea02cd958e`
-- Final local and remote commit identity: matched at `be37ff7c771ddb0e01b833c212bffdaa3a56b42f`
+- Final core release local and remote identity: matched at `be37ff7c771ddb0e01b833c212bffdaa3a56b42f`
 - Complete repository test suite: 365 passing tests
 - Advanced-model held-out access: consumed exactly once; no additional held-out scoring occurred
 - Governed technical-knowledge corpus: 3 sources, 354 deterministic chunks, provenance validation passed
@@ -28,8 +28,8 @@ This log records only implemented and verified engineering work. Planned capabil
 - Integrated application layer: loopback-only FastAPI contracts for frozen-model prediction, governed retrieval, citation-grounded answers, bounded SQLite persistence, structured operational events, readiness checks, monitoring counters, and sanitized failure behavior
 - Reproducible container execution: pinned Dockerfile frontend and Python 3.14.6 slim-bookworm base image, fully pinned container runtime dependency closure, deny-all build-context allowlist, unprivileged runtime user, read-only root filesystem, dropped Linux capabilities, no-new-privileges, loopback-only host publication, read-only governed artifact mounts, and Docker-managed writable application state
 - Professional integrated demonstration: self-contained local prediction, knowledge/evidence, and operations workspaces over the existing governed FastAPI path; fixed asset routing; same-origin content-security policy; no remote UI dependencies or browser persistence
-- Release-candidate hardening: non-destructive 15-check audit over frozen identities, governed artifacts, professional release documentation, local security controls, and interface self-containment
-- Professional release package: finalized data card, evaluation summary, deployment guide, portfolio/interview guide, release-candidate checklist, and README documentation index using verified evidence only
+- Release hardening: non-destructive 15-check audit over frozen identities, governed artifacts, professional release documentation, local security controls, and interface self-containment
+- Professional release package: finalized data card, evaluation summary, deployment guide, portfolio/interview guide, final release-verification checklist, and README documentation index using verified evidence only
 - Container verification evidence: clean no-cache build passed; exact governed runtime dependency versions matched; image artifact/secret exclusion passed; health/readiness, prediction schema, retrieval, grounded-answer, exact-equipment refusal, and loopback network boundaries passed
 - Release-hardening implementation CI: GitHub Actions run `31660678645` completed successfully on exact commit `78f747a252ebaf3644f9998840ab13ea02cd958e`; Python compilation, the 365-test repository suite, and dependency consistency passed
 - Exact-equipment instructions require governed exact-equipment evidence

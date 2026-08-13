@@ -88,7 +88,7 @@ def validate_contract(payload: dict[str, Any]) -> None:
     if governance.get("performance_reporting_enabled") is not False:
         raise FeatureEngineeringError("governance.performance_reporting_enabled must be false.")
     if governance.get("learned_preprocessing_enabled") is not False:
-        raise FeatureEngineeringError("Learned preprocessing is disabled for this bounded lab.")
+        raise FeatureEngineeringError("Learned preprocessing is disabled for this bounded feature-engineering workflow.")
     if governance.get("learned_preprocessing_fit_scope") != "eligible_training_rows_only_if_enabled":
         raise FeatureEngineeringError("Learned preprocessing fit scope must remain training-only.")
     continuous = contract.get("continuous_signals")

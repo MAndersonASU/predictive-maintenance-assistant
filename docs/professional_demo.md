@@ -4,7 +4,7 @@
 
 The root path (`/`) presents a professional local interface over the already-implemented FastAPI contracts. It connects the frozen prediction model, governed retrieval, citation-grounded answers, evidence inspection, readiness, counters, and bounded local review evidence without introducing a second business-logic path.
 
-This is a **bounded local demonstration release candidate**, not a public service. It does not refit or retune the Isolation Forest, change the frozen 48-feature schema or threshold, rebuild the 354-chunk corpus, rebuild the hybrid index, alter grounding behavior, or rerun either held-out evaluator.
+This is a **bounded local professional demonstration**, not a public service. It does not refit or retune the Isolation Forest, change the frozen 48-feature schema or threshold, rebuild the 354-chunk corpus, rebuild the hybrid index, alter grounding behavior, or rerun either held-out evaluator.
 
 ## Demonstration workspaces
 

@@ -39,7 +39,7 @@ Three UCI-specific cases remain `retrieval_source_miss_at_5`. They are preserved
 
 The release verifies one loopback-only application path for prediction, retrieval, citation-grounded answers, readiness, metrics, bounded persistence, and the self-contained browser interface. Docker checks cover pinned dependencies, an unprivileged runtime, read-only governed artifact mounts, dropped capabilities, `no-new-privileges`, and host publication limited to `127.0.0.1:8000`.
 
-The complete pre-release repository suite contained 362 passing tests before the release-audit additions. The current authoritative count must be taken from the exact release-candidate commit and its GitHub Actions run.
+The final verified repository suite contains **365 passing tests**. Exact release verification is recorded in the engineering log and GitHub Actions, and no held-out evaluator is part of routine regression verification.
 
 ## Supported conclusion
 

@@ -155,7 +155,7 @@ The ignored JSON report records document, configuration, artifact-identity, chun
 - [`docs/deployment_guide.md`](docs/deployment_guide.md) — native and Docker release startup and verification.
 - [`docs/container_execution.md`](docs/container_execution.md) — pinned, hardened container contract.
 - [`docs/portfolio_interview_guide.md`](docs/portfolio_interview_guide.md) — verified résumé, LinkedIn, and interview language.
-- [`docs/release_candidate_checklist.md`](docs/release_candidate_checklist.md) — exact-commit release evidence gate.
+- [Final release verification checklist](docs/release_candidate_checklist.md) — exact-commit release evidence gate.
 
 ## Engineering Principles
 
