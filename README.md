@@ -15,7 +15,7 @@ The repository is implemented as a bounded local release candidate through six c
 5. **Application and operations** — loopback-only prediction, retrieval, and answer APIs; strict validation; bounded SQLite persistence; structured operational events; readiness; counters; and sanitized failures.
 6. **Reproducible professional demonstration** — a self-contained browser interface over the governed API path plus a pinned, hardened Docker runtime with read-only governed artifact mounts.
 
-The complete repository suite currently contains **362 passing tests**.
+The pre-release integration checkpoint contained **362 passing tests**. Use the exact release-candidate commit and its GitHub Actions run as the authority for the current count.
 
 ## Machine-Learning Release
 
@@ -130,11 +130,21 @@ The CI workflow intentionally does **not** execute data acquisition, model fitti
 
 Generated datasets, reports, retrieval indexes, model artifacts, and downloaded technical sources remain outside Git under governed ignore rules. Runtime dependencies are declared in `requirements.txt`; the development/test verification environment is fully pinned in `requirements-dev.txt`.
 
+Run the non-destructive frozen-artifact and release-document audit after restoring the governed local artifacts:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m predictive_maintenance.release_audit --repository-root .
+```
+
+The ignored JSON report records document, configuration, artifact-identity, chunk-count, security-boundary, and self-contained-interface checks. The audit never fits, rebuilds, retunes, or runs held-out evaluation.
+
 ## Key Documentation
 
 - [`ENGINEERING_LOG.md`](ENGINEERING_LOG.md) — verified engineering history and current workstream.
 - [`docs/model_card.md`](docs/model_card.md) — frozen Isolation Forest model card.
-- [`docs/ml_evaluation_report.md`](docs/ml_evaluation_report.md) — held-out machine-learning comparison.
+- [`docs/data_card.md`](docs/data_card.md) — governed MetroPT-3 identity, transformations, uses, and limitations.
+- [`docs/evaluation_summary.md`](docs/evaluation_summary.md) — machine-learning, retrieval, grounded-answer, and integration evidence.
 - [`docs/data_feature_governance.md`](docs/data_feature_governance.md) — data, target, feature, and evaluation controls.
 - [`docs/system_architecture.md`](docs/system_architecture.md) — integrated current architecture.
 - [`docs/knowledge_corpus_method.md`](docs/knowledge_corpus_method.md) — governed technical corpus.
@@ -142,7 +152,10 @@ Generated datasets, reports, retrieval indexes, model artifacts, and downloaded 
 - [`docs/knowledge_grounding_method.md`](docs/knowledge_grounding_method.md) — reranking, citations, and refusal behavior.
 - [`docs/application_foundation.md`](docs/application_foundation.md) — loopback API, persistence, operations, and security controls.
 - [`docs/professional_demo.md`](docs/professional_demo.md) — demonstration workspaces, evidence presentation, and interface boundaries.
-- [`docs/container_execution.md`](docs/container_execution.md) — pinned, hardened reproducible local execution.
+- [`docs/deployment_guide.md`](docs/deployment_guide.md) — native and Docker release startup and verification.
+- [`docs/container_execution.md`](docs/container_execution.md) — pinned, hardened container contract.
+- [`docs/portfolio_interview_guide.md`](docs/portfolio_interview_guide.md) — verified résumé, LinkedIn, and interview language.
+- [`docs/release_candidate_checklist.md`](docs/release_candidate_checklist.md) — exact-commit release evidence gate.
 
 ## Engineering Principles
 
@@ -157,4 +170,4 @@ Generated datasets, reports, retrieval indexes, model artifacts, and downloaded 
 
 ## Release-Candidate Boundary
 
-The project is functionally integrated for bounded local demonstration. It is not a public production service, safety system, or proof of business impact. The next milestone is release hardening and portfolio/career packaging using verified evidence only.
+The project is functionally integrated for bounded local demonstration. It is not a public production service, safety system, or proof of business impact. Release acceptance requires the clean-state checks, governed artifact identities, exact-commit CI evidence, and final synchronization recorded in the release-candidate checklist.
