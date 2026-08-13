@@ -6,12 +6,10 @@ Built a governed predictive-maintenance and technical-knowledge assistant that c
 
 ## Résumé bullet options
 
-- Engineered an end-to-end predictive-maintenance portfolio system for 1.52 million MetroPT-3 compressor observations, with reproducible acquisition, gap-aware time-series processing, causal feature engineering, frozen model evaluation, and 362+ automated regression tests.
+- Engineered an end-to-end predictive-maintenance system for 1.52 million MetroPT-3 compressor observations, with reproducible acquisition, gap-aware time-series processing, causal feature engineering, frozen model evaluation, and **365 automated regression tests**.
 - Built a governed technical-knowledge pipeline across three sources and 354 deterministic chunks using TF-IDF, 128-dimensional LSA, bounded hybrid retrieval, deterministic reranking, stable citations, and explicit insufficient-evidence refusal.
 - Delivered a loopback-only FastAPI and Docker demonstration integrating a frozen 48-feature Isolation Forest, retrieval, citation-grounded answers, readiness, metrics, and privacy-bounded SQLite history without duplicating model or retrieval logic.
 - Applied production-minded controls including chronological leakage prevention, checksum-verified artifacts, pinned dependencies, unprivileged containers, read-only artifact mounts, structured events, sanitized failures, and CI verification.
-
-Use the exact final test count from the release-candidate commit when replacing `362+`.
 
 ## LinkedIn project summary
 

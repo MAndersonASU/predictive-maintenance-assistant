@@ -6,7 +6,7 @@ A professional engineering portfolio project that combines governed industrial t
 
 ## Current Verified Capability
 
-The repository is implemented as a bounded local release candidate through six connected foundations:
+The repository is implemented as a bounded local release through six connected foundations:
 
 1. **Governed data engineering** — reproducible MetroPT-3 acquisition, checksums, schema and data-quality validation, Parquet conversion, DuckDB access, and gap-aware exploratory analysis.
 2. **Governed machine learning** — auditable failure-event provenance, chronological target materialization, causal feature engineering, a transparent robust-distance benchmark, a bounded Isolation Forest comparison, and one-time held-out evaluation with frozen parameters.
@@ -15,7 +15,7 @@ The repository is implemented as a bounded local release candidate through six c
 5. **Application and operations** — loopback-only prediction, retrieval, and answer APIs; strict validation; bounded SQLite persistence; structured operational events; readiness; counters; and sanitized failures.
 6. **Reproducible professional demonstration** — a self-contained browser interface over the governed API path plus a pinned, hardened Docker runtime with read-only governed artifact mounts.
 
-The pre-release integration checkpoint contained **362 passing tests**. Use the exact release-candidate commit and its GitHub Actions run as the authority for the current count.
+The final verified repository suite contains **365 passing tests**. The exact technical release verification is recorded in [`ENGINEERING_LOG.md`](ENGINEERING_LOG.md).
 
 ## Machine-Learning Release
 
@@ -141,7 +141,7 @@ The ignored JSON report records document, configuration, artifact-identity, chun
 
 ## Key Documentation
 
-- [`ENGINEERING_LOG.md`](ENGINEERING_LOG.md) — verified engineering history and current workstream.
+- [`ENGINEERING_LOG.md`](ENGINEERING_LOG.md) — verified engineering history and final release evidence.
 - [`docs/model_card.md`](docs/model_card.md) — frozen Isolation Forest model card.
 - [`docs/data_card.md`](docs/data_card.md) — governed MetroPT-3 identity, transformations, uses, and limitations.
 - [`docs/evaluation_summary.md`](docs/evaluation_summary.md) — machine-learning, retrieval, grounded-answer, and integration evidence.
@@ -168,6 +168,6 @@ The ignored JSON report records document, configuration, artifact-identity, chun
 - Exact-equipment claims require exact-equipment evidence.
 - Secrets, generated outputs, large data, local databases, and model artifacts remain outside Git.
 
-## Release-Candidate Boundary
+## Release Boundary
 
-The project is functionally integrated for bounded local demonstration. It is not a public production service, safety system, or proof of business impact. Release acceptance requires the clean-state checks, governed artifact identities, exact-commit CI evidence, and final synchronization recorded in the release-candidate checklist.
+The project is functionally integrated and verified for bounded local demonstration. It is not a public production service, safety system, or proof of business impact. The release boundary is defined by the clean-state checks, governed artifact identities, exact-commit CI evidence, and final synchronization recorded in the engineering log and release checklist.
